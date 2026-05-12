@@ -451,6 +451,39 @@ def view_history():
 
         print("-" * 60)
 
+def view_pending_plays():
+
+    history = pd.read_csv("data/history.csv")
+
+    pending = history[
+        history["result"] == "PENDING"
+    ]
+
+    if pending.empty:
+        print()
+        print("No pending plays.")
+        return
+
+    print()
+    print("=" * 60)
+    print("PENDING PLAYS")
+    print("=" * 60)
+
+    for _, row in pending.iterrows():
+
+        print()
+        print(
+            f"{row['date']} {row['timestamp']} | "
+            f"{row['player']} | "
+            f"{row['sport']} {row['stat']} vs {row['opponent']}"
+        )
+
+        print(
+            f"Suggestion: {row['suggestion']}"
+        )
+
+        print("-" * 60)
+
 def main():
     props = load_props()
 
@@ -517,7 +550,8 @@ while True:
     print("1. Run analysis")
     print("2. Update result")
     print("3. View history")
-    print("4. Exit")
+    print("4. View pending plays")
+    print("5. Exit")
 
     choice = input("Choose an option: ")
 
@@ -531,6 +565,9 @@ while True:
         view_history()
 
     elif choice == "4":
+        view_pending_plays()
+
+    elif choice == "5":
         print("Goodbye.")
         break
 
