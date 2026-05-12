@@ -127,12 +127,14 @@ def save_history(df):
     history = df.copy()
 
     history["date"] = datetime.now().strftime("%Y-%m-%d")
+    history["timestamp"] = datetime.now().strftime("%H:%M:%S")
 
     history["result"] = "PENDING"
     history["actual_stat"] = ""
 
     history = history[[
         "date",
+        "timestamp",
         "player",
         "sport",
         "stat",
