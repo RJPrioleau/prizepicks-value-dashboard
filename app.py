@@ -1,4 +1,5 @@
 import  pandas as pd
+from datetime import datetime
 
 def load_props():
     return pd.read_csv("data/props.csv")
@@ -122,6 +123,148 @@ def build_reasoning(row):
 
     return "|".join(reasons)
 
+def save_history(df):
+    history = df.copy()
+
+    history["date"] = datetime.now().strftime("%Y-%m-%d")
+
+    history["result"] = "PENDING"
+    history["actual_stat"] = ""
+
+    history = history[[
+        "date",
+        "player",
+        "sport",
+        "stat",
+        "opponent",
+        "suggestion",
+        "risk_rating",
+        "confidence",
+        "play_type",
+        "value_score",
+        "result",
+        "actual_stat"
+    ]]
+
+    existing_history = pd.read_csv("data/history.csv", dtype=str)
+    existing_history = existing_history.dropna(how="all")
+
+    if not existing_history.empty:
+        existing_history["date"] = pd.to_datetime(
+            existing_history["date"], errors="coerce"
+        ).dt.strftime("%Y-%m-%d")
+
+        history["date"] = pd.to_datetime(
+            history["date"], errors="coerce"
+        ).dt.strftime("%Y-%m-%d")
+
+        duplicate_keys = ["date", "player", "stat"]
+
+        history = history.merge(
+            existing_history[duplicate_keys],
+            on=duplicate_keys,
+            how="left",
+            indicator=True
+        )
+
+        history = history[history["_merge"] == "left_only"]
+        history = history.drop(columns=["_merge"])
+
+    if history.empty:
+        return
+
+    history.to_csv(
+        "data/history.csv",
+        mode="a",
+        header=False,
+        index=False
+    )
+
+def show_history_summary():
+
+    history = pd.read_csv("data/history.csv")
+
+    if history.empty:
+        print()
+        print("No history available yet.")
+        return
+
+    total_entries = len(history)
+
+    pending_count = len(
+        history[history["result"] == "PENDING"]
+    )
+
+    completed_count = len(
+        history[history["result"] != "PENDING"]
+    )
+
+    win_count = len(
+        history[history["result"] == "WIN"]
+    )
+
+    loss_count = len(
+        history[history["result"] == "LOSS"]
+    )
+
+    push_count = len(
+        history[history["result"] == "PUSH"]
+    )
+
+    graded_count = win_count + loss_count
+
+    if graded_count > 0:
+        win_rate = win_count / graded_count
+    else:
+        win_rate = 0
+
+    print()
+    print("=" * 40)
+    print("HISTORY SUMMARY")
+    print("=" * 40)
+
+    print(f"Total Saved Plays: {total_entries}")
+    print(f"Pending Plays: {pending_count}")
+    print(f"Completed Plays: {completed_count}")
+    print(f"Wins: {win_count}")
+    print(f"Losses: {loss_count}")
+    print(f"Pushes: {push_count}")
+    print(f"Win Rate: {win_rate:.2%}")
+
+    print()
+    print("=" * 40)
+    print("SPORT BREAKDOWN")
+    print("=" * 40)
+
+    sports = history["sport"].unique()
+
+    for sport in sports:
+
+        sport_history = history[
+            history["sport"] == sport
+            ]
+
+        sport_wins = len(
+            sport_history[sport_history["result"] == "WIN"]
+        )
+
+        sport_losses = len(
+            sport_history[sport_history["result"] == "LOSS"]
+        )
+
+        graded = sport_wins + sport_losses
+
+        if graded > 0:
+            sport_win_rate = sport_wins / graded
+        else:
+            sport_win_rate = 0
+
+        print()
+        print(f"{sport}")
+        print(f"Wins: {sport_wins}")
+        print(f"Losses: {sport_losses}")
+        print(f"Win Rate: {sport_win_rate:.2%}")
+
 def main():
     props = load_props()
 
@@ -141,11 +284,14 @@ def main():
 
     props = props.head(3)
 
+
     if props.empty:
         print()
         print("No strong value plays found right now.")
         print("Recommendation: PASS or wait for better lines.")
         return
+
+    save_history(props)
 
     print()
     print("TOP VALUE PLAYS")
@@ -178,5 +324,5 @@ def main():
         print("=" * 40)
         print()
 
-
+        show_history_summary()
 main()
