@@ -381,6 +381,8 @@ def show_history_summary():
         print(f"Losses: {entry_losses}")
         print(f"Win Rate: {entry_win_rate:.2%}")
 
+    input("\nPress Enter to continue...")
+
 def update_result():
     history = pd.read_csv("data/history.csv", dtype=str)
     history["actual_stat"] = history["actual_stat"].fillna("")
@@ -418,6 +420,8 @@ def update_result():
 
     print("Result updated.")
 
+    input("\nPress Enter to continue...")
+
 def view_history():
 
     history = pd.read_csv("data/history.csv")
@@ -451,6 +455,8 @@ def view_history():
 
         print("-" * 60)
 
+    input("\nPress Enter to continue...")
+
 def view_pending_plays():
 
     history = pd.read_csv("data/history.csv")
@@ -483,6 +489,8 @@ def view_pending_plays():
         )
 
         print("-" * 60)
+
+    input("\nPress Enter to continue...")
 
 def view_completed_plays():
 
@@ -521,6 +529,8 @@ def view_completed_plays():
         )
 
         print("-" * 60)
+
+    input("\nPress Enter to continue...")
 
 def main():
     props = load_props()
@@ -582,9 +592,14 @@ def main():
         print()
 
         show_history_summary()
+    input("\nPress Enter to continue...")
 
 while True:
-    print()
+    print("\n" * 2)
+    print("=" * 60)
+    print("PRIZEPICKS VALUE DASHBOARD")
+    print("=" * 60)
+
     print("1. Run analysis")
     print("2. Update result")
     print("3. View history")
