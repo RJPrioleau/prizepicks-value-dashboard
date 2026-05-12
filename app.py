@@ -381,6 +381,38 @@ def show_history_summary():
         print(f"Losses: {entry_losses}")
         print(f"Win Rate: {entry_win_rate:.2%}")
 
+def update_result():
+    history = pd.read_csv("data/history.csv", dtype=str)
+    history["actual_stat"] = history["actual_stat"].fillna("")
+
+    pending = history[
+        history["result"] == "PENDING"
+    ]
+
+    if pending.empty:
+        print("No pending plays to update.")
+        return
+
+    print()
+    print("PENDING PLAYS")
+    print("=" * 40)
+
+    for index, row in pending.iterrows():
+        print(
+            f"{index}: {row['player']} - {row['sport']} {row['stat']} vs {row['opponent']}"
+        )
+
+    selected_index = int(input("Enter the index to update: "))
+    result = input("Enter result (WIN/LOSS/PUSH): ").upper()
+    actual_stat = input("Enter actual stat: ")
+
+    history.loc[selected_index, "result"] = result
+    history.loc[selected_index, "actual_stat"] = actual_stat
+
+    history.to_csv("data/history.csv", index=False)
+
+    print("Result updated.")
+
 def main():
     props = load_props()
 
@@ -441,4 +473,17 @@ def main():
         print()
 
         show_history_summary()
-main()
+
+print("1. Run analysis")
+print("2. Update result")
+
+choice = input("Choose an option: ")
+
+if choice == "1":
+    main()
+
+elif choice == "2":
+    update_result()
+
+else:
+    print("Invalid choice.")
