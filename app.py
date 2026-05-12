@@ -404,6 +404,11 @@ def update_result():
 
     selected_index = int(input("Enter the index to update: "))
     result = input("Enter result (WIN/LOSS/PUSH): ").upper()
+
+    while result not in ["WIN", "LOSS", "PUSH"]:
+        print("Invalid result. Please enter WIN, LOSS, or PUSH.")
+        result = input("Enter result (WIN/LOSS/PUSH): ").upper()
+
     actual_stat = input("Enter actual stat: ")
 
     history.loc[selected_index, "result"] = result
