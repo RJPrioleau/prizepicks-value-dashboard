@@ -418,6 +418,39 @@ def update_result():
 
     print("Result updated.")
 
+def view_history():
+
+    history = pd.read_csv("data/history.csv")
+
+    if history.empty:
+        print("No history available.")
+        return
+
+    print()
+    print("=" * 60)
+    print("PLAY HISTORY")
+    print("=" * 60)
+
+    for _, row in history.iterrows():
+
+        print()
+        print(
+            f"{row['date']} {row['timestamp']} | "
+            f"{row['player']} | "
+            f"{row['sport']} {row['stat']} vs {row['opponent']}"
+        )
+
+        print(
+            f"Suggestion: {row['suggestion']}"
+        )
+
+        print(
+            f"Result: {row['result']} | "
+            f"Actual Stat: {row['actual_stat']}"
+        )
+
+        print("-" * 60)
+
 def main():
     props = load_props()
 
@@ -479,16 +512,27 @@ def main():
 
         show_history_summary()
 
-print("1. Run analysis")
-print("2. Update result")
+while True:
+    print()
+    print("1. Run analysis")
+    print("2. Update result")
+    print("3. View history")
+    print("4. Exit")
 
-choice = input("Choose an option: ")
+    choice = input("Choose an option: ")
 
-if choice == "1":
-    main()
+    if choice == "1":
+        main()
 
-elif choice == "2":
-    update_result()
+    elif choice == "2":
+        update_result()
 
-else:
-    print("Invalid choice.")
+    elif choice == "3":
+        view_history()
+
+    elif choice == "4":
+        print("Goodbye.")
+        break
+
+    else:
+        print("Invalid choice.")
