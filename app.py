@@ -265,6 +265,80 @@ def show_history_summary():
         print(f"Losses: {sport_losses}")
         print(f"Win Rate: {sport_win_rate:.2%}")
 
+    print()
+    print("=" * 40)
+    print("CONFIDENCE BREAKDOWN")
+    print("=" * 40)
+
+    confidence_levels = history["confidence"].unique()
+
+    for level in confidence_levels:
+        confidence_history = history[
+            history["confidence"] == level
+            ]
+
+        confidence_wins = len(
+            confidence_history[
+                confidence_history["result"] == "WIN"
+                ]
+        )
+
+        confidence_losses = len(
+            confidence_history[
+                confidence_history["result"] == "LOSS"
+                ]
+        )
+
+        graded = confidence_wins + confidence_losses
+
+        if graded > 0:
+            confidence_win_rate = confidence_wins / graded
+        else:
+            confidence_win_rate = 0
+
+        print()
+        print(f"{level}")
+        print(f"Wins: {confidence_wins}")
+        print(f"Losses: {confidence_losses}")
+        print(f"Win Rate: {confidence_win_rate:.2%}")
+    print()
+    print("=" * 40)
+    print("PLAY TYPE BREAKDOWN")
+    print("=" * 40)
+
+    play_types = history["play_type"].unique()
+
+    for play_type in play_types:
+
+        play_history = history[
+            history["play_type"] == play_type
+            ]
+
+        play_wins = len(
+            play_history[
+                play_history["result"] == "WIN"
+                ]
+        )
+
+        play_losses = len(
+            play_history[
+                play_history["result"] == "LOSS"
+                ]
+        )
+
+        graded = play_wins + play_losses
+
+        if graded > 0:
+            play_win_rate = play_wins / graded
+        else:
+            play_win_rate = 0
+
+        print()
+        print(f"{play_type}")
+        print(f"Wins: {play_wins}")
+        print(f"Losses: {play_losses}")
+        print(f"Win Rate: {play_win_rate:.2%}")
+
 def main():
     props = load_props()
 
