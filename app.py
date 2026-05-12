@@ -128,6 +128,7 @@ def save_history(df):
 
     history["date"] = datetime.now().strftime("%Y-%m-%d")
     history["timestamp"] = datetime.now().strftime("%H:%M:%S")
+    history["entry_type"] = "PAPER"
 
     history["result"] = "PENDING"
     history["actual_stat"] = ""
@@ -135,6 +136,7 @@ def save_history(df):
     history = history[[
         "date",
         "timestamp",
+        "entry_type",
         "player",
         "sport",
         "stat",
@@ -340,6 +342,44 @@ def show_history_summary():
         print(f"Wins: {play_wins}")
         print(f"Losses: {play_losses}")
         print(f"Win Rate: {play_win_rate:.2%}")
+
+    print()
+    print("=" * 40)
+    print("ENTRY TYPE BREAKDOWN")
+    print("=" * 40)
+
+    entry_types = history["entry_type"].unique()
+
+    for entry_type in entry_types:
+
+        entry_history = history[
+            history["entry_type"] == entry_type
+            ]
+
+        entry_wins = len(
+            entry_history[
+                entry_history["result"] == "WIN"
+                ]
+        )
+
+        entry_losses = len(
+            entry_history[
+                entry_history["result"] == "LOSS"
+                ]
+        )
+
+        graded = entry_wins + entry_losses
+
+        if graded > 0:
+            entry_win_rate = entry_wins / graded
+        else:
+            entry_win_rate = 0
+
+        print()
+        print(f"{entry_type}")
+        print(f"Wins: {entry_wins}")
+        print(f"Losses: {entry_losses}")
+        print(f"Win Rate: {entry_win_rate:.2%}")
 
 def main():
     props = load_props()
