@@ -65,7 +65,17 @@ def rate_risk(row):
 
     return "MEDIUM RISK"
 
+def confidence_score(row):
+    value_score = row["value_score"]
+    risk_rating = row["risk_rating"]
 
+    if value_score >=15 and "LOW RISK" in risk_rating:
+        return "HIGH CONFIDENCE"
+
+    if value_score >= 10:
+        return "MEDIUM CONFIDENCE"
+
+    return "LOW CONFIDENCE"
 
 def main():
     props = load_props()
@@ -74,6 +84,7 @@ def main():
 
     props["suggestion"] = props.apply(suggest_pick,axis=1)
     props["risk_rating"] = props.apply(rate_risk, axis=1)
+    props["confidence"] = props.apply(confidence_score, axis=1)
 
     props = props.sort_values(by="value_score", ascending=False)
 
@@ -97,6 +108,7 @@ def main():
         print()
         print(f"Suggestion: {row['suggestion']}")
         print(f"Risk Rating: {row['risk_rating']}")
+        print(f"Confidence: {row['confidence']}")
 
         print("=" * 40)
         print()
