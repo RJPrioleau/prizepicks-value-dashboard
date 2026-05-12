@@ -77,6 +77,51 @@ def confidence_score(row):
 
     return "LOW CONFIDENCE"
 
+def classify_play(row):
+    confidence = row["confidence"]
+    risk_rating = row["risk_rating"]
+    value_score = row["value_score"]
+
+    if(
+        confidence == "HIGH CONFIDENCE"
+        and "LOW RISK" in risk_rating
+    ):
+        return "SAFE PLAY"
+
+    if value_score >=15:
+        return "AGGRESSIVE VALUE PLAY"
+
+    if "HIGH RISK" in risk_rating:
+        return "RISKY PLAY"
+
+    return "BALANCED PLAY"
+
+def build_reasoning(row):
+    reasons = []
+
+    if row["projection_edge"] >= 2:
+        reasons.append("Projection strongly above line")
+
+    elif row["projection_edge"] >= 1:
+        reasons.append("Projection slightly above line")
+
+    if row["market_edge"] >= 1:
+        reasons.append("Sportsbook market supports value")
+
+    if row["last10_hit_rate"] >= 0.60:
+        reasons.append("Strong recent hit rate")
+
+    if row["matchup_adjustment"] > 0:
+        reasons.append("Favorable Matchup")
+
+    if row["matchup_adjustment"] < 0:
+        reasons.append("Difficult matchup")
+
+    if row["injury_risk"] >= 3:
+        reasons.append("Potential injury/news concern")
+
+    return "|".join(reasons)
+
 def main():
     props = load_props()
 
@@ -85,9 +130,27 @@ def main():
     props["suggestion"] = props.apply(suggest_pick,axis=1)
     props["risk_rating"] = props.apply(rate_risk, axis=1)
     props["confidence"] = props.apply(confidence_score, axis=1)
+    props["play_type"] = props.apply(classify_play, axis=1)
+    props["reasoning"] = props.apply(build_reasoning, axis=1)
 
     props = props.sort_values(by="value_score", ascending=False)
 
+    props = props[
+        ~props["suggestion"].str.contains("NO PLAY")
+    ]
+
+    props = props.head(3)
+
+    if props.empty:
+        print()
+        print("No strong value plays found right now.")
+        print("Recommendation: PASS or wait for better lines.")
+        return
+
+    print()
+    print("TOP VALUE PLAYS")
+    print("=" * 40)
+    print()
 
     for _, row in props.iterrows():
         print("=" * 40)
@@ -109,6 +172,8 @@ def main():
         print(f"Suggestion: {row['suggestion']}")
         print(f"Risk Rating: {row['risk_rating']}")
         print(f"Confidence: {row['confidence']}")
+        print(f"Play Type: {row['play_type']}")
+        print(f"Reasoning: {row['reasoning']}")
 
         print("=" * 40)
         print()
