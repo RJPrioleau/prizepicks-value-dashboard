@@ -590,7 +590,8 @@ while True:
     print("3. View history")
     print("4. View pending plays")
     print("5. View completed plays")
-    print("6. Exit")
+    print("6. View summary")
+    print("7. Exit")
 
     choice = input("Choose an option: ")
 
@@ -610,6 +611,9 @@ while True:
         view_completed_plays()
 
     elif choice == "6":
+        show_history_summary()
+
+    elif choice == "7":
         print("Goodbye.")
         break
 
