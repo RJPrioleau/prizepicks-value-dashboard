@@ -856,6 +856,50 @@ def search_history_by_opponent():
 
     input("\nPress Enter to continue...")
 
+def search_history_by_stat():
+
+    history = pd.read_csv("data/history.csv")
+
+    if history.empty:
+        print()
+        print("No history available.")
+        input("\nPress Enter to continue...")
+        return
+
+    stat_search = input("Enter stat type to search: ").lower()
+
+    results = history[
+        history["stat"].str.lower().str.contains(stat_search, na=False)
+    ]
+
+    if results.empty:
+        print()
+        print("No matching stat type found.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("=" * 60)
+    print("STAT SEARCH RESULTS")
+    print("=" * 60)
+
+    for _, row in results.iterrows():
+
+        print()
+        print(
+            f"{row['date']} {row['timestamp']} | "
+            f"{row['player']} | "
+            f"{row['sport']} {row['stat']} vs {row['opponent']}"
+        )
+
+        print(f"Suggestion: {row['suggestion']}")
+        print(f"Play Type: {row['play_type']}")
+        print(f"Confidence: {row['confidence']}")
+        print(f"Result: {row['result']} | Actual Stat: {row['actual_stat']}")
+        print("-" * 60)
+
+    input("\nPress Enter to continue...")
+
 def main():
     props = load_props()
 
@@ -937,7 +981,8 @@ while True:
     print("11. View plays by confidence")
     print("12. Search history by player")
     print("13. Search history by opponent")
-    print("14. Exit")
+    print("14. Search history by stat")
+    print("15. Exit")
 
     choice = input("Choose an option: ")
 
@@ -981,6 +1026,9 @@ while True:
         search_history_by_opponent()
 
     elif choice == "14":
+        search_history_by_stat()
+
+    elif choice == "15":
         print("Goodbye.")
         break
 
