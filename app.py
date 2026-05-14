@@ -1,4 +1,5 @@
 import  pandas as pd
+import os
 from datetime import datetime
 
 def load_props():
@@ -532,6 +533,60 @@ def view_completed_plays():
 
     input("\nPress Enter to continue...")
 
+def view_plays_by_type():
+
+    history = pd.read_csv("data/history.csv")
+
+    if history.empty:
+        print()
+        print("No history available.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("PLAY TYPES")
+    print("=" * 40)
+
+    play_types = history["play_type"].dropna().unique()
+
+    for index, play_type in enumerate(play_types, start=1):
+        print(f"{index}. {play_type}")
+
+    choice = input("Choose a play type: ")
+
+    try:
+        selected_index = int(choice) - 1
+        selected_type = play_types[selected_index]
+
+    except:
+        print("Invalid choice.")
+        input("\nPress Enter to continue...")
+        return
+
+    filtered = history[
+        history["play_type"] == selected_type
+    ]
+
+    print()
+    print("=" * 60)
+    print(f"{selected_type} PLAYS")
+    print("=" * 60)
+
+    for _, row in filtered.iterrows():
+
+        print()
+        print(
+            f"{row['date']} {row['timestamp']} | "
+            f"{row['player']} | "
+            f"{row['sport']} {row['stat']} vs {row['opponent']}"
+        )
+
+        print(f"Suggestion: {row['suggestion']}")
+        print(f"Result: {row['result']} | Actual Stat: {row['actual_stat']}")
+        print("-" * 60)
+
+    input("\nPress Enter to continue...")
+
 def main():
     props = load_props()
 
@@ -595,7 +650,7 @@ def main():
     input("\nPress Enter to continue...")
 
 while True:
-    print("\n" * 2)
+    os.system("cls")
     print("=" * 60)
     print("PRIZEPICKS VALUE DASHBOARD")
     print("=" * 60)
@@ -606,7 +661,8 @@ while True:
     print("4. View pending plays")
     print("5. View completed plays")
     print("6. View summary")
-    print("7. Exit")
+    print("7. View plays by type")
+    print("8. Exit")
 
     choice = input("Choose an option: ")
 
@@ -629,6 +685,9 @@ while True:
         show_history_summary()
 
     elif choice == "7":
+        view_plays_by_type()
+
+    elif choice == "8":
         print("Goodbye.")
         break
 
