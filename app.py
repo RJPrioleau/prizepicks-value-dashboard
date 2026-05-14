@@ -587,6 +587,60 @@ def view_plays_by_type():
 
     input("\nPress Enter to continue...")
 
+def view_plays_by_sport():
+
+    history = pd.read_csv("data/history.csv")
+
+    if history.empty:
+        print()
+        print("No history available.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("SPORTS")
+    print("=" * 40)
+
+    sports = history["sport"].dropna().unique()
+
+    for index, sport in enumerate(sports, start=1):
+        print(f"{index}. {sport}")
+
+    choice = input("Choose a sport: ")
+
+    try:
+        selected_index = int(choice) - 1
+        selected_sport = sports[selected_index]
+
+    except:
+        print("Invalid choice.")
+        input("\nPress Enter to continue...")
+        return
+
+    filtered = history[
+        history["sport"] == selected_sport
+    ]
+
+    print()
+    print("=" * 60)
+    print(f"{selected_sport} PLAYS")
+    print("=" * 60)
+
+    for _, row in filtered.iterrows():
+
+        print()
+        print(
+            f"{row['date']} {row['timestamp']} | "
+            f"{row['player']} | "
+            f"{row['stat']} vs {row['opponent']}"
+        )
+
+        print(f"Suggestion: {row['suggestion']}")
+        print(f"Result: {row['result']} | Actual Stat: {row['actual_stat']}")
+        print("-" * 60)
+
+    input("\nPress Enter to continue...")
+
 def main():
     props = load_props()
 
@@ -662,7 +716,8 @@ while True:
     print("5. View completed plays")
     print("6. View summary")
     print("7. View plays by type")
-    print("8. Exit")
+    print("8. View plays by sport")
+    print("9. Exit")
 
     choice = input("Choose an option: ")
 
@@ -688,6 +743,9 @@ while True:
         view_plays_by_type()
 
     elif choice == "8":
+        view_plays_by_sport()
+
+    elif choice == "9":
         print("Goodbye.")
         break
 
