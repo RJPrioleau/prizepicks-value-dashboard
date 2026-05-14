@@ -768,6 +768,50 @@ def view_plays_by_confidence():
 
     input("\nPress Enter to continue...")
 
+def search_history_by_player():
+
+    history = pd.read_csv("data/history.csv")
+
+    if history.empty:
+        print()
+        print("No history available.")
+        input("\nPress Enter to continue...")
+        return
+
+    player_search = input("Enter player name to search: ").lower()
+
+    results = history[
+        history["player"].str.lower().str.contains(player_search, na=False)
+    ]
+
+    if results.empty:
+        print()
+        print("No matching player found.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("=" * 60)
+    print("PLAYER SEARCH RESULTS")
+    print("=" * 60)
+
+    for _, row in results.iterrows():
+
+        print()
+        print(
+            f"{row['date']} {row['timestamp']} | "
+            f"{row['player']} | "
+            f"{row['sport']} {row['stat']} vs {row['opponent']}"
+        )
+
+        print(f"Suggestion: {row['suggestion']}")
+        print(f"Play Type: {row['play_type']}")
+        print(f"Confidence: {row['confidence']}")
+        print(f"Result: {row['result']} | Actual Stat: {row['actual_stat']}")
+        print("-" * 60)
+
+    input("\nPress Enter to continue...")
+
 def main():
     props = load_props()
 
@@ -847,7 +891,8 @@ while True:
     print("9. View winning plays")
     print("10. View losing plays")
     print("11. View plays by confidence")
-    print("12. Exit")
+    print("12. Search history by player")
+    print("13. Exit")
 
     choice = input("Choose an option: ")
 
@@ -885,6 +930,9 @@ while True:
         view_plays_by_confidence()
 
     elif choice == "12":
+        search_history_by_player()
+
+    elif choice == "13":
         print("Goodbye.")
         break
 
