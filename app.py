@@ -641,6 +641,78 @@ def view_plays_by_sport():
 
     input("\nPress Enter to continue...")
 
+def view_winning_plays():
+
+    history = pd.read_csv("data/history.csv")
+
+    wins = history[
+        history["result"] == "WIN"
+    ]
+
+    if wins.empty:
+        print()
+        print("No winning plays yet.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("=" * 60)
+    print("WINNING PLAYS")
+    print("=" * 60)
+
+    for _, row in wins.iterrows():
+
+        print()
+        print(
+            f"{row['date']} {row['timestamp']} | "
+            f"{row['player']} | "
+            f"{row['sport']} {row['stat']} vs {row['opponent']}"
+        )
+
+        print(f"Suggestion: {row['suggestion']}")
+        print(f"Play Type: {row['play_type']}")
+        print(f"Confidence: {row['confidence']}")
+        print(f"Actual Stat: {row['actual_stat']}")
+        print("-" * 60)
+
+    input("\nPress Enter to continue...")
+
+def view_losing_plays():
+
+    history = pd.read_csv("data/history.csv")
+
+    losses = history[
+        history["result"] == "LOSS"
+    ]
+
+    if losses.empty:
+        print()
+        print("No losing plays yet.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("=" * 60)
+    print("LOSING PLAYS")
+    print("=" * 60)
+
+    for _, row in losses.iterrows():
+
+        print()
+        print(
+            f"{row['date']} {row['timestamp']} | "
+            f"{row['player']} | "
+            f"{row['sport']} {row['stat']} vs {row['opponent']}"
+        )
+
+        print(f"Suggestion: {row['suggestion']}")
+        print(f"Play Type: {row['play_type']}")
+        print(f"Confidence: {row['confidence']}")
+        print(f"Actual Stat: {row['actual_stat']}")
+        print("-" * 60)
+
+    input("\nPress Enter to continue...")
+
 def main():
     props = load_props()
 
@@ -717,7 +789,9 @@ while True:
     print("6. View summary")
     print("7. View plays by type")
     print("8. View plays by sport")
-    print("9. Exit")
+    print("9. View winning plays")
+    print("10. View losing plays")
+    print("11. Exit")
 
     choice = input("Choose an option: ")
 
@@ -746,6 +820,12 @@ while True:
         view_plays_by_sport()
 
     elif choice == "9":
+        view_winning_plays()
+
+    elif choice == "10":
+        view_losing_plays()
+
+    elif choice == "11":
         print("Goodbye.")
         break
 
