@@ -713,6 +713,61 @@ def view_losing_plays():
 
     input("\nPress Enter to continue...")
 
+def view_plays_by_confidence():
+
+    history = pd.read_csv("data/history.csv")
+
+    if history.empty:
+        print()
+        print("No history available.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("CONFIDENCE LEVELS")
+    print("=" * 40)
+
+    confidence_levels = history["confidence"].dropna().unique()
+
+    for index, level in enumerate(confidence_levels, start=1):
+        print(f"{index}. {level}")
+
+    choice = input("Choose a confidence level: ")
+
+    try:
+        selected_index = int(choice) - 1
+        selected_confidence = confidence_levels[selected_index]
+
+    except:
+        print("Invalid choice.")
+        input("\nPress Enter to continue...")
+        return
+
+    filtered = history[
+        history["confidence"] == selected_confidence
+    ]
+
+    print()
+    print("=" * 60)
+    print(f"{selected_confidence} PLAYS")
+    print("=" * 60)
+
+    for _, row in filtered.iterrows():
+
+        print()
+        print(
+            f"{row['date']} {row['timestamp']} | "
+            f"{row['player']} | "
+            f"{row['sport']} {row['stat']} vs {row['opponent']}"
+        )
+
+        print(f"Suggestion: {row['suggestion']}")
+        print(f"Play Type: {row['play_type']}")
+        print(f"Result: {row['result']} | Actual Stat: {row['actual_stat']}")
+        print("-" * 60)
+
+    input("\nPress Enter to continue...")
+
 def main():
     props = load_props()
 
@@ -791,7 +846,8 @@ while True:
     print("8. View plays by sport")
     print("9. View winning plays")
     print("10. View losing plays")
-    print("11. Exit")
+    print("11. View plays by confidence")
+    print("12. Exit")
 
     choice = input("Choose an option: ")
 
@@ -826,6 +882,9 @@ while True:
         view_losing_plays()
 
     elif choice == "11":
+        view_plays_by_confidence()
+
+    elif choice == "12":
         print("Goodbye.")
         break
 
