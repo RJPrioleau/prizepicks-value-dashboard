@@ -961,6 +961,35 @@ def view_highest_value_losses():
 
     input("\nPress Enter to continue...")
 
+def view_highest_value_wins():
+
+    history = pd.read_csv("data/history.csv")
+
+
+    wins = history[
+        history["result"].str.strip().str.upper() == "WIN"
+    ]
+
+    highest_value_wins = wins.sort_values(
+        by="value_score",
+        ascending=False
+    ).head(10)
+
+    if highest_value_wins.empty:
+        print()
+        print("No winning plays available.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("=" * 60)
+    print("HIGHEST VALUE WINS")
+    print("=" * 60)
+
+    display_history_rows(highest_value_wins)
+
+    input("\nPress Enter to continue...")
+
 def main():
     props = load_props()
 
@@ -1049,7 +1078,8 @@ while True:
     print("18. Filter by Top value plays")
     print("19. Filter by Low value plays")
     print("20. View High Value Losses")
-    print("21. Exit")
+    print("21. View High Value Wins")
+    print("22. Exit")
 
     choice = input("Choose an option: ")
 
@@ -1114,6 +1144,9 @@ while True:
         view_highest_value_losses()
 
     elif choice == "21":
+        view_highest_value_wins()
+
+    elif choice == "22":
         print("Goodbye.")
         break
 
