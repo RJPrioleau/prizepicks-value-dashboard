@@ -423,6 +423,23 @@ def update_result():
 
     input("\nPress Enter to continue...")
 
+def display_history_rows(rows):
+
+    for _, row in rows.iterrows():
+
+        print()
+        print(
+            f"{row['date']} {row['timestamp']} | "
+            f"{row['player']} | "
+            f"{row['sport']} {row['stat']} vs {row['opponent']}"
+        )
+
+        print(f"Suggestion: {row['suggestion']}")
+        print(f"Play Type: {row['play_type']}")
+        print(f"Confidence: {row['confidence']}")
+        print(f"Result: {row['result']} | Actual Stat: {row['actual_stat']}")
+        print("-" * 60)
+
 def view_history():
 
     history = pd.read_csv("data/history.csv")
@@ -436,25 +453,7 @@ def view_history():
     print("PLAY HISTORY")
     print("=" * 60)
 
-    for _, row in history.iterrows():
-
-        print()
-        print(
-            f"{row['date']} {row['timestamp']} | "
-            f"{row['player']} | "
-            f"{row['sport']} {row['stat']} vs {row['opponent']}"
-        )
-
-        print(
-            f"Suggestion: {row['suggestion']}"
-        )
-
-        print(
-            f"Result: {row['result']} | "
-            f"Actual Stat: {row['actual_stat']}"
-        )
-
-        print("-" * 60)
+    display_history_rows(history)
 
     input("\nPress Enter to continue...")
 
@@ -476,20 +475,7 @@ def view_pending_plays():
     print("PENDING PLAYS")
     print("=" * 60)
 
-    for _, row in pending.iterrows():
-
-        print()
-        print(
-            f"{row['date']} {row['timestamp']} | "
-            f"{row['player']} | "
-            f"{row['sport']} {row['stat']} vs {row['opponent']}"
-        )
-
-        print(
-            f"Suggestion: {row['suggestion']}"
-        )
-
-        print("-" * 60)
+    display_history_rows(pending)
 
     input("\nPress Enter to continue...")
 
@@ -511,25 +497,7 @@ def view_completed_plays():
     print("COMPLETED PLAYS")
     print("=" * 60)
 
-    for _, row in completed.iterrows():
-
-        print()
-        print(
-            f"{row['date']} {row['timestamp']} | "
-            f"{row['player']} | "
-            f"{row['sport']} {row['stat']} vs {row['opponent']}"
-        )
-
-        print(
-            f"Suggestion: {row['suggestion']}"
-        )
-
-        print(
-            f"Result: {row['result']} | "
-            f"Actual Stat: {row['actual_stat']}"
-        )
-
-        print("-" * 60)
+    display_history_rows(completed)
 
     input("\nPress Enter to continue...")
 
@@ -572,18 +540,7 @@ def view_plays_by_type():
     print(f"{selected_type} PLAYS")
     print("=" * 60)
 
-    for _, row in filtered.iterrows():
-
-        print()
-        print(
-            f"{row['date']} {row['timestamp']} | "
-            f"{row['player']} | "
-            f"{row['sport']} {row['stat']} vs {row['opponent']}"
-        )
-
-        print(f"Suggestion: {row['suggestion']}")
-        print(f"Result: {row['result']} | Actual Stat: {row['actual_stat']}")
-        print("-" * 60)
+    display_history_rows(filtered)
 
     input("\nPress Enter to continue...")
 
@@ -626,18 +583,7 @@ def view_plays_by_sport():
     print(f"{selected_sport} PLAYS")
     print("=" * 60)
 
-    for _, row in filtered.iterrows():
-
-        print()
-        print(
-            f"{row['date']} {row['timestamp']} | "
-            f"{row['player']} | "
-            f"{row['stat']} vs {row['opponent']}"
-        )
-
-        print(f"Suggestion: {row['suggestion']}")
-        print(f"Result: {row['result']} | Actual Stat: {row['actual_stat']}")
-        print("-" * 60)
+    display_history_rows(filtered)
 
     input("\nPress Enter to continue...")
 
@@ -660,20 +606,7 @@ def view_winning_plays():
     print("WINNING PLAYS")
     print("=" * 60)
 
-    for _, row in wins.iterrows():
-
-        print()
-        print(
-            f"{row['date']} {row['timestamp']} | "
-            f"{row['player']} | "
-            f"{row['sport']} {row['stat']} vs {row['opponent']}"
-        )
-
-        print(f"Suggestion: {row['suggestion']}")
-        print(f"Play Type: {row['play_type']}")
-        print(f"Confidence: {row['confidence']}")
-        print(f"Actual Stat: {row['actual_stat']}")
-        print("-" * 60)
+    display_history_rows(wins)
 
     input("\nPress Enter to continue...")
 
@@ -696,20 +629,7 @@ def view_losing_plays():
     print("LOSING PLAYS")
     print("=" * 60)
 
-    for _, row in losses.iterrows():
-
-        print()
-        print(
-            f"{row['date']} {row['timestamp']} | "
-            f"{row['player']} | "
-            f"{row['sport']} {row['stat']} vs {row['opponent']}"
-        )
-
-        print(f"Suggestion: {row['suggestion']}")
-        print(f"Play Type: {row['play_type']}")
-        print(f"Confidence: {row['confidence']}")
-        print(f"Actual Stat: {row['actual_stat']}")
-        print("-" * 60)
+    display_history_rows(losses)
 
     input("\nPress Enter to continue...")
 
@@ -752,19 +672,7 @@ def view_plays_by_confidence():
     print(f"{selected_confidence} PLAYS")
     print("=" * 60)
 
-    for _, row in filtered.iterrows():
-
-        print()
-        print(
-            f"{row['date']} {row['timestamp']} | "
-            f"{row['player']} | "
-            f"{row['sport']} {row['stat']} vs {row['opponent']}"
-        )
-
-        print(f"Suggestion: {row['suggestion']}")
-        print(f"Play Type: {row['play_type']}")
-        print(f"Result: {row['result']} | Actual Stat: {row['actual_stat']}")
-        print("-" * 60)
+    display_history_rows(filtered)
 
     input("\nPress Enter to continue...")
 
@@ -795,20 +703,7 @@ def search_history_by_player():
     print("PLAYER SEARCH RESULTS")
     print("=" * 60)
 
-    for _, row in results.iterrows():
-
-        print()
-        print(
-            f"{row['date']} {row['timestamp']} | "
-            f"{row['player']} | "
-            f"{row['sport']} {row['stat']} vs {row['opponent']}"
-        )
-
-        print(f"Suggestion: {row['suggestion']}")
-        print(f"Play Type: {row['play_type']}")
-        print(f"Confidence: {row['confidence']}")
-        print(f"Result: {row['result']} | Actual Stat: {row['actual_stat']}")
-        print("-" * 60)
+    display_history_rows(results)
 
     input("\nPress Enter to continue...")
 
@@ -839,20 +734,7 @@ def search_history_by_opponent():
     print("OPPONENT SEARCH RESULTS")
     print("=" * 60)
 
-    for _, row in results.iterrows():
-
-        print()
-        print(
-            f"{row['date']} {row['timestamp']} | "
-            f"{row['player']} | "
-            f"{row['sport']} {row['stat']} vs {row['opponent']}"
-        )
-
-        print(f"Suggestion: {row['suggestion']}")
-        print(f"Play Type: {row['play_type']}")
-        print(f"Confidence: {row['confidence']}")
-        print(f"Result: {row['result']} | Actual Stat: {row['actual_stat']}")
-        print("-" * 60)
+    display_history_rows(results)
 
     input("\nPress Enter to continue...")
 
@@ -883,20 +765,7 @@ def search_history_by_stat():
     print("STAT SEARCH RESULTS")
     print("=" * 60)
 
-    for _, row in results.iterrows():
-
-        print()
-        print(
-            f"{row['date']} {row['timestamp']} | "
-            f"{row['player']} | "
-            f"{row['sport']} {row['stat']} vs {row['opponent']}"
-        )
-
-        print(f"Suggestion: {row['suggestion']}")
-        print(f"Play Type: {row['play_type']}")
-        print(f"Confidence: {row['confidence']}")
-        print(f"Result: {row['result']} | Actual Stat: {row['actual_stat']}")
-        print("-" * 60)
+    display_history_rows(results)
 
     input("\nPress Enter to continue...")
 
