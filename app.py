@@ -851,6 +851,47 @@ def search_history_by_entry_type():
 
     input("\nPress Enter to continue...")
 
+def filter_by_sport_and_result():
+
+    history = pd.read_csv("data/history.csv")
+
+    if history.empty:
+        print()
+        print("No history available.")
+        input("\nPress Enter to continue...")
+        return
+
+    sport_search = input("Enter sport: ").upper()
+    result_search = input("Enter result (WIN/LOSS/PUSH/PENDING): ").upper()
+
+    valid_results = ["WIN", "LOSS", "PUSH", "PENDING"]
+
+    if result_search not in valid_results:
+        print()
+        print("Invalid result type.")
+        input("\nPress Enter to continue...")
+        return
+
+    results = history[
+        (history["sport"].str.upper() == sport_search)
+        & (history["result"] == result_search)
+    ]
+
+    if results.empty:
+        print()
+        print("No matching plays found.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("=" * 60)
+    print(f"{sport_search} {result_search} PLAYS")
+    print("=" * 60)
+
+    display_history_rows(results)
+
+    input("\nPress Enter to continue...")
+
 def main():
     props = load_props()
 
@@ -935,7 +976,8 @@ while True:
     print("14. Search history by stat")
     print("15. Search history by result")
     print("16. Search history by entry type")
-    print("17. Exit")
+    print("17. Filter by sport and result")
+    print("18. Exit")
 
     choice = input("Choose an option: ")
 
@@ -988,6 +1030,9 @@ while True:
         search_history_by_entry_type()
 
     elif choice == "17":
+        filter_by_sport_and_result()
+
+    elif choice == "18":
         print("Goodbye.")
         break
 
