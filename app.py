@@ -916,7 +916,7 @@ def view_low_value_plays():
 
     history = pd.read_csv("data/history.csv")
 
-    low_value_plays = history.sort_values(by="value_score", ascending=False).head(10)
+    low_value_plays = history.sort_values(by="value_score", ascending=True).head(10)
 
     if low_value_plays.empty:
         print()
