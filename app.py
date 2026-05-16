@@ -912,7 +912,26 @@ def view_top_value_plays():
 
     input("\nPress Enter to continue...")
 
+def view_low_value_plays():
 
+    history = pd.read_csv("data/history.csv")
+
+    low_value_plays = history.sort_values(by="value_score", ascending=False).head(10)
+
+    if low_value_plays.empty:
+        print()
+        print("no history available.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("=" * 60)
+    print(" LOW VALUE PLAYS")
+    print("=" * 60)
+
+    display_history_rows(low_value_plays)
+
+    input("\nPress Enter to continue...")
 
 def main():
     props = load_props()
@@ -1000,7 +1019,8 @@ while True:
     print("16. Search history by entry type")
     print("17. Filter by sport and result")
     print("18. Filter by Top value plays")
-    print("19. Exit")
+    print("19. Filter by Low value plays")
+    print("20. Exit")
 
     choice = input("Choose an option: ")
 
@@ -1059,6 +1079,9 @@ while True:
         view_top_value_plays()
 
     elif choice == "19":
+        view_low_value_plays()
+
+    elif choice == "20":
         print("Goodbye.")
         break
 
