@@ -810,6 +810,47 @@ def search_history_by_result():
 
     input("\nPress Enter to continue...")
 
+def search_history_by_entry_type():
+
+    history = pd.read_csv("data/history.csv")
+
+    if history.empty:
+        print()
+        print("No history available.")
+        input("\nPress Enter to continue...")
+        return
+
+    entry_search = input(
+        "Enter entry type (PAPER/REAL): "
+    ).upper()
+
+    valid_entry_types = ["PAPER", "REAL"]
+
+    if entry_search not in valid_entry_types:
+        print()
+        print("Invalid entry type.")
+        input("\nPress Enter to continue...")
+        return
+
+    results = history[
+        history["entry_type"] == entry_search
+    ]
+
+    if results.empty:
+        print()
+        print("No matching entry types found.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("=" * 60)
+    print(f"{entry_search} ENTRY RESULTS")
+    print("=" * 60)
+
+    display_history_rows(results)
+
+    input("\nPress Enter to continue...")
+
 def main():
     props = load_props()
 
@@ -893,7 +934,9 @@ while True:
     print("13. Search history by opponent")
     print("14. Search history by stat")
     print("15. Search history by result")
-    print("16. Exit")
+    print("16. Search history by entry type")
+    print("17. Exit")
+
     choice = input("Choose an option: ")
 
     if choice == "1":
@@ -942,6 +985,9 @@ while True:
         search_history_by_result()
 
     elif choice == "16":
+        search_history_by_entry_type()
+
+    elif choice == "17":
         print("Goodbye.")
         break
 
