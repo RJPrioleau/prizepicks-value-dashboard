@@ -769,6 +769,47 @@ def search_history_by_stat():
 
     input("\nPress Enter to continue...")
 
+def search_history_by_result():
+
+    history = pd.read_csv("data/history.csv")
+
+    if history.empty:
+        print()
+        print("No history available.")
+        input("\nPress Enter to continue...")
+        return
+
+    result_search = input(
+        "Enter result (WIN/LOSS/PUSH/PENDING): "
+    ).upper()
+
+    valid_results = ["WIN", "LOSS", "PUSH", "PENDING"]
+
+    if result_search not in valid_results:
+        print()
+        print("Invalid result type.")
+        input("\nPress Enter to continue...")
+        return
+
+    results = history[
+        history["result"] == result_search
+    ]
+
+    if results.empty:
+        print()
+        print("No matching results found.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("=" * 60)
+    print(f"{result_search} SEARCH RESULTS")
+    print("=" * 60)
+
+    display_history_rows(results)
+
+    input("\nPress Enter to continue...")
+
 def main():
     props = load_props()
 
@@ -851,8 +892,8 @@ while True:
     print("12. Search history by player")
     print("13. Search history by opponent")
     print("14. Search history by stat")
-    print("15. Exit")
-
+    print("15. Search history by result")
+    print("16. Exit")
     choice = input("Choose an option: ")
 
     if choice == "1":
@@ -898,6 +939,9 @@ while True:
         search_history_by_stat()
 
     elif choice == "15":
+        search_history_by_result()
+
+    elif choice == "16":
         print("Goodbye.")
         break
 
