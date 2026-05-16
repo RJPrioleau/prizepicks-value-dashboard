@@ -1019,6 +1019,34 @@ def view_lowest_value_wins():
 
     input("\nPress Enter to continue...")
 
+def view_lowest_value_losses():
+
+    history = pd.read_csv("data/history.csv")
+
+    losses = history[
+        history["result"] == "LOSS"
+    ]
+
+    lowest_value_losses = losses.sort_values(
+        by="value_score",
+        ascending=True
+    ).head(10)
+
+    if lowest_value_losses.empty:
+        print()
+        print("No losing plays available.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("=" * 60)
+    print("LOWEST VALUE LOSSES")
+    print("=" * 60)
+
+    display_history_rows(lowest_value_losses)
+
+    input("\nPress Enter to continue...")
+
 def main():
     props = load_props()
 
@@ -1109,7 +1137,8 @@ while True:
     print("20. View High Value Losses")
     print("21. View High Value Wins")
     print("22. View Low Value Wins")
-    print("23. Exit")
+    print("23. View Low Value Losses")
+    print("24. Exit")
 
     choice = input("Choose an option: ")
 
@@ -1180,6 +1209,9 @@ while True:
         view_lowest_value_wins()
 
     elif choice == "23":
+        view_lowest_value_losses()
+
+    elif choice == "24":
         print("Goodbye.")
         break
 
