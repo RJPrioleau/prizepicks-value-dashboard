@@ -79,6 +79,17 @@ def confidence_score(row):
 
     return "LOW CONFIDENCE"
 
+def confidence_numeric_score(row):
+    confidence = row["confidence"]
+
+    if confidence == "HIGH CONFIDENCE":
+        return 3
+
+    if confidence == "MEDIUM CONFIDENCE":
+        return 2
+
+    return 1
+
 def classify_play(row):
     confidence = row["confidence"]
     risk_rating = row["risk_rating"]
@@ -145,6 +156,7 @@ def save_history(df):
         "suggestion",
         "risk_rating",
         "confidence",
+        "confidence_numeric",
         "play_type",
         "value_score",
         "result",
@@ -1047,6 +1059,53 @@ def view_lowest_value_losses():
 
     input("\nPress Enter to continue...")
 
+def view_highest_confidence_plays():
+
+    history = pd.read_csv("data/history.csv")
+
+    top_confidence = history.sort_values(
+        by="confidence_numeric",
+        ascending=False
+    ).head(10)
+
+    if top_confidence.empty:
+        print()
+        print("No plays available.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("=" * 60)
+    print("HIGHEST CONFIDENCE PLAYS")
+    print("=" * 60)
+
+    display_history_rows(top_confidence)
+
+    input("\nPress Enter to continue...")
+
+def view_lowest_confidence_plays():
+    history = pd.read_csv("data/history.csv")
+
+    bottom_confidence = history.sort_values(
+        by="confidence_numeric",
+        ascending=True
+    ).head(10)
+
+    if bottom_confidence.empty:
+        print()
+        print("No plays available.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("=" * 60)
+    print("LOWEST CONFIDENCE PLAYS")
+    print("=" * 60)
+
+    display_history_rows(bottom_confidence)
+
+    input("\nPress Enter to continue...")
+
 def main():
     props = load_props()
 
@@ -1055,6 +1114,7 @@ def main():
     props["suggestion"] = props.apply(suggest_pick,axis=1)
     props["risk_rating"] = props.apply(rate_risk, axis=1)
     props["confidence"] = props.apply(confidence_score, axis=1)
+    props["confidence_numeric"] = props.apply(confidence_numeric_score, axis=1)
     props["play_type"] = props.apply(classify_play, axis=1)
     props["reasoning"] = props.apply(build_reasoning, axis=1)
 
@@ -1138,7 +1198,9 @@ while True:
     print("21. View High Value Wins")
     print("22. View Low Value Wins")
     print("23. View Low Value Losses")
-    print("24. Exit")
+    print("24. View Highest Confidence Plays")
+    print("25. View lowest Confidence Plays")
+    print("26. Exit")
 
     choice = input("Choose an option: ")
 
@@ -1212,6 +1274,12 @@ while True:
         view_lowest_value_losses()
 
     elif choice == "24":
+        view_highest_confidence_plays()
+
+    elif choice == "25":
+        view_lowest_confidence_plays()
+
+    elif choice == "26":
         print("Goodbye.")
         break
 
