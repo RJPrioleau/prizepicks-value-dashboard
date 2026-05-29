@@ -394,6 +394,36 @@ def show_history_summary():
         print(f"Losses: {entry_losses}")
         print(f"Win Rate: {entry_win_rate:.2%}")
 
+    print()
+    print("=" * 40)
+    print("PLAY TYPE + CONFIDENCE BREAKDOWN")
+    print("=" * 40)
+
+    grouped = history.groupby(["play_type", "confidence"])
+
+    for (play_type, confidence), group in grouped:
+
+        wins = len(
+            group[group["result"] == "WIN"]
+        )
+
+        losses = len(
+            group[group["result"] == "LOSS"]
+        )
+
+        graded = wins + losses
+
+        if graded > 0:
+            win_rate = wins / graded
+        else:
+            win_rate = 0
+
+        print()
+        print(f"{play_type} / {confidence}")
+        print(f"Wins: {wins}")
+        print(f"Losses: {losses}")
+        print(f"Win Rate: {win_rate:.2%}")
+
     input("\nPress Enter to continue...")
 
 def update_result():
@@ -1106,6 +1136,76 @@ def view_lowest_confidence_plays():
 
     input("\nPress Enter to continue...")
 
+def filter_by_play_type_and_confidence():
+
+    history = pd.read_csv("data/history.csv")
+
+    if history.empty:
+        print()
+        print("No history available.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("PLAY TYPES")
+    print("=" * 40)
+
+    play_types = history["play_type"].dropna().unique()
+
+    for index, play_type in enumerate(play_types, start=1):
+        print(f"{index}. {play_type}")
+
+    play_choice = input("Choose a play type: ")
+
+    try:
+        selected_play_index = int(play_choice) - 1
+        selected_play_type = play_types[selected_play_index]
+
+    except:
+        print("Invalid play type.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("CONFIDENCE LEVELS")
+    print("=" * 40)
+
+    confidence_levels = history["confidence"].dropna().unique()
+
+    for index, confidence in enumerate(confidence_levels, start=1):
+        print(f"{index}. {confidence}")
+
+    confidence_choice = input("Choose a confidence level: ")
+
+    try:
+        selected_confidence_index = int(confidence_choice) - 1
+        selected_confidence = confidence_levels[selected_confidence_index]
+
+    except:
+        print("Invalid confidence level.")
+        input("\nPress Enter to continue...")
+        return
+
+    results = history[
+        (history["play_type"] == selected_play_type)
+        & (history["confidence"] == selected_confidence)
+    ]
+
+    if results.empty:
+        print()
+        print("No matching plays found.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("=" * 60)
+    print(f"{selected_play_type} / {selected_confidence}")
+    print("=" * 60)
+
+    display_history_rows(results)
+
+    input("\nPress Enter to continue...")
+
 def main():
     props = load_props()
 
@@ -1200,7 +1300,8 @@ while True:
     print("23. View Low Value Losses")
     print("24. View Highest Confidence Plays")
     print("25. View lowest Confidence Plays")
-    print("26. Exit")
+    print("26. Filter by play type and confidence")
+    print("27. Exit")
 
     choice = input("Choose an option: ")
 
@@ -1280,6 +1381,9 @@ while True:
         view_lowest_confidence_plays()
 
     elif choice == "26":
+        filter_by_play_type_and_confidence()
+
+    elif choice == "27":
         print("Goodbye.")
         break
 

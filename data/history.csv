@@ -1,4 +1,4 @@
 date,timestamp,entry_type,player,sport,stat,opponent,suggestion,risk_rating,confidence,confidence_numeric,play_type,value_score,result,actual_stat
-2026-05-12,16:39:00,PAPER,Jalen Brunson,NBA,Points,BOS,STRONG MORE - projection and market support over,LOW RISK,HIGH CONFIDENCE,SAFE PLAY,19.4,WIN,30
-2026-05-12,16:39:00,PAPER,Anthony Edwards,NBA,Rebounds,DEN,LEAN LESS - projection slightly favors under,HIGH RISK - low recent hit rate,LOW CONFIDENCE,RISKY PLAY,7.5,PENDING,
+2026-05-12,16:39:00,PAPER,Jalen Brunson,NBA,Points,BOS,STRONG MORE - projection and market support over,LOW RISK,HIGH CONFIDENCE,3,SAFE PLAY,19.4,WIN,30
+2026-05-12,16:39:00,PAPER,Anthony Edwards,NBA,Rebounds,DEN,LEAN LESS - projection slightly favors under,HIGH RISK - low recent hit rate,LOW CONFIDENCE,1,RISKY PLAY,7.5,PENDING,
 
