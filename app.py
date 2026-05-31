@@ -1433,10 +1433,10 @@ while True:
     elif choice == "26":
         filter_by_play_type_and_confidence()
 
-    elif choice == 27:
-        show_history_summary()
-
     elif choice == "27":
+        show_win_rate_by_confidence()
+
+    elif choice == "28":
         print("Goodbye.")
         break
 
