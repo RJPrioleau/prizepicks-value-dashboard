@@ -2,8 +2,11 @@ import  pandas as pd
 import os
 from datetime import datetime
 
+HISTORY_FILE = "data/history.csv"
+PROPS_FILE = "data/props.csv"
+
 def load_props():
-    return pd.read_csv("data/props.csv")
+    return pd.read_csv("PROPS_FILE")
 
 def calculate_edges(df):
     df["adjusted_projection"] = (
@@ -163,7 +166,7 @@ def save_history(df):
         "actual_stat"
     ]]
 
-    existing_history = pd.read_csv("data/history.csv", dtype=str)
+    existing_history = pd.read_csv("HISTORY_FILE", dtype=str)
     existing_history = existing_history.dropna(how="all")
 
     if not existing_history.empty:
@@ -191,7 +194,7 @@ def save_history(df):
         return
 
     history.to_csv(
-        "data/history.csv",
+        "HISTORY_FILE",
         mode="a",
         header=False,
         index=False
@@ -199,7 +202,7 @@ def save_history(df):
 
 def show_history_summary():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     if history.empty:
         print()
@@ -427,7 +430,7 @@ def show_history_summary():
     input("\nPress Enter to continue...")
 
 def update_result():
-    history = pd.read_csv("data/history.csv", dtype=str)
+    history = pd.read_csv("HISTORY_FILE", dtype=str)
     history["actual_stat"] = history["actual_stat"].fillna("")
 
     pending = history[
@@ -459,7 +462,7 @@ def update_result():
     history.loc[selected_index, "result"] = result
     history.loc[selected_index, "actual_stat"] = actual_stat
 
-    history.to_csv("data/history.csv", index=False)
+    history.to_csv("HISTORY_FILE", index=False)
 
     print("Result updated.")
 
@@ -484,7 +487,7 @@ def display_history_rows(rows):
 
 def view_history():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     if history.empty:
         print("No history available.")
@@ -501,7 +504,7 @@ def view_history():
 
 def view_pending_plays():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     pending = history[
         history["result"] == "PENDING"
@@ -523,7 +526,7 @@ def view_pending_plays():
 
 def view_completed_plays():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     completed = history[
         history["result"] != "PENDING"
@@ -545,7 +548,7 @@ def view_completed_plays():
 
 def view_plays_by_type():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     if history.empty:
         print()
@@ -588,7 +591,7 @@ def view_plays_by_type():
 
 def view_plays_by_sport():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     if history.empty:
         print()
@@ -631,7 +634,7 @@ def view_plays_by_sport():
 
 def view_winning_plays():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     wins = history[
         history["result"] == "WIN"
@@ -654,7 +657,7 @@ def view_winning_plays():
 
 def view_losing_plays():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     losses = history[
         history["result"] == "LOSS"
@@ -677,7 +680,7 @@ def view_losing_plays():
 
 def view_plays_by_confidence():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     if history.empty:
         print()
@@ -720,7 +723,7 @@ def view_plays_by_confidence():
 
 def search_history_by_player():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     if history.empty:
         print()
@@ -751,7 +754,7 @@ def search_history_by_player():
 
 def search_history_by_opponent():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     if history.empty:
         print()
@@ -782,7 +785,7 @@ def search_history_by_opponent():
 
 def search_history_by_stat():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     if history.empty:
         print()
@@ -813,7 +816,7 @@ def search_history_by_stat():
 
 def search_history_by_result():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     if history.empty:
         print()
@@ -854,7 +857,7 @@ def search_history_by_result():
 
 def search_history_by_entry_type():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     if history.empty:
         print()
@@ -895,7 +898,7 @@ def search_history_by_entry_type():
 
 def filter_by_sport_and_result():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     if history.empty:
         print()
@@ -935,7 +938,7 @@ def filter_by_sport_and_result():
     input("\nPress Enter to continue...")
 
 def view_top_value_plays():
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     top_plays = history.sort_values(by="value_score", ascending=False).head(10)
 
@@ -956,7 +959,7 @@ def view_top_value_plays():
 
 def view_low_value_plays():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     low_value_plays = history.sort_values(by="value_score", ascending=True).head(10)
 
@@ -977,7 +980,7 @@ def view_low_value_plays():
 
 def view_highest_value_losses():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     losses = history[
         history["result"] == "LOSS"
@@ -1005,7 +1008,7 @@ def view_highest_value_losses():
 
 def view_highest_value_wins():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
 
     wins = history[
@@ -1034,7 +1037,7 @@ def view_highest_value_wins():
 
 def view_lowest_value_wins():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
 
     wins = history[
@@ -1063,7 +1066,7 @@ def view_lowest_value_wins():
 
 def view_lowest_value_losses():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     losses = history[
         history["result"] == "LOSS"
@@ -1091,7 +1094,7 @@ def view_lowest_value_losses():
 
 def view_highest_confidence_plays():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     top_confidence = history.sort_values(
         by="confidence_numeric",
@@ -1114,7 +1117,7 @@ def view_highest_confidence_plays():
     input("\nPress Enter to continue...")
 
 def view_lowest_confidence_plays():
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     bottom_confidence = history.sort_values(
         by="confidence_numeric",
@@ -1138,7 +1141,7 @@ def view_lowest_confidence_plays():
 
 def filter_by_play_type_and_confidence():
 
-    history = pd.read_csv("data/history.csv")
+    history = pd.read_csv("HISTORY_FILE")
 
     if history.empty:
         print()
@@ -1203,6 +1206,52 @@ def filter_by_play_type_and_confidence():
     print("=" * 60)
 
     display_history_rows(results)
+
+    input("\nPress Enter to continue...")
+
+def show_win_rate_by_confidence():
+
+    history = pd.read_csv(HISTORY_FILE)
+
+    graded = history[
+        history["result"].isin(["WIN", "LOSS"])
+    ]
+
+    if graded.empty:
+        print()
+        print("No graded plays available.")
+        input("\nPress Enter to continue...")
+        return
+
+    print()
+    print("=" * 60)
+    print("WIN RATE BY CONFIDENCE")
+    print("=" * 60)
+
+    grouped = graded.groupby("confidence")
+
+    for confidence, group in grouped:
+
+        wins = len(
+            group[group["result"] == "WIN"]
+        )
+
+        losses = len(
+            group[group["result"] == "LOSS"]
+        )
+
+        total = wins + losses
+
+        if total > 0:
+            win_rate = wins / total
+        else:
+            win_rate = 0
+
+        print()
+        print(confidence)
+        print(f"Wins: {wins}")
+        print(f"Losses: {losses}")
+        print(f"Win Rate: {win_rate:.2%}")
 
     input("\nPress Enter to continue...")
 
@@ -1301,7 +1350,8 @@ while True:
     print("24. View Highest Confidence Plays")
     print("25. View lowest Confidence Plays")
     print("26. Filter by play type and confidence")
-    print("27. Exit")
+    print("27. view Win rate by Confidence")
+    print("28. Exit")
 
     choice = input("Choose an option: ")
 
@@ -1382,6 +1432,9 @@ while True:
 
     elif choice == "26":
         filter_by_play_type_and_confidence()
+
+    elif choice == 27:
+        show_history_summary()
 
     elif choice == "27":
         print("Goodbye.")
