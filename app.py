@@ -440,6 +440,13 @@ def show_history_summary():
 
 def update_result():
     history = pd.read_csv(HISTORY_FILE, dtype=str)
+
+    if "result" not in history.columns:
+        history["result"] = "PENDING"
+
+    if "actual_stat" not in history.columns:
+        history["actual_stat"] = ""
+
     history["actual_stat"] = history["actual_stat"].fillna("")
 
     pending = history[
@@ -448,6 +455,7 @@ def update_result():
 
     if pending.empty:
         print("No pending plays to update.")
+        input("\nPress Enter to continue...")
         return
 
     print()
@@ -1338,13 +1346,13 @@ def show_performance_analytics():
         print(f"Average Projection Error: {average_error}")
 
         print("\nClosest Projection:")
-        print(f"{best_projection['player']} - {best_projection['stat_type']}")
+        print(f"{best_projection['player']} - {best_projection['stat']}")
         print(f"Projection: {best_projection['projection']}")
         print(f"Actual: {best_projection['actual_stat']}")
         print(f"Missed By: {best_projection['absolute_error']}")
 
         print("\nWorst Projection:")
-        print(f"{worst_projection['player']} - {worst_projection['stat_type']}")
+        print(f"{worst_projection['player']} - {worst_projection['stat']}")
         print(f"Projection: {worst_projection['projection']}")
         print(f"Actual: {worst_projection['actual_stat']}")
         print(f"Missed By: {worst_projection['absolute_error']}")
