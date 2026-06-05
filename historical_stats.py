@@ -144,7 +144,80 @@ def show_clean_game_log(player_name):
 
     print(df[["GAME_DATE", "MATCHUP", "location", "opponent", "PTS", "REB", "AST"]].head(10).to_string(index=False))
 
+def get_home_away_split(player_name, stat_type):
+    player_id = find_player_id(player_name)
+
+    if player_id is None:
+        print("Player not found.")
+        return
+
+    game_log = playergamelog.PlayerGameLog(
+        player_id=player_id,
+        season="2024-25",
+        season_type_all_star="Regular Season"
+    )
+
+    df = game_log.get_data_frames()[0]
+
+    parsed_matchups = df["MATCHUP"].apply(parse_matchup)
+
+    df["location"] = parsed_matchups.apply(lambda x: x[0])
+    df["opponent"] = parsed_matchups.apply(lambda x: x[1])
+
+    home_games = df[df["location"] == "Home"]
+    away_games = df[df["location"] == "Away"]
+
+    home_avg = round(home_games[stat_type].mean(), 2)
+    away_avg = round(away_games[stat_type].mean(), 2)
+
+    print(f"\n{player_name}")
+    print("=" * 40)
+    print(f"{stat_type} Home/Away Split")
+    print()
+    print(f"Home Games: {len(home_games)}")
+    print(f"Home Average: {home_avg}")
+    print()
+    print(f"Away Games: {len(away_games)}")
+    print(f"Away Average: {away_avg}")
+
+def get_opponent_average(player_name, stat_type, opponent):
+    player_id = find_player_id(player_name)
+
+    if player_id is None:
+        print("Player not found.")
+        return
+
+    game_log = playergamelog.PlayerGameLog(
+        player_id=player_id,
+        season="2024-25",
+        season_type_all_star="Regular Season"
+    )
+
+    df = game_log.get_data_frames()[0]
+
+    parsed_matchups = df["MATCHUP"].apply(parse_matchup)
+
+    df["location"] = parsed_matchups.apply(lambda x: x[0])
+    df["opponent"] = parsed_matchups.apply(lambda x: x[1])
+
+    opponent_games = df[df["opponent"] == opponent]
+
+    if opponent_games.empty:
+        print(f"\nNo games found against {opponent}.")
+        return
+
+    opponent_avg = round(opponent_games[stat_type].mean(), 2)
+
+    print(f"\n{player_name}")
+    print("=" * 40)
+    print(f"{stat_type} vs {opponent}")
+    print()
+    print(f"Games Found: {len(opponent_games)}")
+    print(f"Average: {opponent_avg}")
+
 #get_hit_rate("Jalen Brunson", "PTS", 25.5)
 #get_recent_averages("Jalen Brunson", "PTS")
 #analyze_player_stat("Jalen Brunson", "PTS", 25.5)
-show_clean_game_log("Jalen Brunson")
+#show_clean_game_log("Jalen Brunson")
+#get_home_away_split("Jalen Brunson", "PTS")
+get_opponent_average("Jalen Brunson", "PTS", "BOS")
