@@ -215,9 +215,92 @@ def get_opponent_average(player_name, stat_type, opponent):
     print(f"Games Found: {len(opponent_games)}")
     print(f"Average: {opponent_avg}")
 
+def analyze_player_stat_full(player_name, stat_type, line, opponent):
+    player_id = find_player_id(player_name)
+
+    if player_id is None:
+        print("Player not found.")
+        return
+
+    game_log = playergamelog.PlayerGameLog(
+        player_id=player_id,
+        season="2024-25",
+        season_type_all_star="Regular Season"
+    )
+
+    df = game_log.get_data_frames()[0]
+
+    parsed_matchups = df["MATCHUP"].apply(parse_matchup)
+
+    df["location"] = parsed_matchups.apply(lambda x: x[0])
+    df["opponent"] = parsed_matchups.apply(lambda x: x[1])
+
+    last_5 = df.head(5)
+    last_10 = df.head(10)
+
+    last_5_avg = round(last_5[stat_type].mean(), 2)
+    last_10_avg = round(last_10[stat_type].mean(), 2)
+    season_avg = round(df[stat_type].mean(), 2)
+
+    trend = round(last_5_avg - last_10_avg, 2)
+
+    if trend > 0:
+        trend_direction = "UP"
+    elif trend < 0:
+        trend_direction = "DOWN"
+    else:
+        trend_direction = "FLAT"
+
+    hits = (last_10[stat_type] > line).sum()
+    hit_rate = round((hits / len(last_10)) * 100, 2)
+
+    home_avg = round(
+        df[df["location"] == "Home"][stat_type].mean(), 2
+    )
+
+    away_avg = round(
+        df[df["location"] == "Away"][stat_type].mean(), 2
+    )
+
+    opponent_games = df[df["opponent"] == opponent]
+
+    if len(opponent_games) > 0:
+        opponent_avg = round(
+            opponent_games[stat_type].mean(), 2
+        )
+    else:
+        opponent_avg = "N/A"
+
+    print(f"\n{player_name}")
+    print("=" * 50)
+    print(f"Stat: {stat_type}")
+    print(f"Line: {line}")
+    print(f"Opponent: {opponent}")
+    print()
+    print(f"Last 5 Average: {last_5_avg}")
+    print(f"Last 10 Average: {last_10_avg}")
+    print(f"Season Average: {season_avg}")
+    print()
+    print(f"Trend: {trend_direction} ({trend})")
+    print()
+    print(f"Hit Rate Over {line}: {hits}/10")
+    print(f"Hit Rate: {hit_rate}%")
+    print()
+    print(f"Home Average: {home_avg}")
+    print(f"Away Average: {away_avg}")
+    print()
+    print(f"{stat_type} Average vs {opponent}: {opponent_avg}")
+
 #get_hit_rate("Jalen Brunson", "PTS", 25.5)
 #get_recent_averages("Jalen Brunson", "PTS")
 #analyze_player_stat("Jalen Brunson", "PTS", 25.5)
 #show_clean_game_log("Jalen Brunson")
 #get_home_away_split("Jalen Brunson", "PTS")
-get_opponent_average("Jalen Brunson", "PTS", "BOS")
+#get_opponent_average("Jalen Brunson", "PTS", "BOS")
+analyze_player_stat_full(
+    "Jalen Brunson",
+    "PTS",
+    25.5,
+    "BOS"
+)
+
