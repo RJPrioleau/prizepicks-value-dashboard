@@ -215,6 +215,69 @@ def get_opponent_average(player_name, stat_type, opponent):
     print(f"Games Found: {len(opponent_games)}")
     print(f"Average: {opponent_avg}")
 
+def get_basic_recommendation(
+    line,
+    last_10_avg,
+    season_avg,
+    hit_rate,
+    trend_direction,
+    opponent_avg
+):
+    score = 0
+    reasons = []
+
+    if last_10_avg > line:
+        score += 1
+        reasons.append("Last 10 average is above the line.")
+    else:
+        score -= 1
+        reasons.append("Last 10 average is below the line.")
+
+    if season_avg > line:
+        score += 1
+        reasons.append("Season average is above the line.")
+    else:
+        score -= 1
+        reasons.append("Season average is below the line.")
+
+    if hit_rate >= 60:
+        score += 1
+        reasons.append("Hit rate is 60% or higher.")
+    elif hit_rate <= 50:
+        score -= 1
+        reasons.append("Hit rate is 50% or lower.")
+
+    if trend_direction == "UP":
+        score += 1
+        reasons.append("Recent trend is up.")
+    elif trend_direction == "DOWN":
+        score -= 1
+        reasons.append("Recent trend is down.")
+
+    if opponent_avg != "N/A":
+        if opponent_avg > line:
+            score += 1
+            reasons.append("Opponent average is above the line.")
+        else:
+            score -= 1
+            reasons.append("Opponent average is below the line.")
+
+    if score >= 3:
+        recommendation = "MORE"
+    elif score <= -3:
+        recommendation = "LESS"
+    else:
+        recommendation = "PASS"
+
+    if score >= 4:
+        confidence = "HIGH"
+    elif score >= 2:
+        confidence = "MEDIUM"
+    else:
+        confidence = "LOW"
+
+    return recommendation, score, confidence,  reasons
+
 def analyze_player_stat_full(player_name, stat_type, line, opponent):
     player_id = find_player_id(player_name)
 
@@ -270,6 +333,14 @@ def analyze_player_stat_full(player_name, stat_type, line, opponent):
         )
     else:
         opponent_avg = "N/A"
+    recommendation, score, confidence, reasons = get_basic_recommendation(
+        line,
+        last_10_avg,
+        season_avg,
+        hit_rate,
+        trend_direction,
+        opponent_avg
+    )
 
     print(f"\n{player_name}")
     print("=" * 50)
@@ -290,6 +361,14 @@ def analyze_player_stat_full(player_name, stat_type, line, opponent):
     print(f"Away Average: {away_avg}")
     print()
     print(f"{stat_type} Average vs {opponent}: {opponent_avg}")
+    print()
+    print(f"Recommendation: {recommendation}")
+    print(f"Recommendation Score: {score}")
+    print(f"Confidence: {confidence}")
+    print("Reasons:")
+
+    for reason in reasons:
+        print(f"- {reason}")
 
 #get_hit_rate("Jalen Brunson", "PTS", 25.5)
 #get_recent_averages("Jalen Brunson", "PTS")
