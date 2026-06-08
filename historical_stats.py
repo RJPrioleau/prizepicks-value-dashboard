@@ -298,9 +298,9 @@ def get_basic_recommendation(
     else:
         recommendation = "PASS"
 
-    if score >= 4:
+    if abs(score) >= 4:
         confidence = "HIGH"
-    elif score >= 2:
+    elif abs(score) >= 2:
         confidence = "MEDIUM"
     else:
         confidence = "LOW"
@@ -607,7 +607,36 @@ def compare_props(props):
     else:
         print("BEST AVAILABLE PLAY")
         print("No playable MORE recommendation found. Top-ranked prop is still a PASS.")
-    print("=" * 90)
+
+    print("-" * 90)
+    print("TOP ACTIONABLE OPPORTUNITY DETAILS")
+    print("-" * 90)
+
+    detail_prop = None
+
+    if top_opportunities:
+        detail_prop = top_opportunities[0]
+    elif fade_opportunities:
+        detail_prop = fade_opportunities[0]
+    elif ranked_results:
+        detail_prop = ranked_results[0]
+
+    if detail_prop is not None:
+        print(
+            f"{detail_prop['player']} | "
+            f"{detail_prop['stat']} {detail_prop['line']} vs "
+            f"{detail_prop['opponent']} | "
+            f"{detail_prop['recommendation']} | "
+            f"Confidence: {detail_prop['confidence']}"
+        )
+
+        print()
+        print("Reasons:")
+
+        for reason in detail_prop["reasons"]:
+            print(f"- {reason}")
+    else:
+        print("No prop details available.")
 
 #get_hit_rate("Jalen Brunson", "PTS", 25.5)
 #get_recent_averages("Jalen Brunson", "PTS")
