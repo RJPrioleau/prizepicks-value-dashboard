@@ -1,7 +1,9 @@
 from nba_api.stats.static import players
 from nba_api.stats.endpoints import playergamelog
 
-
+# ============================================================
+# PLAYER LOOKUP FUNCTIONS
+# ============================================================
 def find_player_id(player_name):
     matches = players.find_players_by_full_name(player_name)
 
@@ -9,7 +11,9 @@ def find_player_id(player_name):
         return None
 
     return matches[0]["id"]
-
+# ============================================================
+# HELPER FUNCTIONS
+# ============================================================
 def parse_matchup(matchup):
     if "@" in matchup:
         location = "Away"
@@ -214,8 +218,12 @@ def get_opponent_average(player_name, stat_type, opponent):
     print()
     print(f"Games Found: {len(opponent_games)}")
     print(f"Average: {opponent_avg}")
-
+# ============================================================
+# RECOMMENDATION ENGINE
+# ============================================================
 def get_basic_recommendation(
+
+
     line,
     last_10_avg,
     season_avg,
@@ -223,6 +231,25 @@ def get_basic_recommendation(
     trend_direction,
     opponent_avg
 ):
+    """
+    Generate a recommendation, confidence level, and reasoning.
+
+    Scoring System:
+    +1 = Positive indicator
+    -1 = Negative indicator
+
+    Indicators:
+    - Last 10 average
+    - Season average
+    - Hit rate
+    - Recent trend
+    - Opponent history
+
+    Lo Note:
+    This is the heart of the recommendation engine.
+    Any future improvements to recommendation quality will likely
+    happen inside this function.
+    """
     score = 0
     reasons = []
 
@@ -262,10 +289,14 @@ def get_basic_recommendation(
             score -= 1
             reasons.append("Opponent average is below the line.")
 
-    if score >= 3:
-        recommendation = "MORE"
-    elif score <= -3:
-        recommendation = "LESS"
+    if score >= 4:
+        recommendation = "STRONG MORE"
+    elif score >= 2:
+        recommendation = "LEAN MORE"
+    elif score <= -4:
+        recommendation = "STRONG LESS"
+    elif score <= -2:
+        recommendation = "LEAN LESS"
     else:
         recommendation = "PASS"
 
@@ -278,12 +309,29 @@ def get_basic_recommendation(
 
     return recommendation, score, confidence,  reasons
 
-def analyze_player_stat_full(player_name, stat_type, line, opponent):
+# ============================================================
+# CORE ANALYSIS ENGINE
+# ============================================================
+
+def get_player_analysis(player_name, stat_type, line, opponent):
+    """
+        Build a full statistical analysis for one player prop.
+
+        This function is the "engine" of the historical stats module.
+
+        It does NOT print anything.
+        It collects the data, calculates the metrics, builds the recommendation,
+        and returns everything as a dictionary so other parts of the app can use it.
+
+        Lo Note:
+        Keeping this function separate from the print/report functions makes it easier
+        to reuse the same analysis later for rankings, parlays, dashboards, and tracking.
+        """
+
     player_id = find_player_id(player_name)
 
     if player_id is None:
-        print("Player not found.")
-        return
+        return None
 
     game_log = playergamelog.PlayerGameLog(
         player_id=player_id,
@@ -317,22 +365,16 @@ def analyze_player_stat_full(player_name, stat_type, line, opponent):
     hits = (last_10[stat_type] > line).sum()
     hit_rate = round((hits / len(last_10)) * 100, 2)
 
-    home_avg = round(
-        df[df["location"] == "Home"][stat_type].mean(), 2
-    )
-
-    away_avg = round(
-        df[df["location"] == "Away"][stat_type].mean(), 2
-    )
+    home_avg = round(df[df["location"] == "Home"][stat_type].mean(), 2)
+    away_avg = round(df[df["location"] == "Away"][stat_type].mean(), 2)
 
     opponent_games = df[df["opponent"] == opponent]
 
     if len(opponent_games) > 0:
-        opponent_avg = round(
-            opponent_games[stat_type].mean(), 2
-        )
+        opponent_avg = round(opponent_games[stat_type].mean(), 2)
     else:
         opponent_avg = "N/A"
+
     recommendation, score, confidence, reasons = get_basic_recommendation(
         line,
         last_10_avg,
@@ -342,32 +384,81 @@ def analyze_player_stat_full(player_name, stat_type, line, opponent):
         opponent_avg
     )
 
-    print(f"\n{player_name}")
+    return {
+        "player": player_name,
+        "stat": stat_type,
+        "line": line,
+        "opponent": opponent,
+        "last_5_avg": last_5_avg,
+        "last_10_avg": last_10_avg,
+        "season_avg": season_avg,
+        "trend": trend,
+        "trend_direction": trend_direction,
+        "hit_rate": hit_rate,
+        "hits": int(hits),
+        "games_checked": len(last_10),
+        "home_avg": home_avg,
+        "away_avg": away_avg,
+        "opponent_avg": opponent_avg,
+        "recommendation": recommendation,
+        "score": score,
+        "confidence": confidence,
+        "reasons": reasons
+    }
+
+# ============================================================
+# REPORT / DISPLAY FUNCTIONS
+# ============================================================
+
+def analyze_player_stat_full(player_name, stat_type, line, opponent):
+    """
+    Print a readable full analysis report for one player prop.
+
+    This function uses get_player_analysis() to do the math, then handles
+    the user-facing display.
+
+    Why:
+    We do not want this function recalculating stats. Its only job is to
+    format and print the analysis in a way that is easy to read.
+    """
+    analysis = get_player_analysis(player_name, stat_type, line, opponent)
+
+    if analysis is None:
+        print("Player not found.")
+        return
+
+    print(f"\n{analysis['player']}")
     print("=" * 50)
-    print(f"Stat: {stat_type}")
-    print(f"Line: {line}")
-    print(f"Opponent: {opponent}")
+    print(f"Stat: {analysis['stat']}")
+    print(f"Line: {analysis['line']}")
+    print(f"Opponent: {analysis['opponent']}")
     print()
-    print(f"Last 5 Average: {last_5_avg}")
-    print(f"Last 10 Average: {last_10_avg}")
-    print(f"Season Average: {season_avg}")
+    print(f"Last 5 Average: {analysis['last_5_avg']}")
+    print(f"Last 10 Average: {analysis['last_10_avg']}")
+    print(f"Season Average: {analysis['season_avg']}")
     print()
-    print(f"Trend: {trend_direction} ({trend})")
+    print(f"Trend: {analysis['trend_direction']} ({analysis['trend']})")
     print()
-    print(f"Hit Rate Over {line}: {hits}/10")
-    print(f"Hit Rate: {hit_rate}%")
+    print(
+        f"Hit Rate Over {analysis['line']}: "
+        f"{analysis['hits']}/{analysis['games_checked']}"
+    )
+    print(f"Hit Rate: {analysis['hit_rate']}%")
     print()
-    print(f"Home Average: {home_avg}")
-    print(f"Away Average: {away_avg}")
+    print(f"Home Average: {analysis['home_avg']}")
+    print(f"Away Average: {analysis['away_avg']}")
     print()
-    print(f"{stat_type} Average vs {opponent}: {opponent_avg}")
+    print(
+        f"{analysis['stat']} Average vs "
+        f"{analysis['opponent']}: {analysis['opponent_avg']}"
+    )
     print()
-    print(f"Recommendation: {recommendation}")
-    print(f"Recommendation Score: {score}")
-    print(f"Confidence: {confidence}")
+    print(f"Recommendation: {analysis['recommendation']}")
+    print(f"Recommendation Score: {analysis['score']}")
+    print(f"Confidence: {analysis['confidence']}")
     print("Reasons:")
 
-    for reason in reasons:
+    for reason in analysis["reasons"]:
         print(f"- {reason}")
 
 #get_hit_rate("Jalen Brunson", "PTS", 25.5)
@@ -376,10 +467,7 @@ def analyze_player_stat_full(player_name, stat_type, line, opponent):
 #show_clean_game_log("Jalen Brunson")
 #get_home_away_split("Jalen Brunson", "PTS")
 #get_opponent_average("Jalen Brunson", "PTS", "BOS")
-analyze_player_stat_full(
-    "Jalen Brunson",
-    "PTS",
-    25.5,
-    "BOS"
-)
+analyze_player_stat_full("Jalen Brunson", "PTS", 25.5, "BOS")
+#analysis = get_player_analysis("Jalen Brunson", "PTS", 25.5, "BOS")
+#print(analysis)
 
