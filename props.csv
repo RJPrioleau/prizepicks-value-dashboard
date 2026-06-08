@@ -1,4 +1,4 @@
-player,stat,line,opponent
-Jalen Brunson,PTS,25.5,BOS
-Anthony Edwards,REB,6.5,DEN
-Jayson Tatum,AST,5.5,IND
+player,stat,line,opponent,risk_type
+Jalen Brunson,PTS,25.5,BOS,NORMAL
+Anthony Edwards,REB,6.5,DEN,DEMON
+Jayson Tatum,AST,5.5,IND,NORMAL

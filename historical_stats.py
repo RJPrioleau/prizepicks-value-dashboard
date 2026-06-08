@@ -480,7 +480,7 @@ def compare_props(props):
     results = []
 
     for prop in props:
-        player_name, stat_type, line, opponent = prop
+        player_name, stat_type, line, opponent, risk_type = prop
 
         analysis = get_player_analysis(
             player_name,
@@ -488,6 +488,8 @@ def compare_props(props):
             line,
             opponent
         )
+
+        analysis["risk_type"] = risk_type
 
         if analysis is not None:
             results.append(analysis)
@@ -535,7 +537,17 @@ def compare_props(props):
     print(f"LEAN LESS   : {lean_less_count}")
     print(f"STRONG LESS : {strong_less_count}")
     print("=" * 90)
-    print(f"{'#':<4} {'Player':<22} {'Stat':<6} {'Line':<7} {'Opp':<5} {'Score':<6} {'Rec':<15} {'Conf'}")
+    print(
+        f"{'#':<4} "
+        f"{'Player':<22} "
+        f"{'Stat':<6} "
+        f"{'Line':<7} "
+        f"{'Risk':<8} "
+        f"{'Opp':<5} "
+        f"{'Score':<6} "
+        f"{'Rec':<15} "
+        f"{'Conf'}"
+    )
 
     print("-" * 90)
 
@@ -545,11 +557,13 @@ def compare_props(props):
             f"{item['player']:<22} "
             f"{item['stat']:<6} "
             f"{item['line']:<7} "
+            f"{item['risk_type']:<8} "
             f"{item['opponent']:<5} "
             f"{item['score']:<6} "
             f"{item['recommendation']:<15} "
             f"{item['confidence']}"
         )
+
     print("-" * 90)
 
     print("MORE-SIDE OPPORTUNITIES")
@@ -666,7 +680,8 @@ def load_props_from_csv(file_path):
                     row["player"],
                     row["stat"],
                     float(row["line"]),
-                    row["opponent"]
+                    row["opponent"],
+                    row["risk_type"]
                 )
             )
 
