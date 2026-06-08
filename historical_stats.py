@@ -537,6 +537,9 @@ def compare_props(props):
     print(f"LEAN LESS   : {lean_less_count}")
     print(f"STRONG LESS : {strong_less_count}")
     print("=" * 90)
+    #===================
+    # Header
+    #==================
     print(
         f"{'#':<4} "
         f"{'Player':<22} "
@@ -545,6 +548,7 @@ def compare_props(props):
         f"{'Risk':<8} "
         f"{'Opp':<5} "
         f"{'Score':<6} "
+        f"{'Hit%':<8} "
         f"{'Rec':<15} "
         f"{'Conf'}"
     )
@@ -552,6 +556,9 @@ def compare_props(props):
     print("-" * 90)
 
     for rank, item in enumerate(ranked_results, start=1):
+        #=========================
+        # Rows
+        #==========================
         print(
             f"{rank:<4} "
             f"{item['player']:<22} "
@@ -560,6 +567,7 @@ def compare_props(props):
             f"{item['risk_type']:<8} "
             f"{item['opponent']:<5} "
             f"{item['score']:<6} "
+            f"{str(round(item['hit_rate'], 1)) + '%':<8} "
             f"{item['recommendation']:<15} "
             f"{item['confidence']}"
         )
