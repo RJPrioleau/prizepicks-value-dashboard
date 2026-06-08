@@ -551,6 +551,48 @@ def compare_props(props):
         )
     print("-" * 90)
 
+    print("MORE-SIDE OPPORTUNITIES")
+
+    top_opportunities = [
+        item for item in ranked_results
+        if item["recommendation"] in ["STRONG MORE", "LEAN MORE"]
+    ]
+
+    if top_opportunities:
+        for rank, item in enumerate(top_opportunities, start=1):
+            print(
+                f"{rank}. {item['player']} | "
+                f"{item['stat']} {item['line']} vs {item['opponent']} | "
+                f"{item['recommendation']} | "
+                f"Score: {item['score']} | "
+                f"Confidence: {item['confidence']}"
+            )
+    else:
+        print("No MORE-side opportunities found.")
+
+    print("-" * 90)
+
+    print("LESS-SIDE OPPORTUNITIES")
+
+    fade_opportunities = [
+        item for item in ranked_results
+        if item["recommendation"] in ["STRONG LESS", "LEAN LESS"]
+    ]
+
+    if fade_opportunities:
+        for rank, item in enumerate(fade_opportunities, start=1):
+            print(
+                f"{rank}. {item['player']} | "
+                f"{item['stat']} {item['line']} vs {item['opponent']} | "
+                f"{item['recommendation']} | "
+                f"Score: {item['score']} | "
+                f"Confidence: {item['confidence']}"
+            )
+    else:
+        print("No LESS-side opportunities found.")
+
+    print("-" * 90)
+
     best_play = ranked_results[0]
 
     if best_play["recommendation"] != "PASS":
