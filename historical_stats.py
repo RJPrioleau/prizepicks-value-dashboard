@@ -222,8 +222,6 @@ def get_opponent_average(player_name, stat_type, opponent):
 # RECOMMENDATION ENGINE
 # ============================================================
 def get_basic_recommendation(
-
-
     line,
     last_10_avg,
     season_avg,
@@ -409,7 +407,6 @@ def get_player_analysis(player_name, stat_type, line, opponent):
 # ============================================================
 # REPORT / DISPLAY FUNCTIONS
 # ============================================================
-
 def analyze_player_stat_full(player_name, stat_type, line, opponent):
     """
     Print a readable full analysis report for one player prop.
@@ -461,13 +458,128 @@ def analyze_player_stat_full(player_name, stat_type, line, opponent):
     for reason in analysis["reasons"]:
         print(f"- {reason}")
 
+# ============================================================
+# PROP COMPARISON / RANKING FUNCTIONS
+# ============================================================
+def compare_props(props):
+    """
+    Analyze and rank multiple player props.
+
+    Each prop should be a tuple in this format:
+
+    (player_name, stat_type, line, opponent)
+
+    Example:
+    ("Jalen Brunson", "PTS", 25.5, "BOS")
+
+    Why:
+    This is the first step toward ranking opportunities and eventually
+    building suggested slips/parlays.
+    """
+    results = []
+
+    for prop in props:
+        player_name, stat_type, line, opponent = prop
+
+        analysis = get_player_analysis(
+            player_name,
+            stat_type,
+            line,
+            opponent
+        )
+
+        if analysis is not None:
+            results.append(analysis)
+
+    ranked_results = sorted(
+        results,
+        key=lambda item: item["score"],
+        reverse=True
+    )
+
+    strong_more_count = sum(
+        1 for item in ranked_results
+        if item["recommendation"] == "STRONG MORE"
+    )
+
+    lean_more_count = sum(
+        1 for item in ranked_results
+        if item["recommendation"] == "LEAN MORE"
+    )
+
+    pass_count = sum(
+        1 for item in ranked_results
+        if item["recommendation"] == "PASS"
+    )
+
+    lean_less_count = sum(
+        1 for item in ranked_results
+        if item["recommendation"] == "LEAN LESS"
+    )
+
+    strong_less_count = sum(
+        1 for item in ranked_results
+        if item["recommendation"] == "STRONG LESS"
+    )
+
+    print()
+    print("=" * 90)
+    print("PROP COMPARISON REPORT")
+    print("=" * 90)
+    print("SUMMARY")
+    print("-" * 90)
+    print(f"STRONG MORE : {strong_more_count}")
+    print(f"LEAN MORE   : {lean_more_count}")
+    print(f"PASS        : {pass_count}")
+    print(f"LEAN LESS   : {lean_less_count}")
+    print(f"STRONG LESS : {strong_less_count}")
+    print("=" * 90)
+    print(f"{'#':<4} {'Player':<22} {'Stat':<6} {'Line':<7} {'Opp':<5} {'Score':<6} {'Rec':<15} {'Conf'}")
+
+    print("-" * 90)
+
+    for rank, item in enumerate(ranked_results, start=1):
+        print(
+            f"{rank:<4} "
+            f"{item['player']:<22} "
+            f"{item['stat']:<6} "
+            f"{item['line']:<7} "
+            f"{item['opponent']:<5} "
+            f"{item['score']:<6} "
+            f"{item['recommendation']:<15} "
+            f"{item['confidence']}"
+        )
+    print("-" * 90)
+
+    best_play = ranked_results[0]
+
+    if best_play["recommendation"] != "PASS":
+        print("BEST AVAILABLE PLAY")
+        print(
+            f"{best_play['player']} | "
+            f"{best_play['stat']} {best_play['line']} vs {best_play['opponent']} | "
+            f"{best_play['recommendation']} | "
+            f"Score: {best_play['score']} | "
+            f"Confidence: {best_play['confidence']}"
+        )
+    else:
+        print("BEST AVAILABLE PLAY")
+        print("No playable MORE recommendation found. Top-ranked prop is still a PASS.")
+    print("=" * 90)
+
 #get_hit_rate("Jalen Brunson", "PTS", 25.5)
 #get_recent_averages("Jalen Brunson", "PTS")
 #analyze_player_stat("Jalen Brunson", "PTS", 25.5)
 #show_clean_game_log("Jalen Brunson")
 #get_home_away_split("Jalen Brunson", "PTS")
 #get_opponent_average("Jalen Brunson", "PTS", "BOS")
-analyze_player_stat_full("Jalen Brunson", "PTS", 25.5, "BOS")
+#analyze_player_stat_full("Jalen Brunson", "PTS", 25.5, "BOS")
 #analysis = get_player_analysis("Jalen Brunson", "PTS", 25.5, "BOS")
 #print(analysis)
+props_to_compare = [
+    ("Jalen Brunson", "PTS", 25.5, "BOS"),
+    ("Anthony Edwards", "REB", 6.5, "DEN"),
+]
+
+compare_props(props_to_compare)
 
