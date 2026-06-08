@@ -1,3 +1,4 @@
+import csv
 from nba_api.stats.static import players
 from nba_api.stats.endpoints import playergamelog
 
@@ -638,6 +639,42 @@ def compare_props(props):
     else:
         print("No prop details available.")
 
+# ============================================================
+# FILE INPUT FUNCTIONS
+# ============================================================
+def load_props_from_csv(file_path):
+    """
+    Load prop data from a CSV file.
+
+    Expected Format:
+
+    player,stat,line,opponent
+    Jalen Brunson,PTS,25.5,BOS
+
+    Lo Note:
+    This is the first step toward user-managed prop lists and
+    eventually PrizePicks board imports.
+    """
+    props = []
+
+    with open(file_path, newline="", encoding="utf-8") as csvfile:
+        reader = csv.DictReader(csvfile)
+
+        for row in reader:
+            props.append(
+                (
+                    row["player"],
+                    row["stat"],
+                    float(row["line"]),
+                    row["opponent"]
+                )
+            )
+
+    return props
+
+# ============================================================
+# LEGACY DEVELOPMENT TESTS
+# ============================================================
 #get_hit_rate("Jalen Brunson", "PTS", 25.5)
 #get_recent_averages("Jalen Brunson", "PTS")
 #analyze_player_stat("Jalen Brunson", "PTS", 25.5)
@@ -647,10 +684,26 @@ def compare_props(props):
 #analyze_player_stat_full("Jalen Brunson", "PTS", 25.5, "BOS")
 #analysis = get_player_analysis("Jalen Brunson", "PTS", 25.5, "BOS")
 #print(analysis)
-props_to_compare = [
-    ("Jalen Brunson", "PTS", 25.5, "BOS"),
-    ("Anthony Edwards", "REB", 6.5, "DEN"),
-]
+#props_to_compare = [
+ #   ("Jalen Brunson", "PTS", 25.5, "BOS"),
+  #  ("Anthony Edwards", "REB", 6.5, "DEN"),
+#]
+
+#compare_props(props_to_compare)
+
+# ============================================================
+# TESTING
+# ============================================================
+
+# Lo Note:
+# We are currently loading props from a CSV file.
+# This replaces hardcoded test props and moves us one step
+# closer to real-world usage.
+#
+# Future Evolution:
+# CSV -> UI Form -> Automated Board Import
+
+props_to_compare = load_props_from_csv("props.csv")
 
 compare_props(props_to_compare)
 
