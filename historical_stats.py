@@ -1,3 +1,4 @@
+from datetime import datetime
 import csv
 from nba_api.stats.static import players
 from nba_api.stats.endpoints import playergamelog
@@ -480,7 +481,7 @@ def compare_props(props):
     results = []
 
     for prop in props:
-        player_name, stat_type, line, opponent, risk_type = prop
+        player_name, stat_type, line, opponent, game_date, risk_type = prop
 
         analysis = get_player_analysis(
             player_name,
@@ -490,6 +491,7 @@ def compare_props(props):
         )
 
         analysis["risk_type"] = risk_type
+        analysis["game_date"] = game_date
 
         if analysis is not None:
             results.append(analysis)
@@ -674,6 +676,8 @@ def compare_props(props):
     else:
         print("No prop details available.")
 
+    return ranked_results
+
 # ============================================================
 # FILE INPUT FUNCTIONS
 # ============================================================
@@ -702,11 +706,113 @@ def load_props_from_csv(file_path):
                     row["stat"],
                     float(row["line"]),
                     row["opponent"],
+                    row["game_date"],
                     row["risk_type"]
                 )
             )
 
     return props
+
+# ============================================================
+# PAPER BET TRACKING FUNCTIONS
+# ============================================================
+def save_paper_bet(prop):
+    """
+    Save a paper bet recommendation to paper_bets.csv.
+
+    Lo Note:
+    This is the beginning of engine validation.
+    Every recommendation saved here can later be
+    graded as WIN, LOSS, or PUSH.
+    """
+
+    if paper_bet_exists(prop):
+        print(
+            f"Skipping duplicate: "
+            f"{prop['player']} "
+            f"{prop['stat']} "
+            f"{prop['line']} "
+            f"{prop['risk_type']}"
+        )
+        return False
+
+    with open("paper_bets.csv", "a", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+
+        writer.writerow([
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            prop["game_date"],
+            prop["player"],
+            prop["stat"],
+            prop["line"],
+            prop["opponent"],
+            prop["risk_type"],
+            prop["recommendation"],
+            prop["confidence"],
+            "PENDING",
+            ""
+        ])
+
+        return True
+
+def save_recommendations_to_paper_bets(results):
+    """
+    Save all analyzed props to paper_bets.csv.
+
+    Lo Note:
+    This allows an entire board of props to be saved
+    at once for paper betting and future engine analysis.
+    """
+
+    print()
+    print("-" * 90)
+    print("PAPER BET SAVE RESULTS")
+    print("-" * 90)
+
+    saved_count = 0
+    skipped_count = 0
+
+    for prop in results:
+        if save_paper_bet(prop):
+            saved_count += 1
+        else:
+            skipped_count += 1
+
+    print()
+    print(f"New recommendations saved: {saved_count}")
+    print(f"Duplicates skipped: {skipped_count}")
+
+def paper_bet_exists(prop):
+    """
+    Check if a paper bet already exists.
+
+    Duplicate Key:
+    - game_date
+    - player
+    - stat
+    - line
+    - risk_type
+
+    Lo Note:
+    We intentionally do NOT use timestamp because
+    the same prop may be analyzed multiple times.
+    """
+
+    with open("paper_bets.csv", "r", newline="", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+
+        for row in reader:
+
+            if (
+                row["game_date"] == prop["game_date"]
+                and row["player"] == prop["player"]
+                and row["stat"] == prop["stat"]
+                and float(row["line"]) == float(prop["line"])
+                and row["risk_type"] == prop["risk_type"]
+            ):
+                return True
+
+    return False
 
 # ============================================================
 # LEGACY DEVELOPMENT TESTS
@@ -739,7 +845,24 @@ def load_props_from_csv(file_path):
 # Future Evolution:
 # CSV -> UI Form -> Automated Board Import
 
+
+# ============================================================
+# PAPER BETTING TEST WORKFLOW
+# ============================================================
+
+# Lo Note:
+# Current workflow:
+#
+# 1. Load props from props.csv
+# 2. Analyze props
+# 3. Generate ranked report
+# 4. Save recommendations to paper_bets.csv
+#
+# Future Evolution:
+# CSV -> UI -> Automated Board Import
+# Manual Save -> Menu Option -> UI Button
 props_to_compare = load_props_from_csv("props.csv")
 
-compare_props(props_to_compare)
+ranked_results = compare_props(props_to_compare)
 
+save_recommendations_to_paper_bets(ranked_results)

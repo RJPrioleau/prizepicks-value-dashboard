@@ -1,4 +1,4 @@
-player,stat,line,opponent,risk_type
-Jalen Brunson,PTS,25.5,BOS,NORMAL
-Anthony Edwards,REB,6.5,DEN,DEMON
-Jayson Tatum,AST,5.5,IND,NORMAL
+player,stat,line,opponent,game_date,risk_type
+Jalen Brunson,PTS,25.5,BOS,2026-06-10,NORMAL
+Anthony Edwards,REB,6.5,DEN,2026-06-10,DEMON
+Jayson Tatum,AST,5.5,IND,2026-06-10,NORMAL

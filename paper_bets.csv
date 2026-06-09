@@ -1,0 +1,4 @@
+timestamp,game_date,player,stat,line,opponent,risk_type,recommendation,confidence,result,actual_stat
+2026-06-09 17:06:08,2026-06-10,Jayson Tatum,AST,5.5,IND,NORMAL,PASS,LOW,PENDING,
+2026-06-09 17:06:08,2026-06-10,Jalen Brunson,PTS,25.5,BOS,NORMAL,PASS,LOW,PENDING,
+2026-06-09 17:06:08,2026-06-10,Anthony Edwards,REB,6.5,DEN,DEMON,STRONG LESS,HIGH,PENDING,

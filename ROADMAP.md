@@ -6,30 +6,30 @@ Build a data-driven prop analysis platform that helps users identify value oppor
 
 ---
 
-# Phase 1 - Core Analysis Engine (Current Phase)
+# Phase 1 - Core Analysis Engine
 
 ## Completed
 
-* Historical player analysis
-* Recommendation engine
-* Confidence scoring
-* Home/Away splits
-* Opponent analysis
-* CSV prop loading
-* Prop comparison engine
-* Hit rate tie-breakers
-* Risk type architecture (NORMAL / GOBLIN / DEMON)
-* More-side opportunity reporting
-* Less-side opportunity reporting
-* Actionable opportunity details
+- [x] Historical player analysis
+- [x] Recommendation engine
+- [x] Confidence scoring
+- [x] Home/Away splits
+- [x] Opponent analysis
+- [x] CSV prop loading
+- [x] Prop comparison engine
+- [x] Hit rate tie-breakers
+- [x] Risk type architecture
+- [x] More-side opportunity reporting
+- [x] Less-side opportunity reporting
+- [x] Actionable opportunity details
 
 ## Remaining
 
-* Improve recommendation logic
-* Improve ranking quality
-* Add additional tie-breakers
-* Improve error handling
-* Expand testing
+- [ ] Improve recommendation logic
+- [ ] Improve ranking quality
+- [ ] Additional tie-breakers
+- [ ] Improve error handling
+- [ ] Expanded testing
 
 ---
 
@@ -37,12 +37,14 @@ Build a data-driven prop analysis platform that helps users identify value oppor
 
 ## Goals
 
-* Paper bet tracking
-* Actual bet tracking
-* Win/Loss tracking
-* Engine record tracking
-* Confidence calibration
-* Recommendation accuracy reporting
+- [x] Paper bet storage
+- [x] Bulk recommendation saving
+- [x] Duplicate detection
+- [ ] Result updates
+- [ ] Win/Loss tracking
+- [ ] Engine record tracking
+- [ ] Confidence calibration
+- [ ] Recommendation accuracy reporting
 
 ## Key Questions
 
