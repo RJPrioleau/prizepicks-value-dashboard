@@ -23,10 +23,18 @@ Build a data-driven prop analysis platform that helps users identify value oppor
 
 ### Remaining
 - [ ] Improve recommendation logic
+- [ ] Goblin/Demon MORE-only recommendation rules
 - [ ] Improve ranking quality
 - [ ] Additional tie-breakers
 - [ ] Improve error handling
 - [ ] Expanded testing
+
+### Lo Notes
+
+- PrizePicks boards may contain multiple Goblin and Demon lines for the same player/stat.
+- Goblin and Demon props are MORE-only selections.
+- Goblin/Demon props should never generate LESS recommendations.
+- LESS-side Goblin/Demon recommendations should be converted to PASS.
 
 ---
 
