@@ -3,6 +3,8 @@ import csv
 from nba_api.stats.static import players
 from nba_api.stats.endpoints import playergamelog
 
+PLAYER_GAME_LOG_CACHE = {}
+
 # ============================================================
 # PLAYER LOOKUP FUNCTIONS
 # ============================================================
@@ -309,6 +311,30 @@ def get_basic_recommendation(
 
     return recommendation, score, confidence,  reasons
 
+def add_calculated_stats(df):
+    """
+    Add PrizePicks-style stat columns that do not exist directly
+    in the NBA API game log.
+
+    Lo Note:
+    PrizePicks uses stat labels like 3PM and PRA.
+    The NBA API may store those stats under different column names
+    or require us to calculate them.
+    """
+    if "FG3M" in df.columns:
+        df["3PM"] = df["FG3M"]
+
+    if "FG3A" in df.columns:
+        df["3PTA"] = df["FG3A"]
+
+    if "FGM" in df.columns and "FG3M" in df.columns:
+        df["2PM"] = df["FGM"] - df["FG3M"]
+
+    if all(column in df.columns for column in ["PTS", "REB", "AST"]):
+        df["PRA"] = df["PTS"] + df["REB"] + df["AST"]
+
+    return df
+
 # ============================================================
 # CORE ANALYSIS ENGINE
 # ============================================================
@@ -333,13 +359,24 @@ def get_player_analysis(player_name, stat_type, line, opponent):
     if player_id is None:
         return None
 
-    game_log = playergamelog.PlayerGameLog(
-        player_id=player_id,
-        season="2024-25",
-        season_type_all_star="Regular Season"
-    )
+    if player_id in PLAYER_GAME_LOG_CACHE:
+        df = PLAYER_GAME_LOG_CACHE[player_id]
+    else:
+        game_log = playergamelog.PlayerGameLog(
+            player_id=player_id,
+            season="2024-25",
+            season_type_all_star="Regular Season"
+        )
 
-    df = game_log.get_data_frames()[0]
+        df = game_log.get_data_frames()[0]
+        df = add_calculated_stats(df)
+
+        PLAYER_GAME_LOG_CACHE[player_id] = df
+
+
+    if stat_type not in df.columns:
+        print(f"Unsupported stat type skipped: {stat_type}")
+        return None
 
     parsed_matchups = df["MATCHUP"].apply(parse_matchup)
 
@@ -348,6 +385,10 @@ def get_player_analysis(player_name, stat_type, line, opponent):
 
     last_5 = df.head(5)
     last_10 = df.head(10)
+
+    if len(last_10) == 0:
+        print(f"No game log data skipped: {player_name} {stat_type}")
+        return None
 
     last_5_avg = round(last_5[stat_type].mean(), 2)
     last_10_avg = round(last_10[stat_type].mean(), 2)
@@ -480,6 +521,8 @@ def compare_props(props):
     """
     results = []
 
+    game_log_cache = {}
+
     for prop in props:
         player_name, stat_type, line, opponent, game_date, risk_type = prop
 
@@ -490,10 +533,9 @@ def compare_props(props):
             opponent
         )
 
-        analysis["risk_type"] = risk_type
-        analysis["game_date"] = game_date
-
         if analysis is not None:
+            analysis["risk_type"] = risk_type
+            analysis["game_date"] = game_date
             results.append(analysis)
 
     # Lo Note:

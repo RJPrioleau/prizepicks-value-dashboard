@@ -6,25 +6,22 @@ Build a data-driven prop analysis platform that helps users identify value oppor
 
 ---
 
-# Phase 1 - Core Analysis Engine
-
-## Completed
+## Phase 1 - Core Analysis Engine
 
 - [x] Historical player analysis
-- [x] Recommendation engine
-- [x] Confidence scoring
-- [x] Home/Away splits
-- [x] Opponent analysis
-- [x] CSV prop loading
 - [x] Prop comparison engine
-- [x] Hit rate tie-breakers
-- [x] Risk type architecture
-- [x] More-side opportunity reporting
-- [x] Less-side opportunity reporting
-- [x] Actionable opportunity details
+- [x] Recommendation scoring
+- [x] Confidence scoring
+- [x] CSV prop import
+- [x] Risk type support (NORMAL/GOBLIN/DEMON)
+- [x] Stat alias support (3PM, 3PTA, 2PM, PRA)
+- [x] NBA API caching
+- [x] No-data player handling
+- [x] Real board stress test
+- [x] Paper bet CSV generation
+- [x] Duplicate detection
 
-## Remaining
-
+### Remaining
 - [ ] Improve recommendation logic
 - [ ] Improve ranking quality
 - [ ] Additional tie-breakers
@@ -35,16 +32,27 @@ Build a data-driven prop analysis platform that helps users identify value oppor
 
 # Phase 2 - Tracking & Validation
 
+# Phase 2 - Tracking & Validation
+
 ## Goals
 
 - [x] Paper bet storage
 - [x] Bulk recommendation saving
 - [x] Duplicate detection
+
+### Results Management
 - [ ] Result updates
+- [ ] Record actual stats
 - [ ] Win/Loss tracking
+
+### Engine Evaluation
 - [ ] Engine record tracking
 - [ ] Confidence calibration
 - [ ] Recommendation accuracy reporting
+
+### Lo Note
+PrizePicks boards may contain multiple Goblin and Demon lines for the same player/stat.
+Do not assume a simple Goblin → Normal → Demon ladder.
 
 ## Key Questions
 
