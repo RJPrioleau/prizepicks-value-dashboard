@@ -494,9 +494,22 @@ def compare_props(props):
         if analysis is not None:
             results.append(analysis)
 
+    # Lo Note:
+    # Props are ranked primarily by recommendation score.
+    # If two props have the same score, the higher hit rate
+    # wins the tie-breaker.
+    #
+    # Example:
+    # Score 1, Hit Rate 80%
+    # beats
+    # Score 1, Hit Rate 50%
+
     ranked_results = sorted(
         results,
-        key=lambda item: item["score"],
+        key=lambda item: (
+            item["score"],
+            item["hit_rate"]
+        ),
         reverse=True
     )
 
