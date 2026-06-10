@@ -40,17 +40,17 @@ Build a data-driven prop analysis platform that helps users identify value oppor
 
 # Phase 2 - Tracking & Validation
 
-# Phase 2 - Tracking & Validation
-
 ## Goals
 
 - [x] Paper bet storage
 - [x] Bulk recommendation saving
 - [x] Duplicate detection
+- [x] Risk breakdown summary
 
 ### Results Management
-- [ ] Result updates
-- [ ] Record actual stats
+- [x] Result grading logic
+- [x] Result updates
+- [x] Record actual stats
 - [ ] Win/Loss tracking
 
 ### Engine Evaluation
@@ -70,9 +70,25 @@ Do not assume a simple Goblin → Normal → Demon ladder.
 
 ---
 
-# Phase 3 - User Experience
+# Phase 3 - Reporting & User Experience
 
 ## Goals
+
+# Phase 3 - Reporting & User Experience
+
+- [ ] Custom report sorting
+- [ ] Sort by player
+- [ ] Sort by risk type
+- [ ] Sort by recommendation
+- [ ] Sort by confidence
+- [ ] Sort by hit rate
+- [ ] Sort by score
+- [ ] Filter by risk type
+- [ ] Filter by recommendation
+- [ ] Filter by confidence
+- [ ] Top 5 / Top 10 views
+- [ ] Export reports
+- [ ] Improved report formatting
 
 * Flask web interface
 * User-friendly forms
@@ -89,6 +105,12 @@ Do not assume a simple Goblin → Normal → Demon ladder.
 ---
 
 # Phase 4 - Expanded Sports Support
+
+## Features
+- [ ] User bet tracking
+- [ ] Compare user record vs engine record
+- [ ] Track overrides of engine recommendations
+- [ ] Measure value added by engine
 
 ## Planned Sports
 

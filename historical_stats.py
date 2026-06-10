@@ -1,5 +1,6 @@
 from datetime import datetime
 import csv
+import pandas as pd
 from nba_api.stats.static import players
 from nba_api.stats.endpoints import playergamelog
 
@@ -536,6 +537,15 @@ def compare_props(props):
         if analysis is not None:
             analysis["risk_type"] = risk_type
             analysis["game_date"] = game_date
+
+            # Lo Note:
+            # Goblin and Demon props are MORE-only on PrizePicks.
+            # If the engine recommends LESS for one of these, convert it to PASS
+            # because LESS is not a playable option.
+            if risk_type in ["GOBLIN", "DEMON"]:
+                if analysis["recommendation"] in ["LEAN LESS", "STRONG LESS"]:
+                    analysis["recommendation"] = "PASS"
+                    analysis["confidence"] = "LOW"
             results.append(analysis)
 
     # Lo Note:
@@ -582,6 +592,21 @@ def compare_props(props):
         if item["recommendation"] == "STRONG LESS"
     )
 
+    goblin_count = sum(
+        1 for item in ranked_results
+        if item["risk_type"] == "GOBLIN"
+    )
+
+    normal_count = sum(
+        1 for item in ranked_results
+        if item["risk_type"] == "NORMAL"
+    )
+
+    demon_count = sum(
+        1 for item in ranked_results
+        if item["risk_type"] == "DEMON"
+    )
+
     print()
     print("=" * 90)
     print("PROP COMPARISON REPORT")
@@ -593,7 +618,15 @@ def compare_props(props):
     print(f"PASS        : {pass_count}")
     print(f"LEAN LESS   : {lean_less_count}")
     print(f"STRONG LESS : {strong_less_count}")
+    print("-" * 90)
+    print("RISK BREAKDOWN")
+    print("-" * 90)
+    print(f"GOBLIN : {goblin_count}" )
+    print(f"NORMAL : {normal_count}")
+    print(f"DEMON  : {demon_count}")
     print("=" * 90)
+
+
     #===================
     # Header
     #==================
@@ -755,6 +788,33 @@ def load_props_from_csv(file_path):
 
     return props
 
+def determine_result(recommendation, line, actual_stat):
+    """
+    Determine whether a paper bet won, lost, pushed, or should be ignored.
+
+    Lo Note:
+    MORE recommendations win when the actual stat is greater than the line.
+    LESS recommendations win when the actual stat is less than the line.
+    PASS recommendations are not graded.
+    """
+    if recommendation == "PASS":
+        return "PASS"
+
+    if actual_stat == line:
+        return "PUSH"
+
+    if recommendation in ["STRONG MORE", "LEAN MORE"]:
+        if actual_stat > line:
+            return "WIN"
+        return "LOSS"
+
+    if recommendation in ["STRONG LESS", "LEAN LESS"]:
+        if actual_stat < line:
+            return "WIN"
+        return "LOSS"
+
+    return "UNKNOWN"
+
 # ============================================================
 # PAPER BET TRACKING FUNCTIONS
 # ============================================================
@@ -856,6 +916,79 @@ def paper_bet_exists(prop):
 
     return False
 
+def update_paper_bet_results():
+    df = pd.read_csv("paper_bets.csv")
+
+    pending_bets = df[
+        (df["result"] == "PENDING") &
+        (df["recommendation"] != "PASS")
+    ]
+
+    print()
+    print("PENDING BETS")
+    print("-" * 90)
+
+    for index, row in pending_bets.iterrows():
+        print(
+            f"{index}: "
+            f"{row['player']} "
+            f"{row['stat']} "
+            f"{row['line']} "
+            f"{row['recommendation']}"
+        )
+
+    selected_index = int(input("Enter the index number to update: "))
+
+    actual_stat = float(input("Enter the actual stat: "))
+
+    selected_row = df.loc[selected_index]
+
+    new_result = determine_result(
+        selected_row["recommendation"],
+        float(selected_row["line"]),
+        actual_stat
+    )
+
+    df.loc[selected_index, "actual_stat"] = str(actual_stat)
+    df.loc[selected_index, "result"] = new_result
+
+    df.to_csv("paper_bets.csv", index=False)
+
+    print()
+    print(
+        f"Updated {selected_row['player']} "
+        f"{selected_row['stat']} {selected_row['line']} "
+        f"as {new_result}"
+    )
+
+    wins = len(df[df["result"] == "WIN"])
+    losses = len(df[df["result"] == "LOSS"])
+    pushes = len(df[df["result"] == "PUSH"])
+    pending = len(
+        df[
+            (df["result"] == "PENDING") &
+            (df["recommendation"] != "PASS")
+            ]
+    )
+
+    total_graded = wins + losses + pushes
+
+    if total_graded > 0:
+        win_rate = round((wins / total_graded) * 100, 2)
+    else:
+        win_rate = 0
+
+    print()
+    print("-" * 90)
+    print("ENGINE RECORD")
+    print("-" * 90)
+    print(f"Wins: {wins}")
+    print(f"Losses: {losses}")
+    print(f"Pushes: {pushes}")
+    print(f"Pending: {pending}")
+    print(f"Win Rate: {win_rate}%")
+
+
 # ============================================================
 # LEGACY DEVELOPMENT TESTS
 # ============================================================
@@ -908,3 +1041,6 @@ props_to_compare = load_props_from_csv("props.csv")
 ranked_results = compare_props(props_to_compare)
 
 save_recommendations_to_paper_bets(ranked_results)
+
+
+update_paper_bet_results()
