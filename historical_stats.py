@@ -919,47 +919,54 @@ def paper_bet_exists(prop):
 def update_paper_bet_results():
     df = pd.read_csv("paper_bets.csv")
 
-    pending_bets = df[
-        (df["result"] == "PENDING") &
-        (df["recommendation"] != "PASS")
-    ]
+    while True:
+        pending_bets = df[
+            (df["result"] == "PENDING") &
+            (df["recommendation"] != "PASS")
+        ]
 
-    print()
-    print("PENDING BETS")
-    print("-" * 90)
+        print()
+        print("PENDING BETS")
+        print("-" * 90)
 
-    for index, row in pending_bets.iterrows():
-        print(
-            f"{index}: "
-            f"{row['player']} "
-            f"{row['stat']} "
-            f"{row['line']} "
-            f"{row['recommendation']}"
+        for index, row in pending_bets.iterrows():
+            print(
+                f"{index}: "
+                f"{row['player']} "
+                f"{row['stat']} "
+                f"{row['line']} "
+                f"{row['recommendation']}"
+            )
+
+        selected_index = int(input("Enter the index number to update: "))
+
+        actual_stat = float(input("Enter the actual stat: "))
+
+        selected_row = df.loc[selected_index]
+
+        new_result = determine_result(
+            selected_row["recommendation"],
+            float(selected_row["line"]),
+            actual_stat
         )
 
-    selected_index = int(input("Enter the index number to update: "))
+        df.loc[selected_index, "actual_stat"] = str(actual_stat)
+        df.loc[selected_index, "result"] = new_result
 
-    actual_stat = float(input("Enter the actual stat: "))
+        df.to_csv("paper_bets.csv", index=False)
 
-    selected_row = df.loc[selected_index]
+        print()
+        print(
+            f"Updated {selected_row['player']} "
+            f"{selected_row['stat']} {selected_row['line']} "
+            f"as {new_result}"
+        )
 
-    new_result = determine_result(
-        selected_row["recommendation"],
-        float(selected_row["line"]),
-        actual_stat
-    )
+        update_again = input("Update another bet? Y//N: ").strip().upper()
 
-    df.loc[selected_index, "actual_stat"] = str(actual_stat)
-    df.loc[selected_index, "result"] = new_result
-
-    df.to_csv("paper_bets.csv", index=False)
-
-    print()
-    print(
-        f"Updated {selected_row['player']} "
-        f"{selected_row['stat']} {selected_row['line']} "
-        f"as {new_result}"
-    )
+        if update_again != "Y":
+            print("Finished updating paper bets.")
+            break
 
     wins = len(df[df["result"] == "WIN"])
     losses = len(df[df["result"] == "LOSS"])
