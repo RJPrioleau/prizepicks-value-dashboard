@@ -968,6 +968,17 @@ def update_paper_bet_results():
             print("Finished updating paper bets.")
             break
 
+        show_engine_record()
+
+
+
+def show_engine_record():
+    """
+    Display the current engine record from paper_bets.csv.
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
     wins = len(df[df["result"] == "WIN"])
     losses = len(df[df["result"] == "LOSS"])
     pushes = len(df[df["result"] == "PUSH"])
@@ -975,7 +986,7 @@ def update_paper_bet_results():
         df[
             (df["result"] == "PENDING") &
             (df["recommendation"] != "PASS")
-            ]
+        ]
     )
 
     total_graded = wins + losses + pushes
@@ -994,7 +1005,6 @@ def update_paper_bet_results():
     print(f"Pushes: {pushes}")
     print(f"Pending: {pending}")
     print(f"Win Rate: {win_rate}%")
-
 
 # ============================================================
 # LEGACY DEVELOPMENT TESTS

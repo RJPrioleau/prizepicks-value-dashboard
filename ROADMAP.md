@@ -46,6 +46,7 @@ Build a data-driven prop analysis platform that helps users identify value oppor
 - [x] Bulk recommendation saving
 - [x] Duplicate detection
 - [x] Risk breakdown summary
+- [x] Save recommendations to paper_bets.csv
 
 ### Results Management
 - [x] Result grading logic
@@ -54,7 +55,7 @@ Build a data-driven prop analysis platform that helps users identify value oppor
 - [ ] Win/Loss tracking
 
 ### Engine Evaluation
-- [ ] Engine record tracking
+- [x] Engine record tracking
 - [ ] Confidence calibration
 - [ ] Recommendation accuracy reporting
 
