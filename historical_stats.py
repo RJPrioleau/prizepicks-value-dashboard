@@ -925,6 +925,10 @@ def update_paper_bet_results():
             (df["recommendation"] != "PASS")
         ]
 
+        if pending_bets.empty:
+            print("No pending actionable bets to update.")
+            break
+
         print()
         print("PENDING BETS")
         print("-" * 90)
@@ -940,9 +944,20 @@ def update_paper_bet_results():
 
         selected_index = int(input("Enter the index number to update: "))
 
-        actual_stat = float(input("Enter the actual stat: "))
 
         selected_row = df.loc[selected_index]
+
+        print()
+        print("SELECTED BET")
+        print("-" * 90)
+        print(
+            f"{selected_row['player']} | "
+            f"{selected_row['stat']} {selected_row['line']} | "
+            f"{selected_row['recommendation']} | "
+            f"Risk: {selected_row['risk_type']}"
+        )
+
+        actual_stat = float(input("Enter the actual stat: "))
 
         new_result = determine_result(
             selected_row["recommendation"],
@@ -968,7 +983,7 @@ def update_paper_bet_results():
             print("Finished updating paper bets.")
             break
 
-        show_engine_record()
+    show_engine_record()
 
 
 
@@ -1005,6 +1020,194 @@ def show_engine_record():
     print(f"Pushes: {pushes}")
     print(f"Pending: {pending}")
     print(f"Win Rate: {win_rate}%")
+
+def show_recommendation_breakdown():
+    """
+    Display performance by recommendation type.
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
+    recommendation_types = [
+        "STRONG MORE",
+        "LEAN MORE",
+        "STRONG LESS",
+        "LEAN LESS"
+    ]
+
+    print()
+    print("-" * 90)
+    print("RECOMMENDATION BREAKDOWN")
+    print("-" * 90)
+
+    for recommendation in recommendation_types:
+        recommendation_df = df[
+            df["recommendation"] == recommendation
+        ]
+
+        wins = len(
+            recommendation_df[
+                recommendation_df["result"] == "WIN"
+            ]
+        )
+
+        losses = len(
+            recommendation_df[
+                recommendation_df["result"] == "LOSS"
+            ]
+        )
+
+        pushes = len(
+            recommendation_df[
+                recommendation_df["result"] == "PUSH"
+            ]
+        )
+
+        total_graded = wins + losses + pushes
+
+        if total_graded > 0:
+            win_rate = round(
+                (wins / total_graded) * 100,
+                2
+            )
+        else:
+            win_rate = 0
+
+        print()
+        print(recommendation)
+        print(f"Wins: {wins}")
+        print(f"Losses: {losses}")
+        print(f"Pushes: {pushes}")
+        print(f"Win Rate: {win_rate}%")
+
+def show_confidence_breakdown():
+    """
+    Display performance by confidence level.
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
+    confidence_levels = [
+        "HIGH",
+        "MEDIUM",
+        "LOW"
+    ]
+
+    print()
+    print("-" * 90)
+    print("CONFIDENCE BREAKDOWN")
+    print("-" * 90)
+
+    for confidence in confidence_levels:
+        confidence_df = df[
+            df["confidence"] == confidence
+        ]
+
+        wins = len(
+            confidence_df[
+                confidence_df["result"] == "WIN"
+            ]
+        )
+
+        losses = len(
+            confidence_df[
+                confidence_df["result"] == "LOSS"
+            ]
+        )
+
+        pushes = len(
+            confidence_df[
+                confidence_df["result"] == "PUSH"
+            ]
+        )
+
+        total_graded = wins + losses + pushes
+
+        if total_graded > 0:
+            win_rate = round(
+                (wins / total_graded) * 100,
+                2
+            )
+        else:
+            win_rate = 0
+
+        print()
+        print(confidence)
+        print(f"Wins: {wins}")
+        print(f"Losses: {losses}")
+        print(f"Pushes: {pushes}")
+        print(f"Win Rate: {win_rate}%")
+
+def show_risk_breakdown():
+    """
+    Display performance by risk type.
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
+    risk_types = [
+        "GOBLIN",
+        "NORMAL",
+        "DEMON"
+    ]
+
+    print()
+    print("-" * 90)
+    print("RISK BREAKDOWN")
+    print("-" * 90)
+
+    for risk_type in risk_types:
+        risk_df = df[
+            df["risk_type"] == risk_type
+        ]
+
+        wins = len(
+            risk_df[
+                risk_df["result"] == "WIN"
+            ]
+        )
+
+        losses = len(
+            risk_df[
+                risk_df["result"] == "LOSS"
+            ]
+        )
+
+        pushes = len(
+            risk_df[
+                risk_df["result"] == "PUSH"
+            ]
+        )
+
+        total_graded = wins + losses + pushes
+
+        if total_graded > 0:
+            win_rate = round(
+                (wins / total_graded) * 100,
+                2
+            )
+        else:
+            win_rate = 0
+
+        print()
+        print(risk_type)
+        print(f"Wins: {wins}")
+        print(f"Losses: {losses}")
+        print(f"Pushes: {pushes}")
+        print(f"Win Rate: {win_rate}%")
+
+def show_full_performance_report():
+    """
+    Display all engine performance reports.
+    """
+
+    show_engine_record()
+
+    show_recommendation_breakdown()
+
+    show_confidence_breakdown()
+
+    show_risk_breakdown()
 
 # ============================================================
 # LEGACY DEVELOPMENT TESTS
@@ -1053,11 +1256,17 @@ def show_engine_record():
 # Future Evolution:
 # CSV -> UI -> Automated Board Import
 # Manual Save -> Menu Option -> UI Button
-props_to_compare = load_props_from_csv("props.csv")
+#props_to_compare = load_props_from_csv("props.csv")
 
-ranked_results = compare_props(props_to_compare)
+#ranked_results = compare_props(props_to_compare)
 
-save_recommendations_to_paper_bets(ranked_results)
+#save_recommendations_to_paper_bets(ranked_results)
 
 
-update_paper_bet_results()
+#update_paper_bet_results()
+
+#show_recommendation_breakdown()
+
+#show_confidence_breakdown()
+
+show_full_performance_report()

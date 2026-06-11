@@ -55,9 +55,18 @@ Build a data-driven prop analysis platform that helps users identify value oppor
 - [ ] Win/Loss tracking
 
 ### Engine Evaluation
-- [x] Engine record tracking
 - [ ] Confidence calibration
+- [x] Engine record tracking
 - [ ] Recommendation accuracy reporting
+- 
+- ### Reporting
+
+- [x] Engine Record Report
+- [x] Recommendation Breakdown
+- [x] Confidence Breakdown
+- [x] Risk Breakdown
+- [x] Full Performance Report
+- [ ] Menu integration
 
 ### Lo Note
 PrizePicks boards may contain multiple Goblin and Demon lines for the same player/stat.
