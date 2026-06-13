@@ -1,4 +1,9 @@
 import  pandas as pd
+from historical_stats import (
+    update_paper_bet_results,
+    show_engine_record,
+    show_full_performance_report,
+)
 import os
 from datetime import datetime
 from analytics import (
@@ -8,6 +13,8 @@ from analytics import (
     get_best_and_worst_segments,
     calculate_projection_accuracy
 )
+
+print("RUNNING APP.PY FROM JAY'S DESKTOP")
 
 HISTORY_FILE = "data/history.csv"
 PROPS_FILE = "data/props.csv"
@@ -1423,7 +1430,7 @@ def main():
     input("\nPress Enter to continue...")
 
 while True:
-    os.system("cls")
+    #os.system("cls")
     print("=" * 60)
     print("PRIZEPICKS VALUE DASHBOARD")
     print("=" * 60)
@@ -1456,7 +1463,10 @@ while True:
     print("26. Filter by play type and confidence")
     print("27. view Win rate by Confidence")
     print("28. View Performance Analytics")
-    print("29. Exit")
+    print("29. Update Paper Bet Results")
+    print("30. Show Engine Record")
+    print("31. Show Full Performance Report")
+    print("32. Exit")
 
     choice = input("Choose an option: ").strip()
 
@@ -1546,6 +1556,15 @@ while True:
         show_performance_analytics()
 
     elif choice == "29":
+        update_paper_bet_results()
+
+    elif choice == "30":
+        show_engine_record()
+
+    elif choice == "31":
+        show_full_performance_report()
+
+    elif choice == "32":
         print("Goodbye.")
         break
 
