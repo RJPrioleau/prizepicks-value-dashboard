@@ -334,6 +334,9 @@ def add_calculated_stats(df):
     if all(column in df.columns for column in ["PTS", "REB", "AST"]):
         df["PRA"] = df["PTS"] + df["REB"] + df["AST"]
 
+    if all(column in df.columns for column in ["REB", "AST"]):
+        df["Rebs+Asts"] = df["REB"] + df["AST"]
+
     return df
 
 # ============================================================

@@ -1,5 +1,8 @@
 import  pandas as pd
 from historical_stats import (
+    load_props_from_csv,
+    compare_props,
+    save_recommendations_to_paper_bets,
     update_paper_bet_results,
     show_engine_record,
     show_full_performance_report,
@@ -14,7 +17,6 @@ from analytics import (
     calculate_projection_accuracy
 )
 
-print("RUNNING APP.PY FROM JAY'S DESKTOP")
 
 HISTORY_FILE = "data/history.csv"
 PROPS_FILE = "data/props.csv"
@@ -1366,6 +1368,11 @@ def show_performance_analytics():
 
     input("\nPress Enter to return to the menu...")
 
+def run_board_analysis():
+    props_to_compare = load_props_from_csv("props.csv")
+    ranked_results = compare_props(props_to_compare)
+    save_recommendations_to_paper_bets(ranked_results)
+
 def main():
     props = load_props()
 
@@ -1466,7 +1473,8 @@ while True:
     print("29. Update Paper Bet Results")
     print("30. Show Engine Record")
     print("31. Show Full Performance Report")
-    print("32. Exit")
+    print("32. Run Board Analysis")
+    print("33. Exit")
 
     choice = input("Choose an option: ").strip()
 
@@ -1568,6 +1576,10 @@ while True:
         input("\nPress Enter to continue...")
 
     elif choice == "32":
+        run_board_analysis()
+        input("\nPress Enter to continue...")
+
+    elif choice == "33":
         print("Goodbye.")
         break
 
