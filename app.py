@@ -1557,12 +1557,15 @@ while True:
 
     elif choice == "29":
         update_paper_bet_results()
+        input("\nPress Enter to continue...")
 
     elif choice == "30":
         show_engine_record()
+        input("\nPress Enter to continue...")
 
     elif choice == "31":
         show_full_performance_report()
+        input("\nPress Enter to continue...")
 
     elif choice == "32":
         print("Goodbye.")
