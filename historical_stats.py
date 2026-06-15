@@ -6,6 +6,13 @@ from nba_api.stats.endpoints import playergamelog
 
 PLAYER_GAME_LOG_CACHE = {}
 
+# =============================================================================
+# NBA DATA CONFIGURATION
+# =============================================================================
+
+DEFAULT_SEASON = "2025-26"
+DEFAULT_SEASON_TYPE = "Playoffs"
+
 # ============================================================
 # PLAYER LOOKUP FUNCTIONS
 # ============================================================
@@ -349,7 +356,20 @@ def add_calculated_stats(df):
 # CORE ANALYSIS ENGINE
 # ============================================================
 
-def get_player_analysis(player_name, stat_type, line, opponent):
+# INVESTIGATION NOTE:
+# Current game log data is hardcoded to the 2024-25 Regular Season.
+# This may be a major reason June 2026 Finals props are being scored incorrectly.
+# Before changing confidence thresholds, update the data source/season logic and
+# verify whether recommendations change when using the correct season/playoff data.
+
+def get_player_analysis(
+    player_name,
+    stat_type,
+    line,
+    opponent,
+    season=DEFAULT_SEASON,
+    season_type=DEFAULT_SEASON_TYPE
+):
     """
         Build a full statistical analysis for one player prop.
 
@@ -369,19 +389,29 @@ def get_player_analysis(player_name, stat_type, line, opponent):
     if player_id is None:
         return None
 
-    if player_id in PLAYER_GAME_LOG_CACHE:
-        df = PLAYER_GAME_LOG_CACHE[player_id]
+    cache_key = (
+        player_id,
+        season,
+        season_type
+    )
+
+    if cache_key in PLAYER_GAME_LOG_CACHE:
+        df = PLAYER_GAME_LOG_CACHE[cache_key]
+
     else:
         game_log = playergamelog.PlayerGameLog(
             player_id=player_id,
-            season="2024-25",
-            season_type_all_star="Regular Season"
+            season=season,
+            season_type_all_star=season_type
         )
 
         df = game_log.get_data_frames()[0]
         df = add_calculated_stats(df)
 
-        PLAYER_GAME_LOG_CACHE[player_id] = df
+        #print(player_name)
+        #print(df[["GAME_DATE", "PTS", "REB", "AST", "PRA"]].head(10))
+
+        PLAYER_GAME_LOG_CACHE[cache_key] = df
 
 
     if stat_type not in df.columns:
@@ -1630,4 +1660,13 @@ def show_june_13_strong_more_losses():
 #show_recommendation_breakdown_by_slate()
 #show_strong_more_by_risk_and_slate()
 #show_confidence_breakdown_by_slate()
-show_june_13_strong_more_losses()
+#show_june_13_strong_more_losses()
+#analyze_player_stat("Karl-Anthony Towns", "PTS", 16.5)
+#analyze_player_stat_full("Karl-Anthony Towns", "PTS", 16.5, "SAS")
+analyze_player_stat_full("Jose Alvarado", "PRA", 7.5, "SAS")
+#get_player_analysis("Jose Alvarado", "PRA", 7.5, "SAS")
+#analyze_player_stat_full("De'Aaron Fox","PTS",10.5,"NYK")
+#analyze_player_stat_full("Stephon Castle","PTS",11.5,"NYK")
+#show_engine_record()
+#show_full_performance_report()
+#show_confidence_breakdown_by_slate()

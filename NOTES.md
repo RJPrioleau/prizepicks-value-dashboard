@@ -241,3 +241,102 @@ Future diagnostics should include both:
 
 - line-level performance
 - grouped player/stat performance
+
+## Finding #8 - Historical Data Source Investigation
+
+### Discovery
+
+Player analysis currently pulls data using:
+
+```python
+season="2024-25"
+season_type_all_star="Regular Season"
+```
+
+## Finding #9 - Data Source Was a Major Contributor
+
+### Discovery
+
+Player analysis was using:
+
+- 2024-25 season
+- Regular Season game logs
+
+while evaluating:
+
+- 2026 NBA Finals props
+
+### Result
+
+Jose Alvarado PRA 7.5 changed from:
+
+- STRONG MORE
+- Score: 5
+- Confidence: HIGH
+
+to:
+
+- PASS
+- Score: -1
+- Confidence: LOW
+
+without changing any scoring logic.
+
+### Conclusion
+
+Data source accuracy has a larger impact on recommendation quality than confidence thresholds.
+
+Future investigations should verify data sources before modifying recommendation logic.
+
+## Finding #9 - Data Source Significantly Impacts Recommendations
+
+### Discovery
+
+Player analysis was using:
+
+```python
+season="2024-25"
+season_type_all_star="Regular Season"
+```
+
+while evaluating June 2026 NBA Finals props.
+
+### Investigation Results
+
+#### Jose Alvarado PRA 7.5
+
+Old Data Source:
+- STRONG MORE
+- Score: 5
+- Confidence: HIGH
+
+Corrected Data Source:
+- PASS
+- Score: -1
+- Confidence: LOW
+
+#### Karl-Anthony Towns PTS 16.5
+
+Old Data Source:
+- STRONG MORE
+- Score: 5
+- Confidence: HIGH
+
+Corrected Data Source:
+- STRONG LESS
+- Score: -5
+- Confidence: HIGH
+
+Actual Result:
+- 2 Points
+- STRONG LESS would have been correct
+
+### Observation
+
+Recommendation outputs changed significantly when switching from historical regular-season data to current playoff data.
+
+### Conclusion
+
+Data source selection has a major impact on recommendation quality.
+
+Future investigations should verify season and game log sources before modifying confidence thresholds or scoring logic.
