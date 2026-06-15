@@ -8,6 +8,9 @@ from historical_stats import (
     show_full_performance_report,
     show_slate_breakdown,
     show_recommendation_breakdown_by_slate,
+    show_high_confidence_breakdown_by_recommendation,
+    show_strong_more_by_risk_type,
+    show_strong_more_by_slate_and_risk_type,
 )
 import os
 from datetime import datetime
@@ -1474,10 +1477,14 @@ while True:
     print("28. View Performance Analytics")
     print("29. Update Paper Bet Results")
     print("30. Show Engine Record")
+    print("31. Show full performance report")
     print("32. Show Slate Breakdown")
-    print("33. show recommendation breakdown by slate")
-    print("34. Run Board Analysis")
-    print("35. Exit")
+    print("33. Show recommendation breakdown by slate")
+    print("34: Show high confidence by recommendation")
+    print("35. Show strong more by risk type")
+    print("36: show strong more by slate and risk type")
+    print("37. Run Board Analysis")
+    print("38. Exit")
 
     choice = input("Choose an option: ").strip()
 
@@ -1587,10 +1594,22 @@ while True:
         input("\nPress Enter to continue...")
 
     elif choice == "34":
-        run_board_analysis()
+        show_high_confidence_breakdown_by_recommendation()
         input("\nPress Enter to continue...")
 
     elif choice == "35":
+        show_strong_more_by_risk_type()
+        input("\nPress Enter to continue...")
+
+    elif choice == "36":
+        show_strong_more_by_slate_and_risk_type()
+        input("\nPress Enter to continue...")
+
+    elif choice == "37":
+        run_board_analysis()
+        input("\nPress Enter to continue...")
+
+    elif choice == "38":
         print("Goodbye.")
         break
 

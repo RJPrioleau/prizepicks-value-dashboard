@@ -168,3 +168,20 @@ MLB is the next planned sport after NBA functionality reaches a stable state.
 * Recommendations must be explainable.
 * Engine performance must be measurable.
 * Improvements should be driven by data, not assumptions.
+
+## Refactor Candidate
+
+Move diagnostic reports into:
+
+diagnostics.py
+
+Current diagnostics:
+
+- Engine Record
+- Full Performance Report
+- Slate Breakdown
+- Recommendation Breakdown by Slate
+- Confidence Breakdown by Slate
+- High Confidence Breakdown by Recommendation
+- Strong More by Risk Type
+- Strong More by Slate and Risk Type
