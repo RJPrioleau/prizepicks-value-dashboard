@@ -1136,6 +1136,196 @@ def show_full_performance_report():
     show_recommendation_breakdown()
     show_confidence_breakdown()
     show_risk_breakdown()
+
+def show_slate_breakdown():
+    df = pd.read_csv("paper_bets.csv")
+    dates = sorted(df["game_date"].unique())
+
+    print()
+    print("-" * 90)
+    print("SLATE BREAKDOWN")
+    print("-" * 90)
+
+    for date in dates:
+        slate_df = df[
+            (df["game_date"] == date) &
+            (df["recommendation"] != "PASS")
+            ]
+
+        wins = len(slate_df[slate_df["result"] == "WIN"])
+        losses = len(slate_df[slate_df["result"] == "LOSS"])
+        pushes = len(slate_df[slate_df["result"] == "PUSH"])
+
+        total_graded = wins + losses + pushes
+
+        if total_graded > 0:
+            win_rate = round((wins / total_graded) * 100, 2)
+        else:
+            win_rate = 0
+
+        print()
+        print(date)
+        print(f"Wins: {wins}")
+        print(f"Losses: {losses}")
+        print(f"Pushes: {pushes}")
+        print(f"Win Rate: {win_rate}%")
+
+def show_recommendation_breakdown_by_slate():
+    df = pd.read_csv("paper_bets.csv")
+
+    dates = sorted(df["game_date"].unique())
+
+    recommendation_types = [
+        "STRONG MORE",
+        "LEAN MORE",
+        "STRONG LESS",
+        "LEAN LESS"
+    ]
+
+    print()
+    print("-" * 90)
+    print("RECOMMENDATION BREAKDOWN BY SLATE")
+    print("-" * 90)
+
+    for date in dates:
+        print()
+        print(date)
+        print("-" * 40)
+
+        slate_df = df[
+            (df["game_date"] == date) &
+            (df["recommendation"] != "PASS")
+        ]
+
+        for recommendation in recommendation_types:
+            recommendation_df = slate_df[
+                slate_df["recommendation"] == recommendation
+            ]
+
+            wins = len(recommendation_df[recommendation_df["result"] == "WIN"])
+            losses = len(recommendation_df[recommendation_df["result"] == "LOSS"])
+            pushes = len(recommendation_df[recommendation_df["result"] == "PUSH"])
+
+            total_graded = wins + losses + pushes
+
+            if total_graded > 0:
+                win_rate = round((wins / total_graded) * 100, 2)
+            else:
+                win_rate = 0
+
+            print(
+                f"{recommendation}: "
+                f"{wins}-{losses}-{pushes} | "
+                f"Win Rate: {win_rate}%"
+            )
+
+
+# ============================================================
+# ENGINE INVESTIGATION REPORTS
+# ============================================================
+def show_strong_more_by_risk_and_slate():
+    df = pd.read_csv("paper_bets.csv")
+
+    dates = sorted(df["game_date"].unique())
+
+    risk_types = [
+        "GOBLIN",
+        "NORMAL",
+        "DEMON"
+    ]
+
+    print()
+    print("-" * 90)
+    print("STRONG MORE BY RISK AND SLATE")
+    print("-" * 90)
+
+    for date in dates:
+        print()
+        print(date)
+        print("-" * 40)
+
+        slate_df = df[
+            (df["game_date"] == date) &
+            (df["recommendation"] == "STRONG MORE")
+        ]
+
+        for risk_type in risk_types:
+            risk_df = slate_df[
+                slate_df["risk_type"] == risk_type
+            ]
+
+            wins = len(risk_df[risk_df["result"] == "WIN"])
+            losses = len(risk_df[risk_df["result"] == "LOSS"])
+            pushes = len(risk_df[risk_df["result"] == "PUSH"])
+
+            total_graded = wins + losses + pushes
+
+            if total_graded > 0:
+                win_rate = round((wins / total_graded) * 100, 2)
+            else:
+                win_rate = 0
+
+            print(
+                f"{risk_type}: "
+                f"{wins}-{losses}-{pushes} | "
+                f"Win Rate: {win_rate}%"
+            )
+
+def show_confidence_breakdown_by_slate():
+    """
+    Display confidence performance grouped by slate date.
+
+    Lo Note:
+    This helps us see whether HIGH confidence is actually
+    outperforming MEDIUM confidence on each individual slate.
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
+    dates = sorted(df["game_date"].unique())
+
+    confidence_levels = [
+        "HIGH",
+        "MEDIUM",
+        "LOW"
+    ]
+
+    print()
+    print("-" * 90)
+    print("CONFIDENCE BREAKDOWN BY SLATE")
+    print("-" * 90)
+
+    for date in dates:
+        print()
+        print(date)
+        print("-" * 40)
+
+        slate_df = df[
+            (df["game_date"] == date) &
+            (df["recommendation"] != "PASS")
+        ]
+
+        for confidence in confidence_levels:
+            confidence_df = slate_df[
+                slate_df["confidence"] == confidence
+            ]
+
+            wins = len(confidence_df[confidence_df["result"] == "WIN"])
+            losses = len(confidence_df[confidence_df["result"] == "LOSS"])
+            pushes = len(confidence_df[confidence_df["result"] == "PUSH"])
+
+            total_graded = wins + losses + pushes
+
+            if total_graded > 0:
+                win_rate = round((wins / total_graded) * 100, 2)
+            else:
+                win_rate = 0
+
+            print(
+                f"{confidence}: "
+                f"{wins}-{losses}-{pushes} | "
+                f"Win Rate: {win_rate}%"
+            )
 # ============================================================
 # LEGACY DEVELOPMENT TESTS
 # ============================================================
@@ -1198,3 +1388,8 @@ def show_full_performance_report():
 #show_confidence_breakdown()
 
 #show_full_performance_report()
+
+#show_slate_breakdown()
+#show_recommendation_breakdown_by_slate()
+#show_strong_more_by_risk_and_slate()
+#show_confidence_breakdown_by_slate()
