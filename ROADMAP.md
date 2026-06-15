@@ -185,3 +185,62 @@ Current diagnostics:
 - High Confidence Breakdown by Recommendation
 - Strong More by Risk Type
 - Strong More by Slate and Risk Type
+
+## Future Enhancement - NBA Season Configuration
+
+Currently, NBA season and season type are controlled by constants in `historical_stats.py`.
+
+Future improvement:
+
+- Move season settings into a config file
+- Allow user to select season and season type from the menu
+- Prevent future hardcoded season issues
+
+## Future Enhancement - Archive Played Props
+
+Currently, `props.csv` acts as the active working slate file and gets replaced when new props are entered.
+
+Problem:
+
+- Once `props.csv` is replaced, the original slate inputs are lost.
+- This makes it harder to re-run old slates with updated engine logic.
+- It limits future backtesting, diagnostics, and model comparison.
+
+Future improvement:
+
+- Keep `props.csv` as the active working slate file.
+- After board analysis or after results are entered, save a copy of the slate to an archive folder.
+- Use file names based on slate date.
+
+Example structure:
+
+```text
+data/
+  active/
+    props.csv
+
+  archive/
+    props_2026-06-10.csv
+    props_2026-06-13.csv
+
+  results/
+    paper_bets.csv
+```
+
+## Future Enhancement - Raw PrizePicks Text Importer
+
+Build a tool that imports props from copied PrizePicks board text.
+
+Workflow:
+
+- Open PrizePicks in WebCatalog
+- Highlight multiple prop cards
+- Copy text
+- Paste text into `raw_props.txt`
+- Run importer
+- Generate `props.csv`
+
+Target output columns:
+
+```csv
+player,stat,line,opponent,game_date,risk_type
