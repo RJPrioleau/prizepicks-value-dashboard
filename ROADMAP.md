@@ -69,6 +69,7 @@ Do not modify recommendation logic until investigation data supports the change.
 - [x] Trend analysis
 - [x] Home/Away splits
 - [x] Recommendation reasoning output
+- [x] Initial WNBA data layer (SportsDataverse)
 
 ### Tracking & Validation
 
@@ -115,8 +116,15 @@ Do not modify recommendation logic until investigation data supports the change.
 - [x] Playoff data source fixes
 - [x] Historical investigation framework
 - [x] Findings documentation process (NOTES.md)
+- [x] Shared analysis layer
+- [x] Shared recommendation engine
 
-
+### Multi-Sport Support
+- [x] Initial WNBA data integration
+- [x] WNBA player lookup
+- [x] WNBA game log retrieval
+- [x] WNBA historical analysis engine
+- [x] Shared basketball matchup parser
 
 
 

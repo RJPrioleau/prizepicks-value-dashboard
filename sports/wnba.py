@@ -2,6 +2,17 @@ from sportsdataverse import (
     load_wnba_rosters,
     load_wnba_stats_player_game_logs
 )
+from analysis.historical_analysis import (
+    calculate_recent_averages,
+    calculate_hit_rate,
+    calculate_trend,
+    calculate_home_away_split,
+    calculate_opponent_average
+)
+from analysis.recommendation_engine import get_basic_recommendation
+from analysis.matchup_parser import parse_basketball_matchup
+
+
 
 
 """
@@ -104,6 +115,11 @@ def get_wnba_player_game_logs(player_name):
 
     player_logs = add_wnba_calculated_stats(player_logs)
 
+    parsed_matchups = player_logs["matchup"].apply(parse_basketball_matchup)
+
+    player_logs["location"] = parsed_matchups.apply(lambda x: x[0])
+    player_logs["opponent"] = parsed_matchups.apply(lambda x: x[1])
+
     return player_logs
 
 def add_wnba_calculated_stats(df):
@@ -121,7 +137,7 @@ def add_wnba_calculated_stats(df):
 
     return df
 
-def get_wnba_player_analysis(player_name, stat_type, line):
+def get_wnba_player_analysis(player_name, stat_type, line, opponent=None):
     """
     Analyze a WNBA player's recent performance against a prop line.
 
@@ -142,37 +158,72 @@ def get_wnba_player_analysis(player_name, stat_type, line):
 
     player_logs = player_logs.sort_values("game_date", ascending=False)
 
-    last_5_avg = float(round(player_logs.head(5)[stat_type].mean(), 2))
-    last_10_avg = float(round(player_logs.head(10)[stat_type].mean(), 2))
-    season_avg = float(round(player_logs[stat_type].mean(), 2))
+    averages = calculate_recent_averages(player_logs, stat_type)
 
-    hits = player_logs.head(10)[
-        player_logs.head(10)[stat_type] > line
-    ]
+    last_5_avg = averages["last_5_avg"]
+    last_10_avg = averages["last_10_avg"]
+    season_avg = averages["season_avg"]
 
-    hit_count = len(hits)
-    hit_rate = round((hit_count / 10) * 100, 2)
+    hit_data = calculate_hit_rate(
+        player_logs,
+        stat_type,
+        line
+    )
 
-    recent_5 = player_logs.head(5)[stat_type].mean()
-    previous_5 = player_logs.iloc[5:10][stat_type].mean()
-    trend_value = float(round(recent_5 - previous_5, 2))
+    hit_count = hit_data["hit_count"]
+    hit_rate = hit_data["hit_rate"]
 
-    if trend_value > 0:
-        trend_direction = "UP"
-    elif trend_value < 0:
-        trend_direction = "DOWN"
-    else:
-        trend_direction = "FLAT"
+    trend_data = calculate_trend(player_logs, stat_type)
+
+    trend_direction = trend_data["trend_direction"]
+    trend_value = trend_data["trend_value"]
+
+    home_away_data = calculate_home_away_split(
+        player_logs,
+        stat_type,
+        location_column="location"
+    )
+
+    home_avg = home_away_data["home_avg"]
+    away_avg = home_away_data["away_avg"]
+
+    opponent_avg = "N/A"
+
+    if opponent is not None:
+        opponent_avg = calculate_opponent_average(
+            player_logs,
+            stat_type,
+            opponent
+        )
+
+    recommendation, score, confidence, reasons = get_basic_recommendation(
+        line,
+        last_10_avg,
+        season_avg,
+        hit_rate,
+        trend_direction,
+        opponent_avg
+    )
 
     return {
         "player": player_name,
         "stat": stat_type,
         "line": line,
+        "opponent": opponent,
         "last_5_avg": last_5_avg,
         "last_10_avg": last_10_avg,
         "season_avg": season_avg,
-        "hit_count": hit_count,
-        "hit_rate": hit_rate,
+        "trend": trend_value,
         "trend_direction": trend_direction,
-        "trend_value": trend_value,
+        "hit_rate": hit_rate,
+        "hits": hit_count,
+        "games_checked": len(player_logs.head(10)),
+        "home_avg": home_avg,
+        "away_avg": away_avg,
+        "opponent_avg": opponent_avg,
+        "recommendation": recommendation,
+        "score": score,
+        "confidence": confidence,
+        "reasons": reasons,
+
     }

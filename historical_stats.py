@@ -3,6 +3,7 @@ import csv
 import pandas as pd
 from nba_api.stats.static import players
 from nba_api.stats.endpoints import playergamelog
+from analysis.recommendation_engine import get_basic_recommendation
 
 PLAYER_GAME_LOG_CACHE = {}
 
@@ -233,97 +234,6 @@ def get_opponent_average(player_name, stat_type, opponent):
 # ============================================================
 # RECOMMENDATION ENGINE
 # ============================================================
-def get_basic_recommendation(
-    line,
-    last_10_avg,
-    season_avg,
-    hit_rate,
-    trend_direction,
-    opponent_avg
-):
-    """
-    Generate a recommendation, confidence level, and reasoning.
-
-    Scoring System:
-    +1 = Positive indicator
-    -1 = Negative indicator
-
-    Indicators:
-    - Last 10 average
-    - Season average
-    - Hit rate
-    - Recent trend
-    - Opponent history
-
-    Lo Note:
-    This is the heart of the recommendation engine.
-    Any future improvements to recommendation quality will likely
-    happen inside this function.
-    """
-    score = 0
-    reasons = []
-
-    if last_10_avg > line:
-        score += 1
-        reasons.append("Last 10 average is above the line.")
-    else:
-        score -= 1
-        reasons.append("Last 10 average is below the line.")
-
-    if season_avg > line:
-        score += 1
-        reasons.append("Season average is above the line.")
-    else:
-        score -= 1
-        reasons.append("Season average is below the line.")
-
-    if hit_rate >= 60:
-        score += 1
-        reasons.append("Hit rate is 60% or higher.")
-    elif hit_rate <= 50:
-        score -= 1
-        reasons.append("Hit rate is 50% or lower.")
-
-    if trend_direction == "UP":
-        score += 1
-        reasons.append("Recent trend is up.")
-    elif trend_direction == "DOWN":
-        score -= 1
-        reasons.append("Recent trend is down.")
-
-    if opponent_avg != "N/A":
-        if opponent_avg > line:
-            score += 1
-            reasons.append("Opponent average is above the line.")
-        else:
-            score -= 1
-            reasons.append("Opponent average is below the line.")
-
-    if score >= 4:
-        recommendation = "STRONG MORE"
-    elif score >= 2:
-        recommendation = "LEAN MORE"
-    elif score <= -4:
-        recommendation = "STRONG LESS"
-    elif score <= -2:
-        recommendation = "LEAN LESS"
-    else:
-        recommendation = "PASS"
-
-    # INVESTIGATION NOTE:
-    # HIGH confidence is currently performing poorly:
-    # Overall HIGH: 6-32
-    # June 13 HIGH: 0-26
-    # Do not adjust thresholds yet. First trace what inputs are inflating this score.
-
-    if abs(score) >= 4:
-        confidence = "HIGH"
-    elif abs(score) >= 2:
-        confidence = "MEDIUM"
-    else:
-        confidence = "LOW"
-
-    return recommendation, score, confidence,  reasons
 
 def add_calculated_stats(df):
     """
@@ -1701,4 +1611,13 @@ def test_wnba_player_lookup():
 #show_engine_record()
 #show_full_performance_report()
 #show_confidence_breakdown_by_slate()
-test_wnba_player_lookup()
+#test_wnba_player_lookup()
+#get_basic_recommendation()
+# analysis = get_player_analysis(
+#     "Karl-Anthony Towns",
+#     "PTS",
+#     16.5,
+#     "SAS"
+# )
+#
+# print(analysis)
