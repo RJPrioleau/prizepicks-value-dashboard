@@ -456,6 +456,21 @@ Future WNBA support will require:
 - A WNBA-compatible game log data source
 - Validation that stat columns match the existing NBA analysis engine
 
+### Follow-Up Discovery
+
+SportsDataverse provides WNBA roster data including:
+
+- athlete_id
+- full_name
+- team_abbreviation
+- position_name
+
+Example:
+
+A'ja Wilson -> 3149391
+
+This successfully solves the WNBA player lookup problem.
+
 ---
 
 # Future Research

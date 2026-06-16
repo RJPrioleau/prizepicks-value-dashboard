@@ -125,12 +125,14 @@ Do not modify recommendation logic until investigation data supports the change.
 ## Next Development Priorities
 
 ### High Priority
-- [ ] Research WNBA player/game log data source
+
 - [ ] Continue confidence investigation
+- [ ] Build WNBA player lookup
+- [ ] Build WNBA historical stats engine
+- [ ] Integrate WNBA into recommendation engine
+- [ ] Validate WNBA recommendations against live props
 - [ ] Improve recommendation logic
 - [ ] Improve ranking quality
-- [ ] Add WNBA support
-- [ ] Test importer against additional board layouts
 
 ### Medium Priority
 - [ ] Menu cleanup
@@ -179,7 +181,7 @@ Do not modify recommendation logic until investigation data supports the change.
 - [ ] Improved report formatting
 
 ### Multi-Sport Support
-- [ ] WNBA (NBA engine extension)
+- [~] WNBA (NBA engine extension)
 - [ ] MLB (Next major sport expansion)
 - [ ] NFL
 - [ ] NCAA
@@ -277,3 +279,24 @@ Current Behavior:
 
 - Existing props.csv is archived before being overwritten.
 - Archive files are named using the slate date.
+
+### WNBA Data Source
+
+SportsDataverse successfully provides:
+
+- WNBA rosters
+- Player IDs
+- Player game logs
+- Historical statistics
+
+Example:
+
+A'ja Wilson -> 3149391
+
+Current implementation status:
+
+- [x] Research complete
+- [x] Roster retrieval
+- [x] Player lookup proof of concept
+- [x] Game log retrieval proof of concept
+- [ ] Integration into analysis engine
