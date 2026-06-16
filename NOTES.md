@@ -340,3 +340,32 @@ Recommendation outputs changed significantly when switching from historical regu
 Data source selection has a major impact on recommendation quality.
 
 Future investigations should verify season and game log sources before modifying confidence thresholds or scoring logic.
+
+## Finding #10 - Raw Text Import Is Viable
+
+### Discovery
+
+PrizePicks prop cards can be copied directly from WebCatalog.
+
+### Result
+
+A prototype parser successfully converted copied PrizePicks text into:
+
+- player
+- stat
+- line
+- opponent
+- risk_type
+
+and generated a valid props.csv file.
+
+### Impact
+
+This removes the need to manually enter props one-by-one into props.csv.
+
+### Remaining Improvements
+
+- Auto-fill game_date
+- Automatic prop archiving
+- Menu integration
+- Additional validation/error handling

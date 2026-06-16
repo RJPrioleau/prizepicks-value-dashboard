@@ -244,3 +244,33 @@ Target output columns:
 
 ```csv
 player,stat,line,opponent,game_date,risk_type
+```
+
+## Importer Note - Mixed Dates
+
+Current raw prop importer uses one manually entered slate date for all imported props.
+
+Limitation:
+PrizePicks may show props for multiple dates on the same board.
+
+Current workflow:
+Only copy/import props from one slate date at a time.
+
+Future improvement:
+Parse the matchup line to detect day/date automatically.
+
+## Importer Limitation - Live Props
+
+The raw text importer can read copied PrizePicks cards, but live/in-progress props may include extra text such as current score, quarter, clock, or current stat value.
+
+Current workflow:
+
+- Prefer importing pregame props only.
+- Avoid mixing live props with pregame props in the same import.
+- Copy one slate/date at a time.
+
+Future improvement:
+
+- Detect live-game text.
+- Flag or skip live props automatically.
+- Parse current score/clock only if needed later.
