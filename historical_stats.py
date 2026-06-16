@@ -1593,6 +1593,37 @@ def show_june_13_strong_more_losses():
             f"Actual: {row['actual_stat']} | "
             f"Risk: {row['risk_type']}"
         )
+
+#============================================================
+# WNBA
+#============================================================
+
+def test_wnba_player_lookup():
+    """
+    Temporary WNBA feasibility test.
+
+    Goal:
+    Check whether the current NBA player lookup/game log approach
+    can find WNBA players.
+    """
+
+    test_players = [
+        "A'ja Wilson",
+        "Chelsea Gray",
+        "Paige Bueckers",
+        "Olivia Miles"
+    ]
+
+    print()
+    print("-" * 90)
+    print("WNBA PLAYER LOOKUP TEST")
+    print("-" * 90)
+
+    for player_name in test_players:
+        player_id = find_player_id(player_name)
+
+        print(f"{player_name}: {player_id}")
+
 #============================================================
 # LEGACY DEVELOPMENT TESTS
 # ============================================================
@@ -1663,10 +1694,11 @@ def show_june_13_strong_more_losses():
 #show_june_13_strong_more_losses()
 #analyze_player_stat("Karl-Anthony Towns", "PTS", 16.5)
 #analyze_player_stat_full("Karl-Anthony Towns", "PTS", 16.5, "SAS")
-analyze_player_stat_full("Jose Alvarado", "PRA", 7.5, "SAS")
+#analyze_player_stat_full("Jose Alvarado", "PRA", 7.5, "SAS")
 #get_player_analysis("Jose Alvarado", "PRA", 7.5, "SAS")
 #analyze_player_stat_full("De'Aaron Fox","PTS",10.5,"NYK")
 #analyze_player_stat_full("Stephon Castle","PTS",11.5,"NYK")
 #show_engine_record()
 #show_full_performance_report()
 #show_confidence_breakdown_by_slate()
+test_wnba_player_lookup()

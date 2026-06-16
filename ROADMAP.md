@@ -125,6 +125,7 @@ Do not modify recommendation logic until investigation data supports the change.
 ## Next Development Priorities
 
 ### High Priority
+- [ ] Research WNBA player/game log data source
 - [ ] Continue confidence investigation
 - [ ] Improve recommendation logic
 - [ ] Improve ranking quality
@@ -178,8 +179,8 @@ Do not modify recommendation logic until investigation data supports the change.
 - [ ] Improved report formatting
 
 ### Multi-Sport Support
-- [ ] WNBA (Next planned sport)
-- [ ] MLB
+- [ ] WNBA (NBA engine extension)
+- [ ] MLB (Next major sport expansion)
 - [ ] NFL
 - [ ] NCAA
 
