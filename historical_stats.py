@@ -14,15 +14,11 @@ from sports.nba import (
     find_player_id,
     add_calculated_stats
 )
+from config import DEFAULT_SEASON, DEFAULT_SEASON_TYPE
 
 PLAYER_GAME_LOG_CACHE = {}
 
-# =============================================================================
-# NBA DATA CONFIGURATION
-# =============================================================================
 
-DEFAULT_SEASON = "2025-26"
-DEFAULT_SEASON_TYPE = "Playoffs"
 
 # ============================================================
 # PLAYER LOOKUP FUNCTIONS
@@ -1598,11 +1594,11 @@ def test_wnba_player_lookup():
 #show_confidence_breakdown_by_slate()
 #test_wnba_player_lookup()
 #get_basic_recommendation()
-analysis = get_player_analysis(
-    "Karl-Anthony Towns",
-    "PTS",
-    16.5,
-    "SAS"
-)
-
-print(analysis)
+# analysis = get_player_analysis(
+#     "Karl-Anthony Towns",
+#     "PTS",
+#     16.5,
+#     "SAS"
+# )
+#
+# print(analysis)
