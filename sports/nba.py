@@ -1,13 +1,11 @@
 from nba_api.stats.endpoints import playergamelog
 from nba_api.stats.static import players
-
 from analysis.historical_analysis import calculate_recent_averages, calculate_trend, calculate_hit_rate, \
     calculate_home_away_split, calculate_opponent_average
 from analysis.recommendation_engine import get_basic_recommendation
 from analysis.matchup_parser import parse_basketball_matchup
+from config import DEFAULT_SEASON, DEFAULT_SEASON_TYPE
 
-DEFAULT_SEASON = "2025-26"
-DEFAULT_SEASON_TYPE = "Playoffs"
 
 PLAYER_GAME_LOG_CACHE = {}
 
