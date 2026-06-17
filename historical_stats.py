@@ -250,6 +250,16 @@ def compare_props(props):
         if item["risk_type"] == "DEMON"
     )
 
+    nba_count = sum(
+        1 for item in ranked_results
+        if item["sport"] == "NBA"
+    )
+
+    wnba_count = sum(
+        1 for item in ranked_results
+        if item["sport"] == "WNBA"
+    )
+
     print()
     print("=" * 90)
     print("PROP COMPARISON REPORT")
@@ -267,8 +277,12 @@ def compare_props(props):
     print(f"GOBLIN : {goblin_count}" )
     print(f"NORMAL : {normal_count}")
     print(f"DEMON  : {demon_count}")
+    print("-" * 90)
+    print("SPORT BREAKDOWN")
+    print("-" * 90)
+    print(f"NBA  : {nba_count}")
+    print(f"WNBA : {wnba_count}")
     print("=" * 90)
-
 
     #===================
     # Header
@@ -451,5 +465,5 @@ def compare_props(props):
 # show_full_performance_report()
 
 
-#props_to_compare = load_props_from_csv("test_mixed_props.csv")
-#compare_props(props_to_compare)
+props_to_compare = load_props_from_csv("test_mixed_props.csv")
+compare_props(props_to_compare)

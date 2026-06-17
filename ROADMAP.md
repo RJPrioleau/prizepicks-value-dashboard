@@ -126,7 +126,25 @@ Do not modify recommendation logic until investigation data supports the change.
 - [x] WNBA historical analysis engine
 - [x] Shared basketball matchup parser
 
+### Mixed NBA/WNBA Slate Support
+Status: COMPLETE
 
+- [x] Added `sport` column to props CSV format
+- [x] Added automatic routing to NBA and WNBA analysis engines
+- [x] Supports mixed NBA and WNBA props in a single slate
+- [x] Added sport display column to comparison reports
+- [x] Verified with mixed-sport test slate
+
+### Historical Stats Refactor
+- [x] Extracted NBA analysis into `sports/nba.py`
+- [x] Added WNBA analysis engine in `sports/wnba.py`
+- [x] Moved historical calculations into `analysis/historical_analysis.py`
+- [x] Moved matchup parsing into `analysis/matchup_parser.py`
+- [x] Moved recommendation logic into `analysis/recommendation_engine.py`
+- [x] Moved paper betting system into `tracking/paper_bets.py`
+- [x] Moved performance reports into `reports/performance_reports.py`
+- [x] Moved diagnostic reports into `reports/diagnostic_reports.py`
+- [x] Reduced `historical_stats.py` from an all-in-one file to a workflow/orchestration module
 
 ---
 
