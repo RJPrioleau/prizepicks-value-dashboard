@@ -2,17 +2,12 @@ import  pandas as pd
 from historical_stats import (
     load_props_from_csv,
     compare_props,
-    save_recommendations_to_paper_bets,
-    update_paper_bet_results,
-    show_engine_record,
-    show_full_performance_report,
     show_slate_breakdown,
     show_recommendation_breakdown_by_slate,
     show_high_confidence_breakdown_by_recommendation,
     show_strong_more_by_risk_type,
     show_strong_more_by_slate_and_risk_type,
 )
-import os
 from datetime import datetime
 from analytics import (
     load_history,
@@ -20,6 +15,14 @@ from analytics import (
     win_rate_by_column,
     get_best_and_worst_segments,
     calculate_projection_accuracy
+)
+from reports.performance_reports import (
+    show_engine_record,
+    show_full_performance_report,
+)
+from tracking.paper_bets import (
+    save_recommendations_to_paper_bets,
+    update_paper_bet_results,
 )
 
 
