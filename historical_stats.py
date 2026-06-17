@@ -12,9 +12,8 @@ PLAYER_GAME_LOG_CACHE = {}
 
 
 # ============================================================
-# HELPER FUNCTIONS
+# Utility / Debug Display
 # ============================================================
-
 
 def show_clean_game_log(player_name):
     player_id = find_player_id(player_name)
@@ -38,12 +37,10 @@ def show_clean_game_log(player_name):
 
     print(df[["GAME_DATE", "MATCHUP", "location", "opponent", "PTS", "REB", "AST"]].head(10).to_string(index=False))
 
-
-
-
 # ============================================================
-# REPORT / DISPLAY FUNCTIONS
+# Single Prop Analysis Display
 # ============================================================
+
 def analyze_player_stat_full(player_name, stat_type, line, opponent):
     """
     Print a readable full analysis report for one player prop.
@@ -96,8 +93,45 @@ def analyze_player_stat_full(player_name, stat_type, line, opponent):
         print(f"- {reason}")
 
 # ============================================================
-# PROP COMPARISON / RANKING FUNCTIONS
+# Prop Loading
 # ============================================================
+
+def load_props_from_csv(file_path):
+    """
+    Load prop data from a CSV file.
+
+    Expected Format:
+
+    player,stat,line,opponent
+    Jalen Brunson,PTS,25.5,BOS
+
+    Lo Note:
+    This is the first step toward user-managed prop lists and
+    eventually PrizePicks board imports.
+    """
+    props = []
+
+    with open(file_path, newline="", encoding="utf-8") as csvfile:
+        reader = csv.DictReader(csvfile)
+
+        for row in reader:
+            props.append(
+                (
+                    row["player"],
+                    row["stat"],
+                    float(row["line"]),
+                    row["opponent"],
+                    row["game_date"],
+                    row["risk_type"]
+                )
+            )
+
+    return props
+
+# ============================================================
+# Multi-Prop Comparison / Ranking
+# ============================================================
+
 def compare_props(props):
     """
     Analyze and rank multiple player props.
@@ -346,46 +380,8 @@ def compare_props(props):
     return ranked_results
 
 # ============================================================
-# FILE INPUT FUNCTIONS
+# Performance Reports
 # ============================================================
-def load_props_from_csv(file_path):
-    """
-    Load prop data from a CSV file.
-
-    Expected Format:
-
-    player,stat,line,opponent
-    Jalen Brunson,PTS,25.5,BOS
-
-    Lo Note:
-    This is the first step toward user-managed prop lists and
-    eventually PrizePicks board imports.
-    """
-    props = []
-
-    with open(file_path, newline="", encoding="utf-8") as csvfile:
-        reader = csv.DictReader(csvfile)
-
-        for row in reader:
-            props.append(
-                (
-                    row["player"],
-                    row["stat"],
-                    float(row["line"]),
-                    row["opponent"],
-                    row["game_date"],
-                    row["risk_type"]
-                )
-            )
-
-    return props
-
-
-
-# ============================================================
-# PAPER BET TRACKING FUNCTIONS
-# ============================================================
-
 
 def show_engine_record():
     """
@@ -456,7 +452,6 @@ def show_recommendation_breakdown():
         print(f"Pushes: {pushes}")
         print(f"Win Rate: {win_rate}%")
 
-
 def show_confidence_breakdown():
     """
     Display performance by confidence level.
@@ -490,7 +485,6 @@ def show_confidence_breakdown():
         print(f"Losses: {losses}")
         print(f"Pushes: {pushes}")
         print(f"Win Rate: {win_rate}%")
-
 
 def show_risk_breakdown():
     """
@@ -526,7 +520,6 @@ def show_risk_breakdown():
         print(f"Pushes: {pushes}")
         print(f"Win Rate: {win_rate}%")
 
-
 def show_full_performance_report():
     """
     Display all engine performance reports.
@@ -535,6 +528,10 @@ def show_full_performance_report():
     show_recommendation_breakdown()
     show_confidence_breakdown()
     show_risk_breakdown()
+
+# ============================================================
+# Diagnostic Reports
+# ============================================================
 
 def show_slate_breakdown():
     df = pd.read_csv("paper_bets.csv")
@@ -618,10 +615,6 @@ def show_recommendation_breakdown_by_slate():
                 f"Win Rate: {win_rate}%"
             )
 
-
-# ============================================================
-# ENGINE INVESTIGATION REPORTS
-# ============================================================
 def show_strong_more_by_risk_and_slate():
     df = pd.read_csv("paper_bets.csv")
 
@@ -725,22 +718,6 @@ def show_confidence_breakdown_by_slate():
                 f"{wins}-{losses}-{pushes} | "
                 f"Win Rate: {win_rate}%"
             )
-
-# =============================================================================
-# INVESTIGATION REPORT
-#
-# Purpose:
-# Determine whether HIGH confidence failures are concentrated in
-# STRONG MORE plays, STRONG LESS plays, or both.
-#
-# Discovery Trigger:
-# HIGH confidence currently performing extremely poorly:
-#
-# Overall HIGH: 6-32 (15.79%)
-# June 13 HIGH: 0-26
-#
-# Do not modify confidence thresholds until this report is reviewed.
-# =============================================================================
 
 def show_high_confidence_breakdown_by_recommendation():
     """
@@ -957,59 +934,25 @@ def show_june_13_strong_more_losses():
             f"Risk: {row['risk_type']}"
         )
 
-#============================================================
-# WNBA
-#============================================================
-
-def test_wnba_player_lookup():
-    """
-    Temporary WNBA feasibility test.
-
-    Goal:
-    Check whether the current NBA player lookup/game log approach
-    can find WNBA players.
-    """
-
-    test_players = [
-        "A'ja Wilson",
-        "Chelsea Gray",
-        "Paige Bueckers",
-        "Olivia Miles"
-    ]
-
-    print()
-    print("-" * 90)
-    print("WNBA PLAYER LOOKUP TEST")
-    print("-" * 90)
-
-    for player_name in test_players:
-        player_id = find_player_id(player_name)
-
-        print(f"{player_name}: {player_id}")
+# =============================================================================
+# INVESTIGATION REPORT
+#
+# Purpose:
+# Determine whether HIGH confidence failures are concentrated in
+# STRONG MORE plays, STRONG LESS plays, or both.
+#
+# Discovery Trigger:
+# HIGH confidence currently performing extremely poorly:
+#
+# Overall HIGH: 6-32 (15.79%)
+# June 13 HIGH: 0-26
+#
+# Do not modify confidence thresholds until this report is reviewed.
+# =============================================================================
 
 #============================================================
-# LEGACY DEVELOPMENT TESTS
-# ============================================================
-#get_hit_rate("Jalen Brunson", "PTS", 25.5)
-#get_recent_averages("Jalen Brunson", "PTS")
-#analyze_player_stat("Jalen Brunson", "PTS", 25.5)
-#show_clean_game_log("Jalen Brunson")
-#get_home_away_split("Jalen Brunson", "PTS")
-#get_opponent_average("Jalen Brunson", "PTS", "BOS")
-#analyze_player_stat_full("Jalen Brunson", "PTS", 25.5, "BOS")
-#analysis = get_player_analysis("Jalen Brunson", "PTS", 25.5, "BOS")
-#print(analysis)
-#props_to_compare = [
- #   ("Jalen Brunson", "PTS", 25.5, "BOS"),
-  #  ("Anthony Edwards", "REB", 6.5, "DEN"),
-#]
-
-#compare_props(props_to_compare)
-
-# ============================================================
-# TESTING
-# ============================================================
-
+# NOTES
+#
 # Lo Note:
 # We are currently loading props from a CSV file.
 # This replaces hardcoded test props and moves us one step
@@ -1017,12 +960,7 @@ def test_wnba_player_lookup():
 #
 # Future Evolution:
 # CSV -> UI Form -> Automated Board Import
-
-
-# ============================================================
-# PAPER BETTING TEST WORKFLOW
-# ============================================================
-
+#
 # Lo Note:
 # Current workflow:
 #
@@ -1034,42 +972,15 @@ def test_wnba_player_lookup():
 # Future Evolution:
 # CSV -> UI -> Automated Board Import
 # Manual Save -> Menu Option -> UI Button
-#props_to_compare = load_props_from_csv("props.csv")
+# ============================================================
 
-#ranked_results = compare_props(props_to_compare)
+# ==========================================
+# DEV TESTS
+# Uncomment when manually testing
+# ==========================================
 
+# props_to_compare = load_props_from_csv("props.csv")
+# ranked_results = compare_props(props_to_compare)
 
-
-
-
-
-#show_recommendation_breakdown()
-
-#show_confidence_breakdown()
-
-#show_full_performance_report()
-
-#show_slate_breakdown()
-#show_recommendation_breakdown_by_slate()
-#show_strong_more_by_risk_and_slate()
-#show_confidence_breakdown_by_slate()
-#show_june_13_strong_more_losses()
-#analyze_player_stat("Karl-Anthony Towns", "PTS", 16.5)
-#analyze_player_stat_full("Karl-Anthony Towns", "PTS", 16.5, "SAS")
-#analyze_player_stat_full("Jose Alvarado", "PRA", 7.5, "SAS")
-#get_player_analysis("Jose Alvarado", "PRA", 7.5, "SAS")
-#analyze_player_stat_full("De'Aaron Fox","PTS",10.5,"NYK")
-#analyze_player_stat_full("Stephon Castle","PTS",11.5,"NYK")
-#show_engine_record()
-#show_full_performance_report()
-#show_confidence_breakdown_by_slate()
-#test_wnba_player_lookup()
-#get_basic_recommendation()
-# analysis = get_player_analysis(
-#     "Karl-Anthony Towns",
-#     "PTS",
-#     16.5,
-#     "SAS"
-# )
-#
-# print(analysis)
+# show_engine_record()
+# show_full_performance_report()
