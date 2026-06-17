@@ -190,6 +190,10 @@ Status: COMPLETE
 - [ ] Live prop detection
 - [ ] Improved parser error handling
 - [ ] Direct WebCatalog integration research
+- [ ] Prompt user for sport during import
+- [ ] Pass sport into parse_prop_block()
+- [ ] Remove hardcoded "WNBA" value
+- [ ] Support NBA, WNBA, MLB, NFL imports
 
 ### Reporting & UX
 - [ ] Custom report sorting
@@ -211,6 +215,22 @@ Status: COMPLETE
 - [ ] MLB (Next major sport expansion)
 - [ ] NFL
 - [ ] NCAA
+
+### MLB Analysis Requirements
+
+- [ ] Create MLB data source module
+- [ ] Player lookup
+- [ ] Game log retrieval
+- [ ] Starting pitcher detection
+- [ ] Batter vs pitcher history
+- [ ] Batter handedness splits
+- [ ] Pitcher handedness
+- [ ] Pitcher strikeout/contact profile
+- [ ] Team strikeout/contact tendencies
+- [ ] Lineup spot context
+- [ ] Park factor context
+- [ ] Weather/wind context
+- [ ] MLB-specific recommendation logic
 
 ### Advanced Features
 - [ ] Suggested slips

@@ -138,10 +138,20 @@ def parse_prop_block(block, game_date):
     prop_line = block[4]
     stat = block[5]
 
+    stat_aliases = {
+        "Points": "PTS",
+        "Rebounds": "REB",
+        "Assists": "AST",
+        "PRA": "PRA",
+    }
+
+    stat = stat_aliases.get(stat, stat)
+
     risk_type = detect_risk_type(player_risk_line)
     opponent = extract_opponent(matchup_line)
 
     return {
+        "sport": "WNBA",
         "player": player,
         "stat": stat,
         "line": prop_line,
@@ -185,10 +195,11 @@ def write_props_to_csv(props, output_file=OUTPUT_PROPS_FILE):
     Write parsed props to props.csv.
 
     Output format matches the current active props file:
-    player,stat,line,opponent,game_date,risk_type
+    sport,player,stat,line,opponent,game_date,risk_type
     """
 
     fieldnames = [
+        "sport",
         "player",
         "stat",
         "line",

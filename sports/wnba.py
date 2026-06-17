@@ -152,13 +152,22 @@ def get_wnba_player_analysis(player_name, stat_type, line, opponent=None):
         print(f"No WNBA game logs found for {player_name}")
         return None
 
-    if stat_type not in player_logs.columns:
+    stat_column_map = {
+        "PTS": "pts",
+        "REB": "reb",
+        "AST": "ast",
+        "PRA": "PRA",
+    }
+
+    stat_column = stat_column_map.get(stat_type, stat_type)
+
+    if stat_column not in player_logs.columns:
         print(f"Unsupported WNBA stat type: {stat_type}")
         return None
 
     player_logs = player_logs.sort_values("game_date", ascending=False)
 
-    averages = calculate_recent_averages(player_logs, stat_type)
+    averages = calculate_recent_averages(player_logs, stat_column)
 
     last_5_avg = averages["last_5_avg"]
     last_10_avg = averages["last_10_avg"]
@@ -166,21 +175,21 @@ def get_wnba_player_analysis(player_name, stat_type, line, opponent=None):
 
     hit_data = calculate_hit_rate(
         player_logs,
-        stat_type,
+        stat_column,
         line
     )
 
     hit_count = hit_data["hit_count"]
     hit_rate = hit_data["hit_rate"]
 
-    trend_data = calculate_trend(player_logs, stat_type)
+    trend_data = calculate_trend(player_logs, stat_column)
 
     trend_direction = trend_data["trend_direction"]
     trend_value = trend_data["trend_value"]
 
     home_away_data = calculate_home_away_split(
         player_logs,
-        stat_type,
+        stat_column,
         location_column="location"
     )
 
@@ -192,7 +201,7 @@ def get_wnba_player_analysis(player_name, stat_type, line, opponent=None):
     if opponent is not None:
         opponent_avg = calculate_opponent_average(
             player_logs,
-            stat_type,
+            stat_column,
             opponent
         )
 

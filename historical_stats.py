@@ -7,6 +7,7 @@ from sports.nba import (
 )
 from analysis.matchup_parser import parse_basketball_matchup
 from sports.wnba import get_wnba_player_analysis
+from sports.mlb import get_mlb_player_analysis
 
 
 
@@ -167,6 +168,14 @@ def compare_props(props):
 
         elif sport == "WNBA":
             analysis = get_wnba_player_analysis(
+                player_name,
+                stat_type,
+                line,
+                opponent
+            )
+
+        elif sport == "MLB":
+            analysis = get_mlb_player_analysis(
                 player_name,
                 stat_type,
                 line,
@@ -464,6 +473,6 @@ def compare_props(props):
 # show_engine_record()
 # show_full_performance_report()
 
-
-props_to_compare = load_props_from_csv("test_mixed_props.csv")
-compare_props(props_to_compare)
+#
+# props_to_compare = load_props_from_csv("test_mixed_props.csv")
+# compare_props(props_to_compare)
