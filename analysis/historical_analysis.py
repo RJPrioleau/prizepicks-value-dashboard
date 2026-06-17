@@ -43,12 +43,12 @@ def calculate_hit_rate(player_logs, stat_type, line, sample_size=10):
         recent_games[stat_type] > line
     ]
 
-    hit_count = len(hits)
+    hit_count = int(len(hits))
 
-    hit_rate = round(
+    hit_rate = float(round(
         (hit_count / len(recent_games)) * 100,
         2
-    )
+    ))
 
     return {
         "hit_count": hit_count,
@@ -57,17 +57,13 @@ def calculate_hit_rate(player_logs, stat_type, line, sample_size=10):
 
 def calculate_trend(player_logs, stat_type):
     """
-    Calculate recent trend by comparing last 5 games to previous 5 games.
-
-    Returns:
-    - trend_direction
-    - trend_value
+    Calculate trend by comparing last 5 average to last 10 average.
     """
 
-    recent_5 = player_logs.head(5)[stat_type].mean()
-    previous_5 = player_logs.iloc[5:10][stat_type].mean()
+    last_5_avg = player_logs.head(5)[stat_type].mean()
+    last_10_avg = player_logs.head(10)[stat_type].mean()
 
-    trend_value = float(round(recent_5 - previous_5, 2))
+    trend_value = float(round(last_5_avg - last_10_avg, 2))
 
     if trend_value > 0:
         trend_direction = "UP"
