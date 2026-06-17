@@ -2,11 +2,6 @@ import  pandas as pd
 from historical_stats import (
     load_props_from_csv,
     compare_props,
-    show_slate_breakdown,
-    show_recommendation_breakdown_by_slate,
-    show_high_confidence_breakdown_by_recommendation,
-    show_strong_more_by_risk_type,
-    show_strong_more_by_slate_and_risk_type,
 )
 from datetime import datetime
 from analytics import (
@@ -23,6 +18,13 @@ from reports.performance_reports import (
 from tracking.paper_bets import (
     save_recommendations_to_paper_bets,
     update_paper_bet_results,
+)
+from reports.diagnostic_reports import (
+    show_slate_breakdown,
+    show_recommendation_breakdown_by_slate,
+    show_high_confidence_breakdown_by_recommendation,
+    show_strong_more_by_risk_type,
+    show_strong_more_by_slate_and_risk_type,
 )
 
 
