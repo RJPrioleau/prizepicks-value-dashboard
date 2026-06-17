@@ -1,22 +1,12 @@
-from datetime import datetime
 import csv
 import pandas as pd
 from nba_api.stats.endpoints import playergamelog
-from analysis.recommendation_engine import get_basic_recommendation
-from analysis.historical_analysis import (
-    calculate_recent_averages,
-    calculate_hit_rate,
-    calculate_home_away_split,
-    calculate_opponent_average,
-    calculate_trend
-)
 from sports.nba import (
     find_player_id,
-    add_calculated_stats,
     get_player_analysis
 )
-from config import DEFAULT_SEASON, DEFAULT_SEASON_TYPE
 from analysis.matchup_parser import parse_basketball_matchup
+
 
 PLAYER_GAME_LOG_CACHE = {}
 
@@ -30,107 +20,6 @@ PLAYER_GAME_LOG_CACHE = {}
 # HELPER FUNCTIONS
 # ============================================================
 
-def get_hit_rate(player_name, stat_type, line):
-    player_id = find_player_id(player_name)
-
-    if player_id is None:
-        print("Player not found.")
-        return
-
-    game_log = playergamelog.PlayerGameLog(
-        player_id=player_id,
-        season="2024-25",
-        season_type_all_star="Regular Season"
-    )
-
-    df = game_log.get_data_frames()[0]
-
-    last_10 = df.head(10)
-
-    hits = (last_10[stat_type] > line).sum()
-
-    hit_rate = round((hits / len(last_10)) * 100, 2)
-
-    print(f"\n{player_name}")
-    print(f"{stat_type} Line: {line}")
-    print(f"Hit Rate Over: {hits}/{len(last_10)}")
-    print(f"Hit Rate: {hit_rate}%")
-
-def get_recent_averages(player_name, stat_type):
-    player_id = find_player_id(player_name)
-
-    if player_id is None:
-        print("Player not found.")
-        return
-
-    game_log = playergamelog.PlayerGameLog(
-        player_id=player_id,
-        season="2024-25",
-        season_type_all_star="Regular Season"
-    )
-
-    df = game_log.get_data_frames()[0]
-
-    last_5_avg = round(df[stat_type].head(5).mean(), 2)
-    last_10_avg = round(df[stat_type].head(10).mean(), 2)
-    season_avg = round(df[stat_type].mean(), 2)
-
-    print(f"\n{player_name}")
-    print(f"{stat_type} Recent Averages")
-    print("=" * 40)
-    print(f"Last 5 Average: {last_5_avg}")
-    print(f"Last 10 Average: {last_10_avg}")
-    print(f"Season Average: {season_avg}")
-
-def analyze_player_stat(player_name, stat_type, line):
-    player_id = find_player_id(player_name)
-
-    if player_id is None:
-        print("Player not found.")
-        return
-
-    game_log = playergamelog.PlayerGameLog(
-        player_id=player_id,
-        season="2024-25",
-        season_type_all_star="Regular Season"
-    )
-
-    df = game_log.get_data_frames()[0]
-
-    last_5 = df.head(5)
-    last_10 = df.head(10)
-
-    last_5_avg = round(last_5[stat_type].mean(), 2)
-    last_10_avg = round(last_10[stat_type].mean(), 2)
-    season_avg = round(df[stat_type].mean(), 2)
-
-    trend = round(last_5_avg - last_10_avg, 2)
-
-    if trend > 0:
-        trend_direction = "UP"
-    elif trend < 0:
-        trend_direction = "DOWN"
-    else:
-        trend_direction = "FLAT"
-
-    hit_data = calculate_hit_rate(df, stat_type, line)
-
-    hits = hit_data["hit_count"]
-    hit_rate = hit_data["hit_rate"]
-
-    print(f"\n{player_name}")
-    print("=" * 40)
-    print(f"Stat: {stat_type}")
-    print(f"Line: {line}")
-    print()
-    print(f"Last 5 Average: {last_5_avg}")
-    print(f"Last 10 Average: {last_10_avg}")
-    print(f"Season Average: {season_avg}")
-    print()
-    print(f"Trend: {trend_direction} ({trend})")
-    print()
-    print(f"Hit Rate Over {line}: {hits}/{len(last_10)}")
-    print(f"Hit Rate: {hit_rate}%")
 
 def show_clean_game_log(player_name):
     player_id = find_player_id(player_name)
@@ -147,83 +36,14 @@ def show_clean_game_log(player_name):
 
     df = game_log.get_data_frames()[0]
 
-    parsed_matchups = df["MATCHUP"].apply(parse_matchup)
+    parsed_matchups = df["MATCHUP"].apply(parse_basketball_matchup)
 
     df["location"] = parsed_matchups.apply(lambda x: x[0])
     df["opponent"] = parsed_matchups.apply(lambda x: x[1])
 
     print(df[["GAME_DATE", "MATCHUP", "location", "opponent", "PTS", "REB", "AST"]].head(10).to_string(index=False))
 
-def get_home_away_split(player_name, stat_type):
-    player_id = find_player_id(player_name)
 
-    if player_id is None:
-        print("Player not found.")
-        return
-
-    game_log = playergamelog.PlayerGameLog(
-        player_id=player_id,
-        season="2024-25",
-        season_type_all_star="Regular Season"
-    )
-
-    df = game_log.get_data_frames()[0]
-
-    parsed_matchups = df["MATCHUP"].apply(parse_matchup)
-
-    df["location"] = parsed_matchups.apply(lambda x: x[0])
-    df["opponent"] = parsed_matchups.apply(lambda x: x[1])
-
-    home_games = df[df["location"] == "Home"]
-    away_games = df[df["location"] == "Away"]
-
-    home_avg = round(home_games[stat_type].mean(), 2)
-    away_avg = round(away_games[stat_type].mean(), 2)
-
-    print(f"\n{player_name}")
-    print("=" * 40)
-    print(f"{stat_type} Home/Away Split")
-    print()
-    print(f"Home Games: {len(home_games)}")
-    print(f"Home Average: {home_avg}")
-    print()
-    print(f"Away Games: {len(away_games)}")
-    print(f"Away Average: {away_avg}")
-
-def get_opponent_average(player_name, stat_type, opponent):
-    player_id = find_player_id(player_name)
-
-    if player_id is None:
-        print("Player not found.")
-        return
-
-    game_log = playergamelog.PlayerGameLog(
-        player_id=player_id,
-        season="2024-25",
-        season_type_all_star="Regular Season"
-    )
-
-    df = game_log.get_data_frames()[0]
-
-    parsed_matchups = df["MATCHUP"].apply(parse_matchup)
-
-    df["location"] = parsed_matchups.apply(lambda x: x[0])
-    df["opponent"] = parsed_matchups.apply(lambda x: x[1])
-
-    opponent_games = df[df["opponent"] == opponent]
-
-    if opponent_games.empty:
-        print(f"\nNo games found against {opponent}.")
-        return
-
-    opponent_avg = round(opponent_games[stat_type].mean(), 2)
-
-    print(f"\n{player_name}")
-    print("=" * 40)
-    print(f"{stat_type} vs {opponent}")
-    print()
-    print(f"Games Found: {len(opponent_games)}")
-    print(f"Average: {opponent_avg}")
 # ============================================================
 # RECOMMENDATION ENGINE
 # ============================================================
@@ -313,7 +133,6 @@ def compare_props(props):
     """
     results = []
 
-    game_log_cache = {}
 
     for prop in props:
         player_name, stat_type, line, opponent, game_date, risk_type = prop
@@ -579,202 +398,12 @@ def load_props_from_csv(file_path):
 
     return props
 
-def determine_result(recommendation, line, actual_stat):
-    """
-    Determine whether a paper bet won, lost, pushed, or should be ignored.
 
-    Lo Note:
-    MORE recommendations win when the actual stat is greater than the line.
-    LESS recommendations win when the actual stat is less than the line.
-    PASS recommendations are not graded.
-    """
-    if recommendation == "PASS":
-        return "PASS"
-
-    if actual_stat == line:
-        return "PUSH"
-
-    if recommendation in ["STRONG MORE", "LEAN MORE"]:
-        if actual_stat > line:
-            return "WIN"
-        return "LOSS"
-
-    if recommendation in ["STRONG LESS", "LEAN LESS"]:
-        if actual_stat < line:
-            return "WIN"
-        return "LOSS"
-
-    return "UNKNOWN"
 
 # ============================================================
 # PAPER BET TRACKING FUNCTIONS
 # ============================================================
-def save_paper_bet(prop):
-    """
-    Save a paper bet recommendation to paper_bets.csv.
 
-    Lo Note:
-    This is the beginning of engine validation.
-    Every recommendation saved here can later be
-    graded as WIN, LOSS, or PUSH.
-    """
-
-    if paper_bet_exists(prop):
-        print(
-            f"Skipping duplicate: "
-            f"{prop['player']} "
-            f"{prop['stat']} "
-            f"{prop['line']} "
-            f"{prop['risk_type']}"
-        )
-        return False
-
-    with open("paper_bets.csv", "a", newline="", encoding="utf-8") as file:
-        writer = csv.writer(file)
-
-        writer.writerow([
-            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            prop["game_date"],
-            prop["player"],
-            prop["stat"],
-            prop["line"],
-            prop["opponent"],
-            prop["risk_type"],
-            prop["recommendation"],
-            prop["confidence"],
-            "PENDING",
-            ""
-        ])
-
-        return True
-
-def save_recommendations_to_paper_bets(results):
-    """
-    Save all analyzed props to paper_bets.csv.
-
-    Lo Note:
-    This allows an entire board of props to be saved
-    at once for paper betting and future engine analysis.
-    """
-
-    print()
-    print("-" * 90)
-    print("PAPER BET SAVE RESULTS")
-    print("-" * 90)
-
-    saved_count = 0
-    skipped_count = 0
-
-    for prop in results:
-        if save_paper_bet(prop):
-            saved_count += 1
-        else:
-            skipped_count += 1
-
-    print()
-    print(f"New recommendations saved: {saved_count}")
-    print(f"Duplicates skipped: {skipped_count}")
-
-def paper_bet_exists(prop):
-    """
-    Check if a paper bet already exists.
-
-    Duplicate Key:
-    - game_date
-    - player
-    - stat
-    - line
-    - risk_type
-
-    Lo Note:
-    We intentionally do NOT use timestamp because
-    the same prop may be analyzed multiple times.
-    """
-
-    with open("paper_bets.csv", "r", newline="", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
-
-        for row in reader:
-
-            if (
-                row["game_date"] == prop["game_date"]
-                and row["player"] == prop["player"]
-                and row["stat"] == prop["stat"]
-                and float(row["line"]) == float(prop["line"])
-                and row["risk_type"] == prop["risk_type"]
-            ):
-                return True
-
-    return False
-
-def update_paper_bet_results():
-    df = pd.read_csv("paper_bets.csv")
-
-    while True:
-        pending_bets = df[
-            (df["result"] == "PENDING") &
-            (df["recommendation"] != "PASS")
-        ]
-
-        if pending_bets.empty:
-            print("No pending actionable bets to update.")
-            break
-
-        print()
-        print("PENDING BETS")
-        print("-" * 90)
-
-        for index, row in pending_bets.iterrows():
-            print(
-                f"{index}: "
-                f"{row['player']} "
-                f"{row['stat']} "
-                f"{row['line']} "
-                f"{row['recommendation']}"
-            )
-
-        selected_index = int(input("Enter the index number to update: "))
-
-
-        selected_row = df.loc[selected_index]
-
-        print()
-        print("SELECTED BET")
-        print("-" * 90)
-        print(
-            f"{selected_row['player']} | "
-            f"{selected_row['stat']} {selected_row['line']} | "
-            f"{selected_row['recommendation']} | "
-            f"Risk: {selected_row['risk_type']}"
-        )
-
-        actual_stat = float(input("Enter the actual stat: "))
-
-        new_result = determine_result(
-            selected_row["recommendation"],
-            float(selected_row["line"]),
-            actual_stat
-        )
-
-        df.loc[selected_index, "actual_stat"] = str(actual_stat)
-        df.loc[selected_index, "result"] = new_result
-
-        df.to_csv("paper_bets.csv", index=False)
-
-        print()
-        print(
-            f"Updated {selected_row['player']} "
-            f"{selected_row['stat']} {selected_row['line']} "
-            f"as {new_result}"
-        )
-
-        update_again = input("Update another bet? Y//N: ").strip().upper()
-
-        if update_again != "Y":
-            print("Finished updating paper bets.")
-            break
-
-    show_engine_record()
 
 def show_engine_record():
     """
