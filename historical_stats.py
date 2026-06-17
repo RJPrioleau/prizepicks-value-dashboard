@@ -275,6 +275,7 @@ def compare_props(props):
     #==================
     print(
         f"{'#':<4} "
+        f"{'Sport':<6}"
         f"{'Player':<22} "
         f"{'Stat':<6} "
         f"{'Line':<7} "
@@ -294,6 +295,7 @@ def compare_props(props):
         #==========================
         print(
             f"{rank:<4} "
+            f"{item['sport']:<6} "
             f"{item['player']:<22} "
             f"{item['stat']:<6} "
             f"{item['line']:<7} "
@@ -396,6 +398,7 @@ def compare_props(props):
 
     return ranked_results
 
+
 # =============================================================================
 # INVESTIGATION REPORT
 #
@@ -446,3 +449,7 @@ def compare_props(props):
 
 # show_engine_record()
 # show_full_performance_report()
+
+
+#props_to_compare = load_props_from_csv("test_mixed_props.csv")
+#compare_props(props_to_compare)
