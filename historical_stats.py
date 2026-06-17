@@ -11,11 +11,6 @@ from analysis.matchup_parser import parse_basketball_matchup
 PLAYER_GAME_LOG_CACHE = {}
 
 
-
-# ============================================================
-# PLAYER LOOKUP FUNCTIONS
-# ============================================================
-
 # ============================================================
 # HELPER FUNCTIONS
 # ============================================================
@@ -44,20 +39,7 @@ def show_clean_game_log(player_name):
     print(df[["GAME_DATE", "MATCHUP", "location", "opponent", "PTS", "REB", "AST"]].head(10).to_string(index=False))
 
 
-# ============================================================
-# RECOMMENDATION ENGINE
-# ============================================================
 
-
-# ============================================================
-# CORE ANALYSIS ENGINE
-# ============================================================
-
-# INVESTIGATION NOTE:
-# Current game log data is hardcoded to the 2024-25 Regular Season.
-# This may be a major reason June 2026 Finals props are being scored incorrectly.
-# Before changing confidence thresholds, update the data source/season logic and
-# verify whether recommendations change when using the correct season/playoff data.
 
 # ============================================================
 # REPORT / DISPLAY FUNCTIONS
@@ -1056,10 +1038,9 @@ def test_wnba_player_lookup():
 
 #ranked_results = compare_props(props_to_compare)
 
-#save_recommendations_to_paper_bets(ranked_results)
 
 
-#update_paper_bet_results()
+
 
 
 #show_recommendation_breakdown()
