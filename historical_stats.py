@@ -29,17 +29,6 @@ PLAYER_GAME_LOG_CACHE = {}
 # ============================================================
 # HELPER FUNCTIONS
 # ============================================================
-def parse_matchup(matchup):
-    if "@" in matchup:
-        location = "Away"
-    elif "vs." in matchup:
-        location = "Home"
-    else:
-        location = "Unknown"
-
-    opponent = matchup.split()[-1]
-
-    return location, opponent
 
 def get_hit_rate(player_name, stat_type, line):
     player_id = find_player_id(player_name)
