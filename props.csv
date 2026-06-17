@@ -1,4 +1,4 @@
-player,stat,line,opponent,game_date,risk_type
+sport,player,stat,line,opponent,game_date,risk_type
 Olivia Miles,PRA,29,PDX,2026-06-15,NORMAL
 Olivia Miles,PRA,24.5,PDX,2026-06-15,GOBLIN
 Chelsea Gray,PRA,22.5,DAL,2026-06-15,NORMAL

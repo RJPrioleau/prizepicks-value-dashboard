@@ -6,6 +6,8 @@ from sports.nba import (
     get_player_analysis
 )
 from analysis.matchup_parser import parse_basketball_matchup
+from sports.wnba import get_wnba_player_analysis
+
 
 
 
@@ -118,6 +120,7 @@ def load_props_from_csv(file_path):
         for row in reader:
             props.append(
                 (
+                    row["sport"],
                     row["player"],
                     row["stat"],
                     float(row["line"]),
@@ -152,19 +155,32 @@ def compare_props(props):
 
 
     for prop in props:
-        player_name, stat_type, line, opponent, game_date, risk_type = prop
+        sport, player_name, stat_type, line, opponent, game_date, risk_type = prop
 
-        analysis = get_player_analysis(
-            player_name,
-            stat_type,
-            line,
-            opponent
-        )
+        if sport == "NBA":
+            analysis = get_player_analysis(
+                player_name,
+                stat_type,
+                line,
+                opponent
+            )
+
+        elif sport == "WNBA":
+            analysis = get_wnba_player_analysis(
+                player_name,
+                stat_type,
+                line,
+                opponent
+            )
+
+        else:
+            print(f"Unsupported sport skipped: {sport}")
+            continue
 
         if analysis is not None:
             analysis["risk_type"] = risk_type
             analysis["game_date"] = game_date
-
+            analysis["sport"] = sport
             # Lo Note:
             # Goblin and Demon props are MORE-only on PrizePicks.
             # If the engine recommends LESS for one of these, convert it to PASS
@@ -379,9 +395,6 @@ def compare_props(props):
         print("No prop details available.")
 
     return ranked_results
-
-
-
 
 # =============================================================================
 # INVESTIGATION REPORT

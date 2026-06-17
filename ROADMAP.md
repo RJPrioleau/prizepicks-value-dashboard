@@ -308,3 +308,40 @@ Current implementation status:
 - [x] Player lookup proof of concept
 - [x] Game log retrieval proof of concept
 - [ ] Integration into analysis engine
+
+### Future Refactor - Rename historical_stats.py
+
+`historical_stats.py` has been reduced from a large all-in-one file into a smaller workflow/orchestration module.
+
+Current remaining responsibilities:
+
+- Clean game log display
+- Single prop analysis display
+- CSV prop loading
+- Multi-prop comparison/ranking
+
+Potential future names:
+
+- `prop_analysis.py`
+- `analysis_workflow.py`
+- `prop_workflow.py`
+
+Do not rename yet. Wait until NBA/WNBA mixed slate support is stable.
+
+### Future Refactor - App Menu System
+
+Current state:
+- app.py contains menu logic and orchestration
+- file is ~1400 lines
+
+Future goal:
+- Extract menu systems into dedicated modules
+- Reduce app.py to application entry point
+
+Potential structure:
+
+menus/
+├── main_menu.py
+├── analysis_menu.py
+├── reports_menu.py
+└── paper_bets_menu.py
