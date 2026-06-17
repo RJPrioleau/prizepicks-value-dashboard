@@ -20,11 +20,20 @@ def clean_lines(raw_text):
 
     lines = []
 
-    for line in raw_text.splitlines():
-        cleaned_line = line.strip()
+    ignored_lines = {
+        "Swap",
+    }
 
-        if cleaned_line:
-            lines.append(cleaned_line)
+    for line in raw_text.splitlines():
+        line = line.strip()
+
+        if line == "":
+            continue
+
+        if line in ignored_lines:
+            continue
+
+        lines.append(line)
 
     return lines
 

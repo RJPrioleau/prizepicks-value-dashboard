@@ -70,6 +70,8 @@ Do not modify recommendation logic until investigation data supports the change.
 - [x] Home/Away splits
 - [x] Recommendation reasoning output
 - [x] Initial WNBA data layer (SportsDataverse)
+- [x] Completed first full WNBA board integration and stress test (100 props)
+- [x] WNBA Engine v1 Operational
 
 ### Tracking & Validation
 
@@ -383,3 +385,32 @@ menus/
 ├── analysis_menu.py
 ├── reports_menu.py
 └── paper_bets_menu.py
+
+## Sport Engine Validation
+
+### WNBA Validation
+- [x] WNBA player lookup integration
+- [x] WNBA game log retrieval
+- [x] WNBA board analysis support
+- [x] PTS support
+- [x] REB support
+- [x] AST support
+- [x] PRA support
+- [x] Rebs+Asts (RA) support
+- [x] Goblin prop support
+- [x] Demon prop support
+- [x] Multi-game slate support
+- [x] Duplicate recommendation detection
+- [x] 100-prop WNBA stress test
+
+Known Issues
+- [ ] Investigate Olivia Miles player lookup
+- [ ] Investigate Azzi Fudd player lookup
+- [ ] Investigate Janelle Salaün player lookup
+
+Future WNBA Support
+- [ ] PA (Points + Assists)
+- [ ] PR (Points + Rebounds)
+- [ ] Fantasy Score
+- [ ] 3PT Made
+- [ ] Additional PrizePicks stat types as discovered
