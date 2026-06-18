@@ -299,8 +299,8 @@ def compare_props(props):
     print(
         f"{'#':<4} "
         f"{'Sport':<6}"
-        f"{'Player':<22} "
-        f"{'Stat':<6} "
+        f"{'Player':<24} "
+        f"{'Stat':<10} "
         f"{'Line':<7} "
         f"{'Risk':<8} "
         f"{'Opp':<5} "
@@ -319,8 +319,8 @@ def compare_props(props):
         print(
             f"{rank:<4} "
             f"{item['sport']:<6} "
-            f"{item['player']:<22} "
-            f"{item['stat']:<6} "
+            f"{item['player']:<24} "
+            f"{item['stat']:<10} "
             f"{item['line']:<7} "
             f"{item['risk_type']:<8} "
             f"{item['opponent']:<5} "
