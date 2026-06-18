@@ -179,6 +179,66 @@ Status: COMPLETE
 
 ## Future Features
 
+### Paper Bet Tracking Improvements
+
+- [ ] Add VOID result support
+    - Handle DNP (Did Not Play)
+    - Handle injury scratches
+    - Handle illness scratches
+    - Exclude VOID plays from win/loss calculations
+    - Track VOID counts separately in performance reports
+
+### Recommendation Engine Investigation
+
+- [ ] Investigate HIGH confidence assignment logic
+- [ ] Investigate STRONG MORE scoring logic
+- [ ] Compare HIGH vs MEDIUM confidence factors
+- [ ] Compare STRONG MORE wins vs losses
+- [ ] Determine why LEAN LESS significantly outperforms STRONG MORE
+- [ ] Add sport-specific performance reports
+- [ ] Add sport filter to engine record
+- [ ] Add sport filter to recommendation breakdown
+- [ ] Add sport filter to confidence breakdown
+
+### Performance Analytics Improvements
+
+- [ ] Overall record
+- [ ] Record by sport
+    - NBA
+    - WNBA
+    - MLB
+- [ ] Record by slate
+- [ ] Record by month
+- [ ] Record by season
+
+### Result Update Quality of Life Improvements
+
+- [ ] Group pending props by game
+- [ ] Display matchup during result updates
+- [ ] Display team abbreviation during result updates
+- [ ] Allow updating all props from one game before moving to the next
+- [ ] Validate selected bet index before updating
+    - Show a clear message if the index does not exist
+    - Do not crash or continue with invalid selection
+- [ ] Add exit/back option during result update flow
+    - Allow `q`, `quit`, `exit`, or `back`
+    - Useful after accidentally choosing to update another bet
+- [ ] Add slate/game validation before saving paper bets
+    - Confirm all props belong to the intended slate date
+    - Flag games that are not scheduled for the selected date
+    - Prevent future-date props from being mixed into tonight’s paper bet results
+- [ ] Add a way to remove or void an imported game/slate mistake
+    - Remove all pending props by matchup
+    - Remove all pending props by game date
+    - Remove all pending props by team/opponent pair
+
+### Result Update Quality of Life Improvements
+
+- [ ] Group pending props by game
+- [ ] Display matchup during result updates
+- [ ] Display team abbreviation during result updates
+- [ ] Allow updating all props from one game before moving to the next
+
 ### Analysis Improvements
 - [ ] Goblin/Demon MORE-only recommendation rules
 - [ ] Additional recommendation tie-breakers
