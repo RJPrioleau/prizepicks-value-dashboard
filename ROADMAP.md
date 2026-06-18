@@ -179,6 +179,14 @@ Status: COMPLETE
 
 ## Future Features
 
+### Confidence Audit
+
+- [ ] Show all HIGH confidence plays
+- [ ] Show HIGH confidence wins
+- [ ] Show HIGH confidence losses
+- [ ] Compare HIGH vs MEDIUM scoring factors
+- [ ] Identify why HIGH confidence underperforms
+
 ### Paper Bet Tracking Improvements
 
 - [ ] Add VOID result support
