@@ -8,6 +8,7 @@ def show_engine_record():
 
     df = pd.read_csv("paper_bets.csv")
 
+
     wins = len(df[df["result"] == "WIN"])
     losses = len(df[df["result"] == "LOSS"])
     pushes = len(df[df["result"] == "PUSH"])
@@ -34,6 +35,56 @@ def show_engine_record():
     print(f"Pushes: {pushes}")
     print(f"Pending: {pending}")
     print(f"Win Rate: {win_rate}%")
+
+def show_engine_record_by_sport():
+    """
+    Display engine record grouped by sport.
+
+    Why:
+    Overall record mixes NBA, WNBA, and future sports together.
+    Sport-specific records help us evaluate each engine separately.
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
+    if "sport" not in df.columns:
+        df.insert(1, "sport", "UNKNOWN")
+        df.to_csv("paper_bets.csv", index=False)
+
+    sports = sorted(df["sport"].dropna().unique())
+
+    print()
+    print("-" * 90)
+    print("ENGINE RECORD BY SPORT")
+    print("-" * 90)
+
+    for sport in sports:
+        sport_df = df[df["sport"] == sport]
+
+        wins = len(sport_df[sport_df["result"] == "WIN"])
+        losses = len(sport_df[sport_df["result"] == "LOSS"])
+        pushes = len(sport_df[sport_df["result"] == "PUSH"])
+        pending = len(
+            sport_df[
+                (sport_df["result"] == "PENDING") &
+                (sport_df["recommendation"] != "PASS")
+            ]
+        )
+
+        total_graded = wins + losses + pushes
+
+        if total_graded > 0:
+            win_rate = round((wins / total_graded) * 100, 2)
+        else:
+            win_rate = 0
+
+        print()
+        print(sport)
+        print(f"Wins: {wins}")
+        print(f"Losses: {losses}")
+        print(f"Pushes: {pushes}")
+        print(f"Pending: {pending}")
+        print(f"Win Rate: {win_rate}%")
 
 def show_recommendation_breakdown():
     """
@@ -143,6 +194,7 @@ def show_full_performance_report():
     Display all engine performance reports.
     """
     show_engine_record()
+    show_engine_record_by_sport()
     show_recommendation_breakdown()
     show_confidence_breakdown()
     show_risk_breakdown()

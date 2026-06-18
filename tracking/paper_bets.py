@@ -2,6 +2,20 @@ import csv
 from datetime import datetime
 import pandas as pd
 
+def ensure_paper_bets_schema():
+    """
+    Ensure paper_bets.csv has the current expected columns.
+
+    Lo Note:
+    Older paper_bets.csv files did not include sport.
+    This keeps old saved data from crashing newer reports.
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
+    if "sport" not in df.columns:
+        df.insert(1, "sport", "UNKNOWN")
+        df.to_csv("paper_bets.csv", index=False)
 
 def determine_result(recommendation, line, actual_stat):
     """
@@ -39,7 +53,7 @@ def save_paper_bet(prop):
     Every recommendation saved here can later be
     graded as WIN, LOSS, or PUSH.
     """
-
+    ensure_paper_bets_schema()
     if paper_bet_exists(prop):
         print(
             f"Skipping duplicate: "
@@ -55,6 +69,7 @@ def save_paper_bet(prop):
 
         writer.writerow([
             datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            prop.get("sport", "UNKNOWN"),
             prop["game_date"],
             prop["player"],
             prop["stat"],
@@ -111,7 +126,7 @@ def paper_bet_exists(prop):
     We intentionally do NOT use timestamp because
     the same prop may be analyzed multiple times.
     """
-
+    ensure_paper_bets_schema()
     with open("paper_bets.csv", "r", newline="", encoding="utf-8") as file:
         reader = csv.DictReader(file)
 
@@ -119,6 +134,8 @@ def paper_bet_exists(prop):
 
             if (
                 row["game_date"] == prop["game_date"]
+
+                and row.get("sport", "UNKNOWN") == prop.get("sport", "UNKNOWN")
                 and row["player"] == prop["player"]
                 and row["stat"] == prop["stat"]
                 and float(row["line"]) == float(prop["line"])
@@ -129,6 +146,7 @@ def paper_bet_exists(prop):
     return False
 
 def update_paper_bet_results():
+    ensure_paper_bets_schema()
     df = pd.read_csv("paper_bets.csv")
 
     while True:

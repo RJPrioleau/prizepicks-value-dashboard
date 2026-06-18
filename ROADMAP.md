@@ -211,9 +211,27 @@ Status: COMPLETE
 - [ ] Record by month
 - [ ] Record by season
 
+### Paper Bet Data Improvements
+
+- [x] Add sport column to paper_bets.csv
+- [ ] Backfill existing UNKNOWN records
+    - NBA historical records
+    - WNBA historical records
+- [ ] Sport-specific performance reports
+- [ ] Sport-specific recommendation breakdowns
+- [ ] Sport-specific confidence breakdowns
+
 ### Result Update Quality of Life Improvements
 
 - [ ] Group pending props by game
+- [ ] Add stacked filters for `props.csv` and `paper_bets.csv`
+  - Filter by player name
+  - Filter by risk type
+  - Filter by sport
+  - Filter by slate date
+  - Allow combined filters
+    - Example: WNBA + DEMON + June 2026
+    - Example: Caitlin Clark + HIGH confidence + LOSS
 - [ ] Display matchup during result updates
 - [ ] Display team abbreviation during result updates
 - [ ] Allow updating all props from one game before moving to the next
