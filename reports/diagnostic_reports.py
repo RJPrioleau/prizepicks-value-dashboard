@@ -640,6 +640,175 @@ def show_ladder_compression_candidates():
     if candidate_count == 0:
         print("No ladder compression candidates found.")
 
+def show_ladder_compression_simulation():
+    """
+    Simulate ladder compression.
+
+    Keep only one prop per:
+
+    sport
+    slate
+    player
+    stat
+    direction
+    risk type
+
+    Goal:
+    Determine how historical results change if we reduce
+    ladder exposure.
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
+    df = df[
+        df["recommendation"].isin([
+            "STRONG MORE",
+            "LEAN MORE",
+            "STRONG LESS",
+            "LEAN LESS"
+        ])
+    ].copy()
+
+    df = df[
+        df["result"].isin([
+            "WIN",
+            "LOSS",
+            "PUSH"
+        ])
+    ].copy()
+
+    def get_direction(recommendation):
+
+        if recommendation in [
+            "STRONG MORE",
+            "LEAN MORE"
+        ]:
+            return "MORE"
+
+        if recommendation in [
+            "STRONG LESS",
+            "LEAN LESS"
+        ]:
+            return "LESS"
+
+        return "PASS"
+
+    df["direction"] = df["recommendation"].apply(
+        get_direction
+    )
+
+    recommendation_rank = {
+        "STRONG MORE": 4,
+        "STRONG LESS": 4,
+        "LEAN MORE": 3,
+        "LEAN LESS": 3,
+    }
+
+    risk_rank = {
+        "GOBLIN": 3,
+        "NORMAL": 2,
+        "DEMON": 1,
+    }
+
+    df["recommendation_rank"] = (
+        df["recommendation"]
+        .map(recommendation_rank)
+        .fillna(0)
+    )
+
+    df["risk_rank"] = (
+        df["risk_type"]
+        .map(risk_rank)
+        .fillna(0)
+    )
+
+    df = df.sort_values(
+        by=[
+            "recommendation_rank",
+            "risk_rank",
+            "line"
+        ],
+        ascending=[
+            False,
+            False,
+            True
+        ]
+    )
+
+    compressed_df = (
+        df
+        .groupby([
+            "sport",
+            "game_date",
+            "player",
+            "stat",
+            "direction",
+            "risk_type"
+        ])
+        .head(1)
+        .copy()
+    )
+
+    wins = len(
+        compressed_df[
+            compressed_df["result"] == "WIN"
+        ]
+    )
+
+    losses = len(
+        compressed_df[
+            compressed_df["result"] == "LOSS"
+        ]
+    )
+
+    pushes = len(
+        compressed_df[
+            compressed_df["result"] == "PUSH"
+        ]
+    )
+
+    original_wins = len(
+        df[df["result"] == "WIN"]
+    )
+
+    original_losses = len(
+        df[df["result"] == "LOSS"]
+    )
+
+    removed_wins = original_wins - wins
+    removed_losses = original_losses - losses
+
+    total = wins + losses + pushes
+
+    if total > 0:
+        win_rate = round(
+            (wins / total) * 100,
+            2
+        )
+    else:
+        win_rate = 0
+
+    print()
+    print("-" * 90)
+    print("LADDER COMPRESSION SIMULATION")
+    print("-" * 90)
+
+    print(f"Original Props: {len(df)}")
+    print(f"Compressed Props: {len(compressed_df)}")
+    print(f"Removed Props: {len(df) - len(compressed_df)}")
+
+    print()
+
+    print(f"Removed Wins: {removed_wins}")
+    print(f"Removed Losses: {removed_losses}")
+
+    print()
+
+    print(f"Wins: {wins}")
+    print(f"Losses: {losses}")
+    print(f"Pushes: {pushes}")
+    print(f"Win Rate: {win_rate}%")
+
 def show_ladder_performance():
     """
     Show performance for player/stat ladders.
