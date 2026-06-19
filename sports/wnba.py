@@ -135,6 +135,8 @@ def add_wnba_calculated_stats(df):
 
     df["PRA"] = df["pts"] + df["reb"] + df["ast"]
     df["RA"] = df["reb"] + df["ast"]
+    df["PR"] = df["pts"] + df["reb"]
+    df["PA"] = df["pts"] + df["ast"]
 
     return df
 
@@ -159,6 +161,8 @@ def get_wnba_player_analysis(player_name, stat_type, line, opponent=None):
         "AST": "ast",
         "PRA": "PRA",
         "Rebs+Asts": "RA",
+        "Pts+Rebs": "PR",
+        "Pts+Asts": "PA",
     }
 
     stat_column = stat_column_map.get(stat_type, stat_type)

@@ -284,6 +284,11 @@ Status: COMPLETE
 - [ ] Sport-specific performance reports
 - [ ] Sport-specific recommendation breakdowns
 - [ ] Sport-specific confidence breakdowns
+- [ ] Improve missing player handling
+  - Track players not found in historical data
+  - Distinguish rookie vs missing player vs API issue
+  - Export missing-player report after board analysis
+  - Avoid repeated warnings for same player
 
 ### Result Update Quality of Life Improvements
 
