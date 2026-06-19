@@ -264,6 +264,89 @@ def show_high_confidence_breakdown_by_recommendation():
             f"Win Rate: {win_rate}%"
         )
 
+def show_confidence_audit():
+    """
+    Audit HIGH vs MEDIUM confidence performance.
+
+    Why:
+    HIGH confidence is underperforming MEDIUM confidence.
+    This report helps identify whether the issue is tied to
+    recommendation type, sport, or risk type.
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
+    graded_df = df[df["result"].isin(["WIN", "LOSS", "PUSH"])]
+
+    confidence_levels = [
+        "HIGH",
+        "MEDIUM",
+        "LOW"
+    ]
+
+    print()
+    print("-" * 90)
+    print("CONFIDENCE AUDIT")
+    print("-" * 90)
+
+    for confidence in confidence_levels:
+        confidence_df = graded_df[graded_df["confidence"] == confidence]
+
+        wins = len(confidence_df[confidence_df["result"] == "WIN"])
+        losses = len(confidence_df[confidence_df["result"] == "LOSS"])
+        pushes = len(confidence_df[confidence_df["result"] == "PUSH"])
+
+        total = wins + losses + pushes
+
+        win_rate = round((wins / total) * 100, 2) if total > 0 else 0
+
+        print()
+        print(confidence)
+        print(f"Wins: {wins}")
+        print(f"Losses: {losses}")
+        print(f"Pushes: {pushes}")
+        print(f"Win Rate: {win_rate}%")
+
+        if total > 0:
+            print()
+            print("By Recommendation:")
+
+            recommendation_summary = (
+                confidence_df
+                .groupby("recommendation")["result"]
+                .value_counts()
+                .unstack(fill_value=0)
+            )
+
+            print(recommendation_summary.to_string())
+
+            print()
+            print("By Sport:")
+
+            if "sport" in confidence_df.columns:
+                sport_summary = (
+                    confidence_df
+                    .groupby("sport")["result"]
+                    .value_counts()
+                    .unstack(fill_value=0)
+                )
+
+                print(sport_summary.to_string())
+            else:
+                print("No sport column found.")
+
+            print()
+            print("By Risk Type:")
+
+            risk_summary = (
+                confidence_df
+                .groupby("risk_type")["result"]
+                .value_counts()
+                .unstack(fill_value=0)
+            )
+
+            print(risk_summary.to_string())
+
 def show_strong_more_by_risk_type():
     """
     Display STRONG MORE performance grouped by risk type.
@@ -401,3 +484,248 @@ def show_june_13_strong_more_losses():
             f"Actual: {row['actual_stat']} | "
             f"Risk: {row['risk_type']}"
         )
+
+
+
+def show_ladder_performance():
+    """
+    Show performance for player/stat ladders.
+
+    A ladder is when the same player has multiple lines for the
+    same stat on the same slate.
+
+    Lo Note:
+    Goblin and Demon props are MORE-only on PrizePicks.
+    This report focuses on grouped player/stat exposure so we can
+    separate one bad player read from many duplicated prop losses.
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
+    graded_df = df[
+        df["result"].isin(["WIN", "LOSS", "PUSH"])
+    ].copy()
+
+    if graded_df.empty:
+        print("No graded paper bets found.")
+        return
+
+    def get_recommendation_direction(recommendation):
+        if recommendation in ["STRONG MORE", "LEAN MORE"]:
+            return "MORE"
+
+        if recommendation in ["STRONG LESS", "LEAN LESS"]:
+            return "LESS"
+
+        return "PASS"
+
+    graded_df["direction"] = graded_df["recommendation"].apply(
+        get_recommendation_direction
+    )
+
+    graded_df = graded_df[graded_df["direction"] != "PASS"]
+
+
+    ladder_groups = (
+        graded_df
+        .groupby(["sport", "game_date", "player", "stat", "direction"])
+    )
+
+    print()
+    print("-" * 90)
+    print("LADDER PERFORMANCE")
+    print("-" * 90)
+
+    ladder_count = 0
+    cleared_full_count = 0
+    hit_partial_count = 0
+    missed_count = 0
+    mixed_actuals_count = 0
+
+    total_wins = 0
+    total_losses = 0
+    total_pushes = 0
+
+    worst_ladders = []
+
+    strong_more_ladders = 0
+    lean_more_ladders = 0
+
+    strong_more_misses = 0
+    lean_more_misses = 0
+
+    for (sport, game_date, player, stat, direction), group in ladder_groups:
+        if len(group) <= 1:
+            continue
+
+        ladder_count += 1
+
+        group = group.copy()
+        group["line"] = group["line"].astype(float)
+        group["actual_stat"] = pd.to_numeric(
+            group["actual_stat"],
+            errors="coerce"
+        )
+
+        actual_values = group["actual_stat"].dropna().unique()
+
+        if len(actual_values) == 1:
+            actual_stat = actual_values[0]
+        else:
+            actual_stat = "MIXED"
+
+        wins = len(group[group["result"] == "WIN"])
+        losses = len(group[group["result"] == "LOSS"])
+        pushes = len(group[group["result"] == "PUSH"])
+
+        total_wins += wins
+        total_losses += losses
+        total_pushes += pushes
+
+        lowest_line = group["line"].min()
+        highest_line = group["line"].max()
+
+        if actual_stat == "MIXED":
+            assessment = "MIXED ACTUALS"
+        elif actual_stat > highest_line:
+            assessment = "CLEARED FULL LADDER"
+        elif actual_stat > lowest_line:
+            assessment = "HIT PARTIAL LADDER"
+        else:
+            assessment = "MISSED LADDER"
+
+        if assessment == "CLEARED FULL LADDER":
+            cleared_full_count += 1
+        elif assessment == "HIT PARTIAL LADDER":
+            hit_partial_count += 1
+        elif assessment == "MISSED LADDER":
+            missed_count += 1
+        else:
+            mixed_actuals_count += 1
+
+        if assessment == "MISSED LADDER":
+
+            if "STRONG MORE" in recommendations:
+                strong_more_misses += 1
+
+            if "LEAN MORE" in recommendations:
+                lean_more_misses += 1
+
+        lines = ", ".join(
+            str(line) for line in sorted(group["line"].unique())
+        )
+
+        risks = ", ".join(
+            sorted(group["risk_type"].dropna().unique())
+        )
+
+        recommendations = ", ".join(
+            sorted(group["recommendation"].dropna().unique())
+        )
+
+        if "STRONG MORE" in recommendations:
+            strong_more_ladders += 1
+
+        if "LEAN MORE" in recommendations:
+            lean_more_ladders += 1
+
+        print()
+        print(f"{sport} | {game_date} | {player} | {stat} | {direction}")
+        print("-" * 90)
+        print(f"Lines: {lines}")
+        print(f"Risks: {risks}")
+        print(f"Recommendations: {recommendations}")
+        print(f"Actual Stat: {actual_stat}")
+        print(f"Ladder Record: {wins}-{losses}-{pushes}")
+        print(f"Assessment: {assessment}")
+
+        worst_ladders.append({
+            "sport": sport,
+            "game_date": game_date,
+            "player": player,
+            "stat": stat,
+            "direction": direction,
+            "losses": losses,
+            "wins": wins,
+            "pushes": pushes,
+            "assessment": assessment,
+            "lines": lines,
+            "risks": risks,
+            "recommendations": recommendations
+        })
+
+    successful_ladders = cleared_full_count + hit_partial_count
+
+    ladder_success_rate = (
+        round((successful_ladders / ladder_count) * 100, 2)
+        if ladder_count > 0
+        else 0
+    )
+
+    total_props = total_wins + total_losses + total_pushes
+
+    prop_win_rate = (
+        round((total_wins / total_props) * 100, 2)
+        if total_props > 0
+        else 0
+    )
+
+    print()
+    print("-" * 90)
+    print("LADDER SUMMARY")
+    print("-" * 90)
+    print(f"Total Ladders: {ladder_count}")
+    print(f"Cleared Full Ladder: {cleared_full_count}")
+    print(f"Hit Partial Ladder: {hit_partial_count}")
+    print(f"Missed Ladder: {missed_count}")
+    print(f"Mixed Actuals: {mixed_actuals_count}")
+    print(f"Ladder Success Rate: {ladder_success_rate}%")
+    print(f"Prop-Level Record: {total_wins}-{total_losses}-{total_pushes}")
+    print(f"Prop Win Rate: {prop_win_rate}%")
+    print()
+    print("RECOMMENDATION EXPOSURE")
+    print("-" * 90)
+
+    print(
+        f"STRONG MORE Ladders: "
+        f"{strong_more_ladders}"
+    )
+
+    print(
+        f"STRONG MORE Misses: "
+        f"{strong_more_misses}"
+    )
+
+    print(
+        f"LEAN MORE Ladders: "
+        f"{lean_more_ladders}"
+    )
+
+    print(
+        f"LEAN MORE Misses: "
+        f"{lean_more_misses}"
+    )
+
+    print()
+    print("WORST LADDER EXPOSURE")
+    print("-" * 90)
+
+    worst_ladders = sorted(
+        worst_ladders,
+        key=lambda ladder: ladder["losses"],
+        reverse=True
+    )
+
+    for ladder in worst_ladders[:10]:
+        print(
+            f"{ladder['sport']} | "
+            f"{ladder['game_date']} | "
+            f"{ladder['player']} | "
+            f"{ladder['stat']} | "
+            f"{ladder['direction']} | "
+            f"{ladder['wins']}-{ladder['losses']}-{ladder['pushes']} | "
+            f"{ladder['assessment']}"
+        )
+
+    if ladder_count == 0:
+        print("No ladders found.")

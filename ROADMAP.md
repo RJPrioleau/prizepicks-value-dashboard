@@ -187,6 +187,12 @@ Status: COMPLETE
 - [ ] Compare HIGH vs MEDIUM scoring factors
 - [ ] Identify why HIGH confidence underperforms
 
+### Engine Audit
+
+- [ ] Measure results by unique player assessment
+- [ ] Measure results by individual prop
+- [ ] Detect correlated prop clusters
+
 ### Paper Bet Tracking Improvements
 
 - [ ] Add VOID result support
@@ -207,6 +213,46 @@ Status: COMPLETE
 - [ ] Add sport filter to engine record
 - [ ] Add sport filter to recommendation breakdown
 - [ ] Add sport filter to confidence breakdown
+
+### Recommendation Engine Analytics
+
+- [ ] Player-level prediction accuracy
+- [ ] Prop-level prediction accuracy
+- [ ] Correlated prop cluster detection
+- [ ] Ladder analysis
+- [ ] Single-player exposure analysis
+
+### Ladder Analysis Engine
+
+- [x] Detect player/stat ladders
+- [x] Measure ladder performance
+- [ ] Calculate ladder success rate
+- [ ] Measure player assessment accuracy
+- [ ] Identify best goblin rung
+- [ ] Identify best demon rung
+- [ ] Reduce duplicate exposure in recommendations
+- [ ] Group Goblin ladders
+- [ ] Group Demon ladders
+- [ ] Calculate hit probability by rung
+- [ ] Identify best-value rung
+- [ ] Recommend only the best rung
+- [ ] Track player-level prediction accuracy
+- [ ] Track ladder-level prediction accuracy
+- [ ] Add ladder-aware recommendation handling
+  - Group same player/stat/risk ladders
+  - Recommend only best Goblin rung
+  - Recommend only best Demon rung if worth it
+  - Track player/stat ladder success separately from prop-level record
+  - Limit exposure when one player read creates many props
+
+### Ladder / Correlation System
+
+- Detect multiple props from same player/stat
+- Group them into a ladder
+- Identify best value rung
+- Track player-level accuracy
+- Track prop-level accuracy
+- Reduce duplicate recommendations
 
 ### Performance Analytics Improvements
 
