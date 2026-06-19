@@ -26,6 +26,7 @@ from reports.diagnostic_reports import (
     show_strong_more_by_risk_type,
     show_strong_more_by_slate_and_risk_type,
 )
+from reports.filter_reports import filter_paper_bets
 
 
 HISTORY_FILE = "data/history.csv"
@@ -1488,8 +1489,9 @@ while True:
     print("34: Show high confidence by recommendation")
     print("35. Show strong more by risk type")
     print("36: show strong more by slate and risk type")
-    print("37. Run Board Analysis")
-    print("38. Exit")
+    print("37: Filter Paper Bets")
+    print("38. Run Board Analysis")
+    print("39. Exit")
 
     choice = input("Choose an option: ").strip()
 
@@ -1611,10 +1613,61 @@ while True:
         input("\nPress Enter to continue...")
 
     elif choice == "37":
-        run_board_analysis()
+
+        player = input(
+            "Player (blank for all): "
+        ).strip()
+
+        sport = input(
+            "Sport [NBA/WNBA] (blank for all): "
+        ).strip()
+
+        risk_type = input(
+            "Risk Type [GOBLIN/NORMAL/DEMON] (blank for all): "
+        ).strip()
+
+        slate_date = input(
+            "Slate Date YYYY-MM or YYYY-MM-DD (blank for all): "
+        ).strip()
+
+        result = input(
+            "Result [WIN/LOSS/PUSH/PENDING/PASS] (blank for all): "
+        ).strip()
+
+        valid_sports = ["NBA", "WNBA"]
+        valid_risk_types = ["GOBLIN", "NORMAL", "DEMON"]
+        valid_results = ["WIN", "LOSS", "PUSH", "PENDING", "PASS"]
+
+        if sport and sport.upper() not in valid_sports:
+            print(f"Invalid sport. Choose from: {', '.join(valid_sports)}")
+            input("\nPress Enter to continue...")
+            continue
+
+        if risk_type and risk_type.upper() not in valid_risk_types:
+            print(f"Invalid risk type. Choose from: {', '.join(valid_risk_types)}")
+            input("\nPress Enter to continue...")
+            continue
+
+        if result and result.upper() not in valid_results:
+            print(f"Invalid result. Choose from: {', '.join(valid_results)}")
+            input("\nPress Enter to continue...")
+            continue
+
+        filter_paper_bets(
+            player=player or None,
+            sport=sport or None,
+            risk_type=risk_type or None,
+            slate_date=slate_date or None,
+            result=result or None,
+        )
+
         input("\nPress Enter to continue...")
 
     elif choice == "38":
+        run_board_analysis()
+        input("\nPress Enter to continue...")
+
+    elif choice == "39":
         print("Goodbye.")
         break
 

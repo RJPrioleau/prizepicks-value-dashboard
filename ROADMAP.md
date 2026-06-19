@@ -73,6 +73,15 @@ Do not modify recommendation logic until investigation data supports the change.
 - [x] Completed first full WNBA board integration and stress test (100 props)
 - [x] WNBA Engine v1 Operational
 
+## Analytics Toolkit
+
+- [x] Ladder Analysis
+- [x] Confidence Audit
+- [x] Sport Performance Tracking
+- [x] Filter Engine
+- [x] Summary Mode
+- [x] Score Tracking
+
 ### Tracking & Validation
 
 - [x] Paper bet storage
@@ -293,14 +302,14 @@ Status: COMPLETE
 ### Result Update Quality of Life Improvements
 
 - [ ] Group pending props by game
-- [ ] Add stacked filters for `props.csv` and `paper_bets.csv`
-  - Filter by player name
-  - Filter by risk type
-  - Filter by sport
-  - Filter by slate date
-  - Allow combined filters
-    - Example: WNBA + DEMON + June 2026
-    - Example: Caitlin Clark + HIGH confidence + LOSS
+- [x] Add stacked filters for `props.csv` and `paper_bets.csv`
+  - [x] Filter by player name
+  - [x] Filter by risk type
+  - [x] Filter by sport
+  - [x] Filter by slate date
+  - [x] Allow combined filters
+    - [x] Example: WNBA + DEMON + June 2026
+    - [x] Example: Caitlin Clark + HIGH confidence + LOSS
 - [ ] Display matchup during result updates
 - [ ] Display team abbreviation during result updates
 - [ ] Allow updating all props from one game before moving to the next

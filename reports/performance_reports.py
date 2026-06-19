@@ -189,6 +189,57 @@ def show_risk_breakdown():
         print(f"Pushes: {pushes}")
         print(f"Win Rate: {win_rate}%")
 
+def show_score_performance():
+    """
+    Display performance grouped by engine score.
+
+    Lo Note:
+    Older paper_bets.csv rows may not have score values.
+    This report skips blank scores and becomes more useful
+    as new boards are saved with score tracking enabled.
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
+    if "score" not in df.columns:
+        print()
+        print("-" * 90)
+        print("SCORE PERFORMANCE")
+        print("-" * 90)
+        print("No score column found.")
+        return
+
+    df["score"] = pd.to_numeric(df["score"], errors="coerce")
+
+    scored_df = df[
+        df["score"].notna() &
+        df["result"].isin(["WIN", "LOSS", "PUSH"])
+    ]
+
+    print()
+    print("-" * 90)
+    print("SCORE PERFORMANCE")
+    print("-" * 90)
+
+    if scored_df.empty:
+        print("No graded paper bets with score data yet.")
+        return
+
+    for score in sorted(scored_df["score"].unique(), reverse=True):
+        score_df = scored_df[scored_df["score"] == score]
+
+        wins = len(score_df[score_df["result"] == "WIN"])
+        losses = len(score_df[score_df["result"] == "LOSS"])
+        pushes = len(score_df[score_df["result"] == "PUSH"])
+
+        total = wins + losses + pushes
+        win_rate = round((wins / total) * 100, 2) if total > 0 else 0
+
+        print()
+        print(f"Score: {score}")
+        print(f"Record: {wins}-{losses}-{pushes}")
+        print(f"Win Rate: {win_rate}%")
+
 def show_full_performance_report():
     """
     Display all engine performance reports.
@@ -198,3 +249,4 @@ def show_full_performance_report():
     show_recommendation_breakdown()
     show_confidence_breakdown()
     show_risk_breakdown()
+    show_score_performance()
