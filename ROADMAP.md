@@ -196,11 +196,21 @@ Status: COMPLETE
 ### Paper Bet Tracking Improvements
 
 - [ ] Add VOID result support
-    - Handle DNP (Did Not Play)
+    - [ ] Add DNP result status
+  - DNP
+  - Injury
+  - Did Not Start
+  - Void prop
     - Handle injury scratches
     - Handle illness scratches
     - Exclude VOID plays from win/loss calculations
     - Track VOID counts separately in performance reports
+- - [ ] Score Analytics Report
+    - Score distribution
+    - Win rate by score
+    - Score by sport
+    - Score by risk type
+    - Score by recommendation
 
 ### Recommendation Engine Investigation
 

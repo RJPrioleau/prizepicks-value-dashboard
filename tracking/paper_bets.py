@@ -17,6 +17,11 @@ def ensure_paper_bets_schema():
         df.insert(1, "sport", "UNKNOWN")
         df.to_csv("paper_bets.csv", index=False)
 
+    if "score" not in df.columns:
+        confidence_index = df.columns.get_loc("confidence")
+        df.insert(confidence_index, "score", "")
+        df.to_csv("paper_bets.csv", index=False)
+
 def determine_result(recommendation, line, actual_stat):
     """
     Determine whether a paper bet won, lost, pushed, or should be ignored.
@@ -77,6 +82,7 @@ def save_paper_bet(prop):
             prop["opponent"],
             prop["risk_type"],
             prop["recommendation"],
+            prop.get("score", ""),
             prop["confidence"],
             "PENDING",
             ""
