@@ -485,7 +485,160 @@ def show_june_13_strong_more_losses():
             f"Risk: {row['risk_type']}"
         )
 
+def show_ladder_compression_candidates():
+    """
+    Show ladders where multiple recommended props come from the same
+    player/stat/slate/direction.
 
+    Why:
+    This helps us see where the engine may be overexposed by saving
+    several props from one player read.
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
+    graded_df = df[
+        df["recommendation"].isin([
+            "STRONG MORE",
+            "LEAN MORE",
+            "STRONG LESS",
+            "LEAN LESS"
+        ])
+    ].copy()
+
+    if graded_df.empty:
+        print("No recommended paper bets found.")
+        return
+
+    def get_direction(recommendation):
+        if recommendation in ["STRONG MORE", "LEAN MORE"]:
+            return "MORE"
+
+        if recommendation in ["STRONG LESS", "LEAN LESS"]:
+            return "LESS"
+
+        return "PASS"
+
+    graded_df["direction"] = graded_df["recommendation"].apply(
+        get_direction
+    )
+
+    graded_df["line"] = pd.to_numeric(
+        graded_df["line"],
+        errors="coerce"
+    )
+
+    if "score" in graded_df.columns:
+        graded_df["score"] = pd.to_numeric(
+            graded_df["score"],
+            errors="coerce"
+        )
+    else:
+        graded_df["score"] = None
+
+    ladder_groups = graded_df.groupby([
+        "sport",
+        "game_date",
+        "player",
+        "stat",
+        "direction"
+    ])
+
+    print()
+    print("-" * 90)
+    print("LADDER COMPRESSION CANDIDATES")
+    print("-" * 90)
+
+    candidate_count = 0
+
+    total_candidate_props = 0
+    total_removable_props = 0
+
+    for (sport, game_date, player, stat, direction), group in ladder_groups:
+        if len(group) <= 1:
+            continue
+
+        candidate_count += 1
+
+        total_candidate_props += len(group)
+        total_removable_props += len(group) - 1
+
+        recommendation_rank = {
+            "STRONG MORE": 4,
+            "STRONG LESS": 4,
+            "LEAN MORE": 3,
+            "LEAN LESS": 3,
+        }
+
+        risk_rank = {
+            "GOBLIN": 3,
+            "NORMAL": 2,
+            "DEMON": 1,
+        }
+
+        group["recommendation_rank"] = group["recommendation"].map(
+            recommendation_rank
+        ).fillna(0)
+
+        group["risk_rank"] = group["risk_type"].map(
+            risk_rank
+        ).fillna(0)
+
+        group = group.sort_values(
+            by=["score", "recommendation_rank", "risk_rank", "line"],
+            ascending=[False, False, False, True],
+            na_position="last"
+        )
+
+        keep_row = group.iloc[0]
+
+        print()
+        print(f"{sport} | {game_date} | {player} | {stat} | {direction}")
+        print("-" * 90)
+        print(f"Prop Count: {len(group)}")
+        print(
+            f"Suggested Keep: "
+            f"{keep_row['line']} | "
+            f"{keep_row['risk_type']} | "
+            f"{keep_row['recommendation']} | "
+            f"Score: {keep_row['score']}"
+        )
+
+        print()
+        print("Full Ladder:")
+
+        columns = [
+            "line",
+            "risk_type",
+            "recommendation",
+            "score",
+            "confidence",
+            "result",
+            "actual_stat"
+        ]
+
+        display_df = group[columns].fillna("")
+        print(display_df.to_string(index=False))
+
+    print()
+    print("-" * 90)
+    print("COMPRESSION SUMMARY")
+    print("-" * 90)
+
+    print(f"Compression Candidates: {candidate_count}")
+    print(f"Props Inside Candidates: {total_candidate_props}")
+    print(f"Potential Props Removed: {total_removable_props}")
+
+    if total_candidate_props > 0:
+        reduction_pct = round(
+            (total_removable_props / total_candidate_props) * 100,
+            2
+        )
+
+        print(f"Potential Reduction: {reduction_pct}%")
+
+    if candidate_count == 0:
+        print("No ladder compression candidates found.")
 
 def show_ladder_performance():
     """
