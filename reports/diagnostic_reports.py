@@ -809,6 +809,163 @@ def show_ladder_compression_simulation():
     print(f"Pushes: {pushes}")
     print(f"Win Rate: {win_rate}%")
 
+def show_removed_ladder_props():
+    df = pd.read_csv("paper_bets.csv")
+
+    df = df[
+        df["recommendation"].isin([
+            "STRONG MORE",
+            "LEAN MORE",
+            "STRONG LESS",
+            "LEAN LESS"
+        ])
+    ].copy()
+
+    df = df[
+        df["result"].isin([
+            "WIN",
+            "LOSS",
+            "PUSH"
+        ])
+    ].copy()
+
+    def get_direction(recommendation):
+
+        if recommendation in [
+            "STRONG MORE",
+            "LEAN MORE"
+        ]:
+            return "MORE"
+
+        if recommendation in [
+            "STRONG LESS",
+            "LEAN LESS"
+        ]:
+            return "LESS"
+
+        return "PASS"
+
+    df["direction"] = df["recommendation"].apply(
+        get_direction
+    )
+
+    recommendation_rank = {
+        "STRONG MORE": 4,
+        "STRONG LESS": 4,
+        "LEAN MORE": 3,
+        "LEAN LESS": 3,
+    }
+
+    risk_rank = {
+        "GOBLIN": 3,
+        "NORMAL": 2,
+        "DEMON": 1,
+    }
+
+    df["recommendation_rank"] = (
+        df["recommendation"]
+        .map(recommendation_rank)
+        .fillna(0)
+    )
+
+    df["risk_rank"] = (
+        df["risk_type"]
+        .map(risk_rank)
+        .fillna(0)
+    )
+
+    df = df.sort_values(
+        by=[
+            "recommendation_rank",
+            "risk_rank",
+            "line"
+        ],
+        ascending=[
+            False,
+            False,
+            True
+        ]
+    )
+
+    compressed_df = (
+        df
+        .groupby([
+            "sport",
+            "game_date",
+            "player",
+            "stat",
+            "direction",
+            "risk_type"
+        ])
+        .head(1)
+        .copy()
+    )
+
+    removed_df = df.loc[
+        ~df.index.isin(compressed_df.index)
+    ].copy()
+
+    print()
+    print("-" * 90)
+    print("REMOVED LADDER PROPS")
+    print("-" * 90)
+
+    removed_df = removed_df.sort_values(
+        by=[
+            "sport",
+            "game_date",
+            "player",
+            "stat",
+            "line"
+        ]
+    )
+    columns = [
+        "sport",
+        "game_date",
+        "player",
+        "stat",
+        "line",
+        "risk_type",
+        "recommendation",
+        "result",
+        "actual_stat"
+    ]
+    if removed_df.empty:
+        print("No removed props found.")
+        return
+
+    print(
+        removed_df[columns]
+        .to_string(index=False)
+    )
+    removed_wins = len(
+        removed_df[
+            removed_df["result"] == "WIN"
+            ]
+    )
+
+    removed_losses = len(
+        removed_df[
+            removed_df["result"] == "LOSS"
+            ]
+    )
+
+    removed_pushes = len(
+        removed_df[
+            removed_df["result"] == "PUSH"
+            ]
+    )
+
+    print()
+    print("-" * 90)
+    print("REMOVED PROP SUMMARY")
+    print("-" * 90)
+
+    print(f"Removed Props: {len(removed_df)}")
+    print(f"Removed Wins: {removed_wins}")
+    print(f"Removed Losses: {removed_losses}")
+    print(f"Removed Pushes: {removed_pushes}")
+
 def show_ladder_performance():
     """
     Show performance for player/stat ladders.
