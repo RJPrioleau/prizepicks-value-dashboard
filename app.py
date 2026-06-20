@@ -490,7 +490,7 @@ def update_result():
     selected_index = int(input("Enter the index to update: "))
     result = input("Enter result (WIN/LOSS/PUSH): ").upper()
 
-    while result not in ["WIN", "LOSS", "PUSH"]:
+    while result not in ["WIN", "LOSS", "PUSH", "DNP"]:
         print("Invalid result. Please enter WIN, LOSS, or PUSH.")
         result = input("Enter result (WIN/LOSS/PUSH): ").upper()
 
@@ -867,7 +867,7 @@ def search_history_by_result():
         "Enter result (WIN/LOSS/PUSH/PENDING): "
     ).upper()
 
-    valid_results = ["WIN", "LOSS", "PUSH", "PENDING"]
+    valid_results = ["WIN", "LOSS", "PUSH", "PENDING", "DNP"]
 
     if result_search not in valid_results:
         print()
@@ -948,7 +948,7 @@ def filter_by_sport_and_result():
     sport_search = input("Enter sport: ").upper()
     result_search = input("Enter result (WIN/LOSS/PUSH/PENDING): ").upper()
 
-    valid_results = ["WIN", "LOSS", "PUSH", "PENDING"]
+    valid_results = ["WIN", "LOSS", "PUSH", "PENDING", "DNP"]
 
     if result_search not in valid_results:
         print()
@@ -1636,7 +1636,7 @@ while True:
 
         valid_sports = ["NBA", "WNBA"]
         valid_risk_types = ["GOBLIN", "NORMAL", "DEMON"]
-        valid_results = ["WIN", "LOSS", "PUSH", "PENDING", "PASS"]
+        valid_results = ["WIN", "LOSS", "PUSH", "PENDING", "DNP", "PASS"]
 
         if sport and sport.upper() not in valid_sports:
             print(f"Invalid sport. Choose from: {', '.join(valid_sports)}")

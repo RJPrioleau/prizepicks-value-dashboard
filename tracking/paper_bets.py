@@ -31,6 +31,10 @@ def determine_result(recommendation, line, actual_stat):
     LESS recommendations win when the actual stat is less than the line.
     PASS recommendations are not graded.
     """
+
+    if str(actual_stat).upper() == "DNP":
+        return "DNP"
+
     if recommendation == "PASS":
         return "PASS"
 
@@ -178,8 +182,26 @@ def update_paper_bet_results():
                 f"{row['recommendation']}"
             )
 
-        selected_index = int(input("Enter the index number to update: "))
+        selected_index_input = input(
+            "Enter index to update (or X to exit): "
+        ).strip()
 
+        if selected_index_input.upper() == "X":
+            print("Finished updating paper bets.")
+            break
+
+        try:
+            selected_index = int(selected_index_input)
+
+        except ValueError:
+            print("Invalid selection.")
+            input("Press Enter to continue...")
+            continue
+
+        if selected_index not in df.index:
+            print("Invalid selection. That index is not available.")
+            input("Press Enter to continue...")
+            continue
 
         selected_row = df.loc[selected_index]
 
@@ -193,7 +215,12 @@ def update_paper_bet_results():
             f"Risk: {selected_row['risk_type']}"
         )
 
-        actual_stat = float(input("Enter the actual stat: "))
+        actual_stat_input = input("Enter the actual stat or DNP: ").strip()
+
+        if actual_stat_input.upper() == "DNP":
+            actual_stat = "DNP"
+        else:
+            actual_stat = float(actual_stat_input)
 
         new_result = determine_result(
             selected_row["recommendation"],
@@ -213,7 +240,7 @@ def update_paper_bet_results():
             f"as {new_result}"
         )
 
-        update_again = input("Update another bet? Y//N: ").strip().upper()
+        update_again = input("Update another bet? Y/N: ").strip().upper()
 
         if update_again != "Y":
             print("Finished updating paper bets.")
