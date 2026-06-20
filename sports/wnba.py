@@ -11,6 +11,7 @@ from analysis.historical_analysis import (
 )
 from analysis.recommendation_engine import get_basic_recommendation
 from analysis.matchup_parser import parse_basketball_matchup
+import pandas as pd
 
 
 
@@ -138,6 +139,11 @@ def add_wnba_calculated_stats(df):
     df["PR"] = df["pts"] + df["reb"]
     df["PA"] = df["pts"] + df["ast"]
 
+    df["pts"] = pd.to_numeric(df["pts"], errors="coerce")
+    df["reb"] = pd.to_numeric(df["reb"], errors="coerce")
+    df["ast"] = pd.to_numeric(df["ast"], errors="coerce")
+    df["fg3m"] = pd.to_numeric(df["fg3m"], errors="coerce")
+
     return df
 
 def get_wnba_player_analysis(player_name, stat_type, line, opponent=None):
@@ -163,6 +169,7 @@ def get_wnba_player_analysis(player_name, stat_type, line, opponent=None):
         "Rebs+Asts": "RA",
         "Pts+Rebs": "PR",
         "Pts+Asts": "PA",
+        "3PTM": "fg3m",
     }
 
     stat_column = stat_column_map.get(stat_type, stat_type)

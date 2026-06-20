@@ -204,8 +204,8 @@ Status: COMPLETE
 
 ### Paper Bet Tracking Improvements
 
-- [ ] Add VOID result support
-    - [ ] Add DNP result status
+- [x] Add VOID result support
+    - [x] Add DNP result status
   - DNP
   - Injury
   - Did Not Start
@@ -220,6 +220,13 @@ Status: COMPLETE
     - Score by sport
     - Score by risk type
     - Score by recommendation
+- [ ] Investigate prop importer skipping props
+  - Latest board expected 20 props but imported 15
+  - Check unsupported stat types
+  - Check malformed raw lines
+  - Check duplicate detection
+  - Add importer summary showing imported vs skipped lines
+  - Add skipped-line report with reason
 
 ### Recommendation Engine Investigation
 
