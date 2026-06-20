@@ -240,6 +240,7 @@ Status: COMPLETE
 - [ ] Correlated prop cluster detection
 - [ ] Ladder analysis
 - [ ] Single-player exposure analysis
+- [ ] Ladder Compression Engine
 
 ### Ladder Analysis Engine
 

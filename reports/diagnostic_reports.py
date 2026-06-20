@@ -809,6 +809,50 @@ def show_ladder_compression_simulation():
     print(f"Pushes: {pushes}")
     print(f"Win Rate: {win_rate}%")
 
+def show_compressed_board_preview():
+    df = pd.read_csv("paper_bets.csv")
+    candidate_count = 0
+    def get_direction(recommendation):
+        if recommendation in ["STRONG MORE", "LEAN MORE"]:
+            return "MORE"
+
+        if recommendation in ["STRONG LESS", "LEAN LESS"]:
+            return "LESS"
+
+        return "PASS"
+
+    df["direction"] = df["recommendation"].apply(get_direction)
+    df = df[df["direction"] != "PASS"]
+
+    df = df[df["result"] == "PENDING"]
+
+    ladder_groups = (
+        df.groupby(
+            ["sport", "game_date", "player", "stat", "direction"]
+        )
+    )
+    for (
+            sport,
+            game_date,
+            player,
+            stat,
+            direction
+    ), group in ladder_groups:
+
+        if len(group) <= 1:
+            continue
+        candidate_count += 1
+
+        print()
+        print(player)
+        print(group[["line", "risk_type"]])
+    if candidate_count == 0:
+        print()
+        print("-" * 90)
+        print("COMPRESSED BOARD PREVIEW")
+        print("-" * 90)
+        print("No active ladder compression candidates found.")
+
 def show_removed_ladder_props():
     df = pd.read_csv("paper_bets.csv")
 
