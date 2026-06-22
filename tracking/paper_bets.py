@@ -159,11 +159,22 @@ def update_paper_bet_results():
     ensure_paper_bets_schema()
     df = pd.read_csv("paper_bets.csv")
 
+    game_date_filter = input(
+        "Enter game date to update (YYYY-MM-DD), or press Enter for all pending: "
+    ).strip()
+
     while True:
         pending_bets = df[
             (df["result"] == "PENDING") &
             (df["recommendation"] != "PASS")
-        ]
+            ].copy()
+
+        if game_date_filter:
+            pending_bets = pending_bets[
+                pending_bets["game_date"].astype(str) == game_date_filter
+                ]
+        print()
+        print(f"Pending Bets Found: {len(pending_bets)}")
 
         if pending_bets.empty:
             print("No pending actionable bets to update.")

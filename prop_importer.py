@@ -48,7 +48,7 @@ def is_team_position_line(line):
     DAL - G
     """
 
-    pattern = r"^[A-Z]{2,4}\s-\s[A-Z]{1,2}$"
+    pattern = r"^[A-Z]{2,4}\s-\s[A-Z-]+$"
 
     return re.match(pattern, line) is not None
 
@@ -233,6 +233,7 @@ if __name__ == "__main__":
     lines = clean_lines(raw_text)
     start_indexes = find_prop_start_indexes(lines)
     prop_blocks = split_into_prop_blocks(lines, start_indexes)
+    print(f"Found {len(prop_blocks)} prop blocks")
 
     props = []
 

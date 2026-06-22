@@ -12,6 +12,7 @@ from analysis.historical_analysis import (
 from analysis.recommendation_engine import get_basic_recommendation
 from analysis.matchup_parser import parse_basketball_matchup
 import pandas as pd
+import unicodedata
 
 
 
@@ -154,6 +155,12 @@ def get_wnba_player_analysis(player_name, stat_type, line, opponent=None):
     Recreate the basic NBA-style historical analysis for WNBA using
     SportsDataverse game logs.
     """
+
+    player_name = (
+        unicodedata.normalize("NFKD", player_name)
+        .encode("ascii", "ignore")
+        .decode("ascii")
+    )
 
     player_logs = get_wnba_player_game_logs(player_name)
 
