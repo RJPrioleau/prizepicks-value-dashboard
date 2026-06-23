@@ -184,14 +184,23 @@ def update_paper_bet_results():
         print("PENDING BETS")
         print("-" * 90)
 
-        for index, row in pending_bets.iterrows():
-            print(
-                f"{index}: "
-                f"{row['player']} "
-                f"{row['stat']} "
-                f"{row['line']} "
-                f"{row['recommendation']}"
-            )
+        grouped = pending_bets.groupby("opponent")
+
+        for opponent, group in grouped:
+
+            print()
+            print("-" * 90)
+            print(f"OPPONENT: {opponent}")
+            print("-" * 90)
+
+            for index, row in group.iterrows():
+                print(
+                    f"{index}: "
+                    f"{row['player']} "
+                    f"{row['stat']} "
+                    f"{row['line']} "
+                    f"{row['recommendation']}"
+                )
 
         selected_index_input = input(
             "Enter index to update (or X to exit): "

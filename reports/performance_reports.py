@@ -241,6 +241,214 @@ def show_score_performance():
         print(f"Record: {wins}-{losses}-{pushes}")
         print(f"Win Rate: {win_rate}%")
 
+def show_score_performance_by_recommendation():
+    """
+    Show score performance broken down by recommendation type.
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
+    if "score" not in df.columns:
+        print()
+        print("-" * 90)
+        print("SCORE PERFORMANCE BY RECOMMENDATION")
+        print("-" * 90)
+        print("No score column found.")
+        return
+
+    df["score"] = pd.to_numeric(df["score"], errors="coerce")
+
+    scored_df = df[
+        df["score"].notna() &
+        df["result"].isin(["WIN", "LOSS", "PUSH"])
+    ]
+
+    print()
+    print("-" * 90)
+    print("SCORE PERFORMANCE BY RECOMMENDATION")
+    print("-" * 90)
+
+    if scored_df.empty:
+        print("No graded paper bets with score data yet.")
+        return
+
+    grouped = scored_df.groupby(
+        ["score", "recommendation"]
+    )
+
+    for (score, recommendation), group in grouped:
+
+        wins = len(group[group["result"] == "WIN"])
+        losses = len(group[group["result"] == "LOSS"])
+        pushes = len(group[group["result"] == "PUSH"])
+
+        total = wins + losses + pushes
+
+        win_rate = (
+            round((wins / total) * 100, 2)
+            if total > 0 else 0
+        )
+
+        print()
+        print(
+            f"Score {int(score)} | "
+            f"{recommendation}"
+        )
+        print(f"Total Graded: {total}")
+        print(f"Record: {wins}-{losses}-{pushes}")
+        print(f"Win Rate: {win_rate}%")
+
+def show_score_performance_by_risk_type():
+    """
+    Show score performance broken down by risk_type type.
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
+    if "score" not in df.columns:
+        print()
+        print("-" * 90)
+        print("SCORE PERFORMANCE BY RISK TYPE")
+        print("-" * 90)
+        print("No score column found.")
+        return
+
+    df["score"] = pd.to_numeric(df["score"], errors="coerce")
+
+    scored_df = df[
+        df["score"].notna() &
+        df["result"].isin(["WIN", "LOSS", "PUSH"])
+    ]
+
+    print()
+    print("-" * 90)
+    print("SCORE PERFORMANCE BY RISK TYPE")
+    print("-" * 90)
+
+    if scored_df.empty:
+        print("No graded paper bets with score data yet.")
+        return
+
+    grouped = scored_df.groupby(
+        ["score", "risk_type"]
+    )
+
+    for (score, risk_type), group in grouped:
+
+        wins = len(group[group["result"] == "WIN"])
+        losses = len(group[group["result"] == "LOSS"])
+        pushes = len(group[group["result"] == "PUSH"])
+
+        total = wins + losses + pushes
+
+        win_rate = (
+            round((wins / total) * 100, 2)
+            if total > 0 else 0
+        )
+
+        print()
+        print(
+            f"Score {int(score)} | "
+            f"{risk_type}"
+        )
+        print(f"Total Graded: {total}")
+        print(f"Record: {wins}-{losses}-{pushes}")
+        print(f"Win Rate: {win_rate}%")
+
+def show_score_distribution():
+
+    """
+    Show how often each score is generated.
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
+    if "score" not in df.columns:
+        print()
+        print("-" * 90)
+        print("SCORE DISTRIBUTION")
+        print("-" * 90)
+        print("No score column found.")
+        return
+
+    df["score"] = pd.to_numeric(df["score"], errors="coerce")
+
+    scored_df = df[df["score"].notna()]
+
+    print()
+    print("-" * 90)
+    print("SCORE DISTRIBUTION")
+    print("-" * 90)
+
+    if scored_df.empty:
+        print("No score data found.")
+        return
+
+    total = len(scored_df)
+
+    for score in range(5, -6, -1):
+        count = len(
+            scored_df[
+                scored_df["score"] == score
+                ]
+        )
+
+        percentage = round((count / total) * 100, 2) if total > 0 else 0
+
+        print(
+            f"Score {score:>2}: "
+            f"{count} ({percentage}%)"
+        )
+
+    print()
+    print(f"Total Scored Props: {total}")
+
+def show_average_score_analysis():
+    """
+    Compare average scores for wins and losses.
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
+    if "score" not in df.columns:
+        print()
+        print("-" * 90)
+        print("AVERAGE SCORE ANALYSIS")
+        print("-" * 90)
+        print("No score column found.")
+        return
+
+    df["score"] = pd.to_numeric(df["score"], errors="coerce")
+
+    graded_df = df[
+        df["score"].notna() &
+        df["result"].isin(["WIN", "LOSS"])
+    ]
+
+    winning_scores = graded_df[
+        graded_df["result"] == "WIN"
+    ]["score"]
+
+    losing_scores = graded_df[
+        graded_df["result"] == "LOSS"
+    ]["score"]
+
+    average_win_score = round(
+        winning_scores.mean(), 2
+    )
+
+    average_loss_score = round(
+        losing_scores.mean(), 2
+    )
+
+    print()
+    print("-" * 90)
+    print("AVERAGE SCORE ANALYSIS")
+    print("-" * 90)
+
+    print(f"Average WIN Score: {average_win_score}")
+    print(f"Average LOSS Score: {average_loss_score}")
+
 def show_full_performance_report():
     """
     Display all engine performance reports.
@@ -251,3 +459,7 @@ def show_full_performance_report():
     show_confidence_breakdown()
     show_risk_breakdown()
     show_score_performance()
+    show_score_performance_by_recommendation()
+    show_score_performance_by_risk_type()
+    show_score_distribution()
+    show_average_score_analysis()
