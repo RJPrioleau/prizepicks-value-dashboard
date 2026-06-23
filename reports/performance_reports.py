@@ -236,7 +236,8 @@ def show_score_performance():
         win_rate = round((wins / total) * 100, 2) if total > 0 else 0
 
         print()
-        print(f"Score: {score}")
+        print(f"Score: {int(score)}")
+        print(f"Total Graded: {total}")
         print(f"Record: {wins}-{losses}-{pushes}")
         print(f"Win Rate: {win_rate}%")
 
