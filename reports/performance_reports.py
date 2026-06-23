@@ -449,6 +449,77 @@ def show_average_score_analysis():
     print(f"Average WIN Score: {average_win_score}")
     print(f"Average LOSS Score: {average_loss_score}")
 
+def show_score_effectiveness():
+    df = pd.read_csv("paper_bets.csv")
+
+    df["score"] = pd.to_numeric(
+        df["score"],
+        errors="coerce"
+    )
+
+    scored_df = df[
+        df["score"].notna() &
+        df["result"].isin(["WIN", "LOSS", "PUSH"])
+        ]
+
+    print()
+    print("-" * 90)
+    print("SCORE EFFECTIVENESS")
+    print("-" * 90)
+
+    print(
+        f"{'Score':<7}"
+        f"{'Total':<8}"
+        f"{'Wins':<8}"
+        f"{'Losses':<10}"
+        f"{'Pushes':<8}"
+        f"{'Win Rate'}"
+    )
+
+    print("-" * 50)
+
+    for score in sorted(
+            scored_df["score"].unique(),
+            reverse=True
+    ):
+        score_df = scored_df[
+            scored_df["score"] == score
+            ]
+
+        wins = len(
+            score_df[
+                score_df["result"] == "WIN"
+                ]
+        )
+
+        losses = len(
+            score_df[
+                score_df["result"] == "LOSS"
+                ]
+        )
+
+        pushes = len(
+            score_df[
+                score_df["result"] == "PUSH"
+                ]
+        )
+
+        total = wins + losses + pushes
+
+        win_rate = (
+            round((wins / total) * 100, 2)
+            if total > 0 else 0
+        )
+
+        print(
+            f"{int(score):<7}"
+            f"{total:<8}"
+            f"{wins:<8}"
+            f"{losses:<10}"
+            f"{pushes:<8}"
+            f"{win_rate}%"
+        )
+
 def show_full_performance_report():
     """
     Display all engine performance reports.
@@ -462,4 +533,5 @@ def show_full_performance_report():
     show_score_performance_by_recommendation()
     show_score_performance_by_risk_type()
     show_score_distribution()
+    show_average_score_analysis()
     show_average_score_analysis()

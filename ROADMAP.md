@@ -118,6 +118,14 @@ Do not modify recommendation logic until investigation data supports the change.
 - [x] Automatic props.csv generation
 - [x] Duplicate protection workflow
 - [x] Raw prop slate archiving by game date
+- [x] Add stacked filters for `props.csv` and `paper_bets.csv`
+  - [x] Filter by player name
+  - [x] Filter by risk type
+  - [x] Filter by sport
+  - [x] Filter by slate date
+  - [x] Allow combined filters
+    - [x] Example: WNBA + DEMON + June 2026
+    - [x] Example: Caitlin Clark + HIGH confidence + LOSS
 
 ### Infrastructure
 
@@ -220,7 +228,7 @@ Status: COMPLETE
     - Score by sport
     - Score by risk type
     - Score by recommendation
-- [ ] Investigate prop importer skipping props
+- [x] Investigate prop importer skipping props
   - Latest board expected 20 props but imported 15
   - Check unsupported stat types
   - Check malformed raw lines
@@ -310,21 +318,14 @@ Status: COMPLETE
 ### Result Update Quality of Life Improvements
 
 - [ ] Group pending props by game
-- [x] Add stacked filters for `props.csv` and `paper_bets.csv`
-  - [x] Filter by player name
-  - [x] Filter by risk type
-  - [x] Filter by sport
-  - [x] Filter by slate date
-  - [x] Allow combined filters
-    - [x] Example: WNBA + DEMON + June 2026
-    - [x] Example: Caitlin Clark + HIGH confidence + LOSS
+
 - [ ] Display matchup during result updates
 - [ ] Display team abbreviation during result updates
 - [ ] Allow updating all props from one game before moving to the next
 - [ ] Validate selected bet index before updating
     - Show a clear message if the index does not exist
     - Do not crash or continue with invalid selection
-- [ ] Add exit/back option during result update flow
+- [x] Add exit/back option during result update flow
     - Allow `q`, `quit`, `exit`, or `back`
     - Useful after accidentally choosing to update another bet
 - [ ] Add slate/game validation before saving paper bets
