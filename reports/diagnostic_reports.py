@@ -953,6 +953,57 @@ def show_score_compressed_board_preview():
 
     print(compressed_df[columns].to_string(index=False))
 
+def show_reason_coverage_report():
+    """
+    Show whether recommendation reasons are being stored
+    and which reasons appear most often.
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
+    print()
+    print("-" * 90)
+    print("REASON COVERAGE REPORT")
+    print("-" * 90)
+
+    if "reasons" not in df.columns:
+        print("No reasons column found.")
+        return
+
+    reason_df = df[
+        df["reasons"].notna() &
+        (df["reasons"].astype(str).str.strip() != "")
+    ].copy()
+
+    print(f"Total Rows: {len(df)}")
+    print(f"Rows With Reasons: {len(reason_df)}")
+    print(f"Rows Missing Reasons: {len(df) - len(reason_df)}")
+
+    if reason_df.empty:
+        return
+
+    reason_counts = {}
+
+    for reasons in reason_df["reasons"]:
+        for reason in str(reasons).split(" | "):
+            reason = reason.strip()
+
+            if reason == "":
+                continue
+
+            reason_counts[reason] = reason_counts.get(reason, 0) + 1
+
+    print()
+    print("REASON COUNTS")
+    print("-" * 90)
+
+    for reason, count in sorted(
+        reason_counts.items(),
+        key=lambda item: item[1],
+        reverse=True
+    ):
+        print(f"{count}: {reason}")
+
 def show_removed_ladder_props():
     df = pd.read_csv("paper_bets.csv")
 

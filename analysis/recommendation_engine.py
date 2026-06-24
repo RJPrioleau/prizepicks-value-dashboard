@@ -1,3 +1,5 @@
+from analysis.indicator_weights import INDICATOR_WEIGHTS
+
 def get_basic_recommendation(line,last_10_avg,season_avg,hit_rate,trend_direction,opponent_avg):
     """
     Generate a recommendation, confidence level, and reasoning.
@@ -22,39 +24,39 @@ def get_basic_recommendation(line,last_10_avg,season_avg,hit_rate,trend_directio
     reasons = []
 
     if last_10_avg > line:
-        score += 1
+        score += INDICATOR_WEIGHTS["last_10_average"]
         reasons.append("Last 10 average is above the line.")
     else:
-        score -= 1
+        score -= INDICATOR_WEIGHTS["last_10_average"]
         reasons.append("Last 10 average is below the line.")
 
     if season_avg > line:
-        score += 1
+        score += INDICATOR_WEIGHTS["season_average"]
         reasons.append("Season average is above the line.")
     else:
-        score -= 1
+        score -= INDICATOR_WEIGHTS["season_average"]
         reasons.append("Season average is below the line.")
 
     if hit_rate >= 60:
-        score += 1
+        score += INDICATOR_WEIGHTS["hit_rate"]
         reasons.append("Hit rate is 60% or higher.")
     elif hit_rate <= 50:
-        score -= 1
+        score -= INDICATOR_WEIGHTS["hit_rate"]
         reasons.append("Hit rate is 50% or lower.")
 
     if trend_direction == "UP":
-        score += 1
+        score += INDICATOR_WEIGHTS["trend"]
         reasons.append("Recent trend is up.")
     elif trend_direction == "DOWN":
-        score -= 1
+        score -= INDICATOR_WEIGHTS["trend"]
         reasons.append("Recent trend is down.")
 
     if opponent_avg != "N/A":
         if opponent_avg > line:
-            score += 1
+            score += INDICATOR_WEIGHTS["opponent_average"]
             reasons.append("Opponent average is above the line.")
         else:
-            score -= 1
+            score -= INDICATOR_WEIGHTS["opponent_average"]
             reasons.append("Opponent average is below the line.")
 
     if score >= 4:
