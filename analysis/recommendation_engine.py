@@ -72,7 +72,12 @@ def get_basic_recommendation(line,last_10_avg,season_avg,hit_rate,trend_directio
     # HIGH confidence is currently performing poorly:
     # Overall HIGH: 6-32
     # June 13 HIGH: 0-26
-    # Do not adjust thresholds yet. First trace what inputs are inflating this score.
+    # Do not adjust thresholds yet.
+    # Lo Note:
+    # Confidence is currently derived directly from score.
+    # It is not an independent metric.
+    # Any confidence analytics will mirror score analytics
+    # until confidence logic is expanded.
 
     if abs(score) >= 4:
         confidence = "HIGH"

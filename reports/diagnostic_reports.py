@@ -853,6 +853,106 @@ def show_compressed_board_preview():
         print("-" * 90)
         print("No active ladder compression candidates found.")
 
+def show_score_compressed_board_preview():
+    """
+    Preview ladder compression using strongest absolute score.
+
+    Rule:
+    - Group same player/stat/direction ladders
+    - Keep prop with strongest absolute score
+    - Tie-breaker: safer line
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
+    if "score" not in df.columns:
+        print("No score column found.")
+        return
+
+    df["score"] = pd.to_numeric(df["score"], errors="coerce")
+    df["line"] = pd.to_numeric(df["line"], errors="coerce")
+
+    pending_all_df = df[
+        (df["result"] == "PENDING") &
+        (df["score"].notna())
+        ].copy()
+
+
+
+    pending_df = df[
+        (df["result"] == "PENDING") &
+        (df["score"].notna()) &
+        (df["recommendation"] != "PASS")
+    ].copy()
+    def get_direction(recommendation):
+        if recommendation in ["STRONG MORE", "LEAN MORE"]:
+            return "MORE"
+
+        if recommendation in ["STRONG LESS", "LEAN LESS"]:
+            return "LESS"
+
+        return "PASS"
+
+    pending_df["direction"] = pending_df["recommendation"].apply(get_direction)
+    pending_df = pending_df[pending_df["direction"] != "PASS"]
+    more_df = pending_df[pending_df["direction"] == "MORE"].copy()
+    less_df = pending_df[pending_df["direction"] == "LESS"].copy()
+
+    more_df["abs_score"] = more_df["score"].abs()
+    less_df["abs_score"] = less_df["score"].abs()
+
+    more_df = more_df.sort_values(
+        by=["abs_score", "line"],
+        ascending=[False, True]
+    )
+
+    less_df = less_df.sort_values(
+        by=["abs_score", "line"],
+        ascending=[False, False]
+    )
+
+    sorted_df = pd.concat([more_df, less_df])
+    compressed_df = (
+        sorted_df
+        .groupby(["sport", "game_date", "player", "stat", "direction"])
+        .head(1)
+        .copy()
+    )
+
+    removed_df = sorted_df.loc[
+        ~sorted_df.index.isin(compressed_df.index)
+    ].copy()
+    print()
+    print("-" * 90)
+    print("SCORE-COMPRESSED BOARD PREVIEW")
+    print("-" * 90)
+
+    print(f"Original Actionable Props: {len(sorted_df)}")
+    print(f"Compressed Props: {len(compressed_df)}")
+    print(f"Removed Props: {len(removed_df)}")
+
+    print()
+    print(f"Original Pending Scored Props: {len(pending_all_df)}")
+    print(f"Original Actionable Props: {len(sorted_df)}")
+
+    print()
+    print("KEPT PROPS")
+    print("-" * 90)
+
+    columns = [
+        "sport",
+        "game_date",
+        "player",
+        "stat",
+        "line",
+        "risk_type",
+        "recommendation",
+        "score",
+        "confidence"
+    ]
+
+    print(compressed_df[columns].to_string(index=False))
+
 def show_removed_ladder_props():
     df = pd.read_csv("paper_bets.csv")
 
