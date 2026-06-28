@@ -165,8 +165,10 @@ def update_paper_bet_results():
     df = pd.read_csv("paper_bets.csv")
 
     game_date_filter = input(
-        "Enter game date to update (YYYY-MM-DD), or press Enter for all pending: "
+        "Enter game date to update (YYYY-MM-DD), or press Enter to view pending slates: "
     ).strip()
+
+
 
     while True:
         pending_bets = df[
@@ -188,6 +190,35 @@ def update_paper_bet_results():
         print()
         print("PENDING BETS")
         print("-" * 90)
+
+        if not game_date_filter:
+            print()
+            print("PENDING SLATES")
+            print("-" * 90)
+
+            slate_counts = (
+                pending_bets
+                .groupby("game_date")
+                .size()
+                .sort_index()
+            )
+
+            if slate_counts.empty:
+                print("No pending actionable bets found.")
+                break
+
+            for game_date, count in slate_counts.items():
+                print(f"{game_date}: {count} pending bets")
+
+            print()
+            game_date_filter = input(
+                "Enter game date to update from above, or press Enter again for all pending: "
+            ).strip()
+
+            if game_date_filter:
+                pending_bets = pending_bets[
+                    pending_bets["game_date"].astype(str) == game_date_filter
+                    ]
 
         grouped = pending_bets.groupby("opponent")
 
@@ -228,6 +259,11 @@ def update_paper_bet_results():
             input("Press Enter to continue...")
             continue
 
+        if selected_index not in pending_bets.index:
+            print("Invalid selection. That index is not in the displayed pending bets.")
+            input("Press Enter to continue...")
+            continue
+
         selected_row = df.loc[selected_index]
 
         print()
@@ -240,12 +276,24 @@ def update_paper_bet_results():
             f"Risk: {selected_row['risk_type']}"
         )
 
-        actual_stat_input = input("Enter the actual stat or DNP: ").strip()
+        actual_stat_input = input("Enter the actual stat, DNP, or X to go back: ").strip()
+
+        if actual_stat_input.upper() == "X":
+            print("Cancelled update. Returning to pending bets.")
+            input("Press Enter to continue...")
+            continue
 
         if actual_stat_input.upper() == "DNP":
             actual_stat = "DNP"
         else:
-            actual_stat = float(actual_stat_input)
+            try:
+                actual_stat = float(actual_stat_input)
+            except ValueError:
+                print("Invalid actual stat. Enter a number, DNP, or X.")
+                input("Press Enter to continue...")
+                continue
+
+
 
         new_result = determine_result(
             selected_row["recommendation"],
