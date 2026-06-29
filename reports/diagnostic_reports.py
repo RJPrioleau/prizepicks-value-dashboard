@@ -1403,3 +1403,65 @@ def show_ladder_performance():
 
     if ladder_count == 0:
         print("No ladders found.")
+
+def show_indicator_effectiveness():
+    """
+    Show how often each recommendation reason appears
+    and the engine's record when that reason is present.
+    """
+
+    df = pd.read_csv("paper_bets.csv")
+
+    graded_df = df[
+        df["result"].isin(["WIN", "LOSS"]) &
+        df["reasons"].notna() &
+        (df["reasons"] != "")
+        ]
+
+    indicator_stats = {}
+
+    for _, row in graded_df.iterrows():
+
+        reasons = row["reasons"].split(" | ")
+
+        for reason in reasons:
+            if reason not in indicator_stats:
+                indicator_stats[reason] = {
+                    "wins": 0,
+                    "losses": 0
+                }
+            if row["result"] == "WIN":
+                indicator_stats[reason]["wins"] += 1
+
+            elif row["result"] == "LOSS":
+                indicator_stats[reason]["losses"] += 1
+
+    print()
+    print("-" * 90)
+    print("INDICATOR EFFECTIVENESS")
+    print("-" * 90)
+
+    for reason, stats in sorted(
+            indicator_stats.items()
+    ):
+        wins = stats["wins"]
+        losses = stats["losses"]
+
+        total = wins + losses
+
+        win_rate = (
+            round((wins / total) * 100, 2)
+            if total > 0 else 0
+        )
+        print("-" * 50)
+        print(reason)
+        print(f"Record: {wins}-{losses}")
+        print(f"Win Rate: {win_rate}%")
+
+
+
+
+
+
+
+

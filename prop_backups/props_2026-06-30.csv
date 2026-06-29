@@ -1,0 +1,10 @@
+sport,player,stat,line,opponent,game_date,risk_type
+WNBA,Sarah Ashlee Barker,3PTM,1.5,CHI,2026-06-26,DEMON
+WNBA,Sonia Citron,PRA,25.5,CON,2026-06-26,NORMAL
+WNBA,Angel Reese,PTS,9.5,GSV,2026-06-26,GOBLIN
+WNBA,Emily Engstler,PTS,8.5,CHI,2026-06-26,NORMAL
+WNBA,Kamilla Cardoso,REB,8,PDX,2026-06-26,NORMAL
+WNBA,Angel Reese,REB,11.5,GSV,2026-06-26,NORMAL
+WNBA,Olivia Nelson-Ododa,REB,6.5,WAS,2026-06-26,DEMON
+WNBA,Kamilla Cardoso,Pts+Rebs,22.5,PDX,2026-06-26,NORMAL
+WNBA,Veronica Burton,PTS,12.5,ATL,2026-06-26,NORMAL
