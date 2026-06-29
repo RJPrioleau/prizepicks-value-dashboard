@@ -534,4 +534,4 @@ def show_full_performance_report():
     show_score_performance_by_risk_type()
     show_score_distribution()
     show_average_score_analysis()
-    show_average_score_analysis()
+
