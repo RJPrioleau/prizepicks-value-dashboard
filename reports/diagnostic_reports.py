@@ -1,5 +1,27 @@
 import pandas as pd
 
+INDICATOR_GROUPS = {
+    "Last 10 Average": [
+        "Last 10 average is above the line.",
+        "Last 10 average is below the line."
+    ],
+    "Season Average": [
+        "Season average is above the line.",
+        "Season average is below the line."
+    ],
+    "Hit Rate": [
+        "Hit rate is 60% or higher.",
+        "Hit rate is 50% or lower."
+    ],
+    "Trend": [
+        "Recent trend is up.",
+        "Recent trend is down."
+    ],
+    "Opponent Average": [
+        "Opponent average is above the line.",
+        "Opponent average is below the line."
+    ]
+}
 
 def show_slate_breakdown():
     df = pd.read_csv("paper_bets.csv")
@@ -1404,12 +1426,16 @@ def show_ladder_performance():
     if ladder_count == 0:
         print("No ladders found.")
 
-def show_indicator_effectiveness():
+def build_indicator_stats():
     """
-    Show how often each recommendation reason appears
-    and the engine's record when that reason is present.
-    """
+    Build indicator win/loss statistics from graded paper bets.
 
+    Returns
+    -------
+    dict
+        Dictionary keyed by recommendation reason containing
+        win/loss counts.
+    """
     df = pd.read_csv("paper_bets.csv")
 
     graded_df = df[
@@ -1435,6 +1461,16 @@ def show_indicator_effectiveness():
 
             elif row["result"] == "LOSS":
                 indicator_stats[reason]["losses"] += 1
+
+    return indicator_stats
+
+def show_indicator_effectiveness():
+    """
+    Show how often each recommendation reason appears
+    and the engine's record when that reason is present.
+    """
+
+    indicator_stats = build_indicator_stats()
 
     print()
     print("-" * 90)
@@ -1463,10 +1499,40 @@ def show_indicator_effectiveness():
         print(f"Record: {wins}-{losses}")
         print(f"Win Rate: {win_rate}%")
 
+def show_grouped_indicator_effectiveness():
+    """
+    Show indicator effectiveness grouped by indicator family.
+    """
 
+    indicator_stats = build_indicator_stats()
 
+    print()
+    print("-" * 90)
+    print("GROUPED INDICATOR EFFECTIVENESS")
+    print("-" * 90)
 
+    for group_name, reasons in INDICATOR_GROUPS.items():
+        print()
+        print("-" * 50)
+        print(group_name)
+        print("-" * 50)
 
+        for reason in reasons:
+            stats = indicator_stats.get(
+                reason,
+                {"wins": 0, "losses": 0}
+            )
 
+            wins = stats["wins"]
+            losses = stats["losses"]
+            total = wins + losses
 
+            win_rate = (
+                round((wins / total) * 100, 2)
+                if total > 0 else 0
+            )
 
+            print(reason)
+            print(f"Record: {wins}-{losses}")
+            print(f"Win Rate: {win_rate}%")
+            print()
