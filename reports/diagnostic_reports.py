@@ -1442,7 +1442,12 @@ def show_indicator_effectiveness():
     print("-" * 90)
 
     for reason, stats in sorted(
-            indicator_stats.items()
+            indicator_stats.items(),
+            key=lambda item: (
+                    item[1]["wins"] / (item[1]["wins"] + item[1]["losses"])
+                    if (item[1]["wins"] + item[1]["losses"]) > 0 else 0
+            ),
+            reverse=True
     ):
         wins = stats["wins"]
         losses = stats["losses"]

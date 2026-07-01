@@ -24,6 +24,118 @@ Primary goals:
 * Historical results are more valuable than opinions.
 * Automation should eliminate repetitive tasks, not remove user control.
 
+## Current Priority
+
+- [ ] Finish Engine Toolkit v1.0
+- [ ] Freeze Engine Toolkit
+- [ ] Begin MLB engine implementation
+- [ ] Run WNBA + MLB concurrently
+- [ ] Expand What-If Engine using live data from both sports
+
+## Core Engine Architecture
+
+### Guiding Principles
+
+- [ ] Build one recommendation engine that supports multiple sports
+- [ ] Generalize features whenever they benefit every sport
+- [ ] Specialize only when a sport truly requires unique logic
+- [ ] The Core Engine should never need to know what sport it is analyzing
+- [ ] Build once. Reuse everywhere.
+- [ ] Make all engine changes data-driven
+
+---
+
+## Core Engine
+
+### Shared Components
+
+- [ ] Recommendation Engine
+- [ ] Score Calculation
+- [ ] Confidence System
+- [ ] Indicator Weight System
+- [ ] Recommendation Reasons
+- [ ] Paper Bet Tracking
+- [ ] Result Grading
+- [ ] Analytics & Performance Reports
+- [ ] Diagnostic Reports
+- [ ] Ladder Analysis
+- [ ] What-If Simulation Engine
+- [ ] AI-Assisted Analysis (Future)
+
+---
+
+## Sport Modules
+
+### NBA
+
+- [ ] Historical Statistics
+- [ ] Matchup Calculations
+- [ ] Sport-Specific Indicators
+- [ ] Sport-Specific Weights
+
+### WNBA
+
+- [ ] Historical Statistics
+- [ ] Matchup Calculations
+- [ ] Sport-Specific Indicators
+- [ ] Sport-Specific Weights
+
+### MLB
+
+- [ ] Historical Statistics
+- [ ] Matchup Calculations
+- [ ] Pitcher/Batter Analysis
+- [ ] Sport-Specific Indicators
+- [ ] Sport-Specific Weights
+
+### NFL
+
+- [ ] Historical Statistics
+- [ ] Matchup Calculations
+- [ ] Sport-Specific Indicators
+- [ ] Sport-Specific Weights
+
+---
+
+## Engine Toolkit v1.0
+
+### Research & Simulation
+
+- [ ] Indicator Effectiveness Report
+- [ ] Grouped Indicator Effectiveness Report
+- [ ] Minimum Viable What-If Replay Engine
+- [ ] Weight Simulation
+- [ ] Toolkit Documentation
+
+### Engine Toolkit Freeze
+
+- [ ] Freeze Engine Toolkit v1.0
+- [ ] No new research tools unless they directly improve recommendations or solve a production problem
+
+---
+
+## Engine Development Cycle
+
+- [ ] Load WNBA slate
+- [ ] Load MLB slate
+- [ ] Paper trade both sports
+- [ ] Update results
+- [ ] Run diagnostics
+- [ ] Review engine performance
+- [ ] Test improvements in What-If Engine
+- [ ] Apply validated improvements to production engine
+- [ ] Repeat
+
+---
+
+## Engine Improvement Rules
+
+- [ ] Reports create evidence
+- [ ] Evidence creates hypotheses
+- [ ] Simulations test hypotheses
+- [ ] Production engine changes only after simulation validation
+- [ ] No intuition-only engine changes
+
 
 ## Current Development Focus
 ### Active Investigation
