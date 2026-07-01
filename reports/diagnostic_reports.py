@@ -1517,6 +1517,8 @@ def show_grouped_indicator_effectiveness():
         print(group_name)
         print("-" * 50)
 
+        win_rates = []
+
         for reason in reasons:
             stats = indicator_stats.get(
                 reason,
@@ -1532,7 +1534,16 @@ def show_grouped_indicator_effectiveness():
                 if total > 0 else 0
             )
 
+            win_rates.append(win_rate)
+
             print(reason)
             print(f"Record: {wins}-{losses}")
             print(f"Win Rate: {win_rate}%")
             print()
+
+        if len(win_rates) == 2:
+
+            difference = round(
+                abs(win_rates[0] - win_rates[1]),
+            )
+            print(f"Difference: {difference}%")
