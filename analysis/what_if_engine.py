@@ -1,4 +1,5 @@
 import pandas as pd
+from sports.wnba import get_wnba_player_analysis
 
 """
 What-If Engine
@@ -141,6 +142,15 @@ def replay_single_prop(row, custom_weights):
     """
 
     sport = row["sport"]
+
+    if sport == "WNBA":
+        analysis = get_wnba_player_analysis(
+            row["player"],
+            row["stat"],
+            float(row["line"]),
+            row["opponent"]
+        )
+        return analysis
 
     return {
         "sport": sport,
