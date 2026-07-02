@@ -1,4 +1,4 @@
-
+import pandas as pd
 
 """
 What-If Engine
@@ -114,4 +114,15 @@ def replay_historical_props(custom_weights):
     print("HISTORICAL REPLAY")
     print("-" * 90)
 
-    print("Simulation engine coming soon...")
+    df = pd.read_csv("paper_bets.csv")
+
+    replay_df = df[
+        df["result"].isin(["WIN", "LOSS", "PUSH"]) &
+        df["score"].notna()
+        ].copy()
+
+    print(f"Historical Rows Loaded: {len(df)}")
+    print(f"Replay-Eligible Rows: {len(replay_df)}")
+
+    print()
+    print("Replay calculation coming soon...")
