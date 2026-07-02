@@ -33,15 +33,27 @@ def run_weight_simulation(custom_weights):
     and a simulated engine configuration.
     """
 
+    # -------------------------------------------------
+    # Header
+    # -------------------------------------------------
+
     print()
     print("-" * 90)
     print("WEIGHT SIMULATION")
     print("-" * 90)
 
+    # -------------------------------------------------
+    # Current production weights
+    # -------------------------------------------------
+
     print("Current Engine")
 
     for indicator, weight in INDICATOR_WEIGHTS.items():
         print(f"{indicator:<25}: {weight}")
+
+    # -------------------------------------------------
+    # Simulated weights
+    # -------------------------------------------------
 
     print()
     print("Simulation")
@@ -49,5 +61,57 @@ def run_weight_simulation(custom_weights):
     for indicator, weight in custom_weights.items():
         print(f"{indicator:<25}: {weight}")
 
+    # -------------------------------------------------
+    # Weight changes
+    # -------------------------------------------------
+
     print()
+    print("WEIGHT CHANGES")
+    print("-" * 50)
+
+    changes_found = False
+
+    for indicator, current_weight in INDICATOR_WEIGHTS.items():
+
+        new_weight = custom_weights.get(
+            indicator,
+            current_weight
+        )
+
+        if new_weight != current_weight:
+
+            changes_found = True
+
+            change = new_weight - current_weight
+
+            print(
+                f"{indicator:<25}"
+                f"{current_weight} -> {new_weight}"
+                f" ({change:+})"
+            )
+
+    if not changes_found:
+        print("No weight changes detected.")
+
+    # -------------------------------------------------
+    # Replay Engine (Coming Next)
+    # -------------------------------------------------
+
+    replay_historical_props(custom_weights)
+
+def replay_historical_props(custom_weights):
+    """
+    Replay historical props using simulated indicator weights.
+
+    Lo Note:
+    This function is the foundation of the What-If Engine.
+    It will evaluate hypothetical engine configurations without
+    modifying paper_bets.csv.
+    """
+
+    print()
+    print("-" * 90)
+    print("HISTORICAL REPLAY")
+    print("-" * 90)
+
     print("Simulation engine coming soon...")
