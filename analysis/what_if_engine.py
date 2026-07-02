@@ -124,5 +124,28 @@ def replay_historical_props(custom_weights):
     print(f"Historical Rows Loaded: {len(df)}")
     print(f"Replay-Eligible Rows: {len(replay_df)}")
 
+    sample_row = replay_df.iloc[0]
+    replay_result = replay_single_prop(sample_row, custom_weights)
+    print(replay_result)
+
     print()
     print("Replay calculation coming soon...")
+
+def replay_single_prop(row, custom_weights):
+    """
+    Replay one historical prop through the correct sport module.
+
+    Lo Note:
+    This is the router. It decides which sport-specific
+    analysis function should handle the prop.
+    """
+
+    sport = row["sport"]
+
+    return {
+        "sport": sport,
+        "player": row["player"],
+        "stat": row["stat"],
+        "line": float(row["line"]),
+        "status": "ROUTER_READY"
+    }
