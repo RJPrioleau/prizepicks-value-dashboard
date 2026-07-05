@@ -308,6 +308,20 @@ Status: COMPLETE
 
 ## Future Features
 
+### Board Reporting and Archive System
+
+- [ ] Distinguish current-board reports from historical performance reports
+- [ ] Add Props Analyzed to board summary
+- [ ] Add Recommendations Made to board summary
+- [ ] Add Passed count to board summary
+- [ ] Add Participation Rate to board summary
+- [ ] Archive board analysis with timestamp
+- [ ] Save archived board reports separately from paper_bets.csv
+- [ ] Add archive folder for board snapshots
+- [ ] Allow resetting current board counters after archive
+- [ ] Add historical board summary by date range
+- [ ] Add historical board summary by sport
+
 ### Confidence Audit
 
 - [ ] Show all HIGH confidence plays

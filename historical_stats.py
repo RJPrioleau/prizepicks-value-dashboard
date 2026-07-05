@@ -268,6 +268,19 @@ def compare_props(props):
         1 for item in ranked_results
         if item["sport"] == "WNBA"
     )
+    props_recommended = (
+        strong_more_count
+        +lean_more_count
+        +lean_less_count
+        +strong_less_count
+    )
+    total_props = (
+            strong_more_count
+            + lean_more_count
+            + lean_less_count
+            + strong_less_count
+            + pass_count
+    )
 
     print()
     print("=" * 90)
@@ -280,6 +293,7 @@ def compare_props(props):
     print(f"PASS        : {pass_count}")
     print(f"LEAN LESS   : {lean_less_count}")
     print(f"STRONG LESS : {strong_less_count}")
+    print(f"Props Recommended : {props_recommended} out of {total_props}")
     print("-" * 90)
     print("RISK BREAKDOWN")
     print("-" * 90)

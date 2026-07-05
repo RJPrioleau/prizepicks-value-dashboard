@@ -127,10 +127,37 @@ def replay_historical_props(custom_weights):
 
     sample_row = replay_df.iloc[0]
     replay_result = replay_single_prop(sample_row, custom_weights)
-    print(replay_result)
+    print()
+    print("REPLAY COMPARISON")
+    print("-" * 90)
+
+    print(f"Player: {sample_row['player']}")
+    print(f"Stat: {sample_row['stat']}")
+    print(f"Line: {sample_row['line']}")
+    print(f"Opponent: {sample_row['opponent']}")
 
     print()
-    print("Replay calculation coming soon...")
+    print("Original")
+    print("-" * 40)
+    print(f"Recommendation: {sample_row['recommendation']}")
+    print(f"Score: {sample_row['score']}")
+
+    print()
+    print("Simulation")
+    print("-" * 40)
+    print(f"Recommendation: {replay_result['recommendation']}")
+    print(f"Score: {replay_result['score']}")
+
+    score_change = replay_result["score"] - sample_row["score"]
+
+    print()
+    print("Difference")
+    print("-" * 40)
+    print(f"Score Change: {score_change:+}")
+    print(
+        "Recommendation Changed: "
+        f"{replay_result['recommendation'] != sample_row['recommendation']}"
+    )
 
 def replay_single_prop(row, custom_weights):
     """
@@ -148,7 +175,8 @@ def replay_single_prop(row, custom_weights):
             row["player"],
             row["stat"],
             float(row["line"]),
-            row["opponent"]
+            row["opponent"],
+            indicator_weights=custom_weights
         )
         return analysis
 
