@@ -100,7 +100,7 @@ def run_weight_simulation(custom_weights):
 
     replay_historical_props(custom_weights)
 
-def replay_historical_props(custom_weights):
+def  replay_historical_props(custom_weights):
     """
     Replay historical props using simulated indicator weights.
 
@@ -127,12 +127,42 @@ def replay_historical_props(custom_weights):
     print(f"Historical Rows Loaded: {len(df)}")
     print(f"Replay-Eligible Rows: {len(replay_df)}")
 
+    simulation_wins = 0
+    simulation_losses = 0
+    simulation_pushes = 0
+    simulation_ignored = 0
+
+    production_wins = 0
+    production_losses = 0
+    production_pushes = 0
+
     for _, row in replay_df.iterrows():
 
         replay_result = replay_single_prop(
             row,
             custom_weights
         )
+
+        simulation_result = score_simulation_result(
+            replay_result["recommendation"],
+            row["result"]
+        )
+
+        if simulation_result == "WIN":
+            simulation_wins += 1
+        elif simulation_result == "LOSS":
+            simulation_losses += 1
+        elif simulation_result == "PUSH":
+            simulation_pushes += 1
+        else:
+            simulation_ignored += 1
+
+        if row["result"] == "WIN":
+            production_wins += 1
+        elif row["result"] == "LOSS":
+            production_losses += 1
+        elif row["result"] == "PUSH":
+            production_pushes += 1
 
         if replay_result["recommendation"] != row["recommendation"]:
             changed_props.append({
@@ -143,6 +173,45 @@ def replay_historical_props(custom_weights):
                 "simulation_score": replay_result["score"],
                 "result": row["result"]
             })
+
+    production_total = production_wins + production_losses + production_pushes
+    simulation_total = simulation_wins + simulation_losses + simulation_pushes
+
+    production_win_rate = (
+        round((production_wins / production_total) * 100, 2)
+        if production_total > 0 else 0
+    )
+
+    simulation_win_rate = (
+        round((simulation_wins / simulation_total) * 100, 2)
+        if simulation_total > 0 else 0
+    )
+
+    print()
+    print("PRODUCTION RECORD")
+    print("-" * 50)
+    print(f"Wins: {production_wins}")
+    print(f"Losses: {production_losses}")
+    print(f"Pushes: {production_pushes}")
+
+    print(f"Win Rate: {production_win_rate}%")
+
+    print()
+    print("SIMULATION RECORD")
+    print("-" * 50)
+    print(f"Wins: {simulation_wins}")
+    print(f"Losses: {simulation_losses}")
+    print(f"Pushes: {simulation_pushes}")
+    print(f"Ignored: {simulation_ignored}")
+
+    print(f"Win Rate: {simulation_win_rate}%")
+
+    print()
+    print("DIFFERENCE")
+    print("-" * 50)
+    print(f"Win Difference: {simulation_wins - production_wins:+}")
+    print(f"Loss Difference: {simulation_losses - production_losses:+}")
+    print(f"Win Rate Difference: {round(simulation_win_rate - production_win_rate, 2):+}%")
 
     print()
     print(f"Changed Recommendations: {len(changed_props)}")
@@ -190,3 +259,27 @@ def replay_single_prop(row, custom_weights):
         "line": float(row["line"]),
         "status": "ROUTER_READY"
     }
+
+def score_simulation_result(simulation_recommendation,historical_result):
+    """
+        Determine the simulated outcome for one historical prop.
+
+        Lo Note:
+        If the simulated engine would PASS on the prop,
+        it does not receive credit for a win or loss.
+
+        Otherwise, the historical result becomes the
+        simulated engine's result.
+        """
+    """
+    Future Enhancement:
+    Different recommendation strengths (LEAN vs STRONG)
+    currently count equally for simulation records.
+
+    Future engine versions may assign different bet sizes
+    or confidence weighting.
+    """
+    if simulation_recommendation == "PASS":
+        return "IGNORE"
+
+    return historical_result

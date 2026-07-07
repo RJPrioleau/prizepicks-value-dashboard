@@ -307,6 +307,44 @@ Status: COMPLETE
 ---
 
 ## Future Features
+### Prop Comparison Report Improvements
+
+- [ ] Redesign summary section for better readability
+- [ ] Display total props analyzed
+- [ ] Display total recommendations made
+- [ ] Display total passes
+- [ ] Display participation rate (recommendations ÷ total props)
+- [ ] Display recommendation rate as a percentage
+- [ ] Display recommendation distribution by confidence level
+- [ ] Display recommendation distribution by recommendation type
+- [ ] Compare current slate participation rate against historical average
+- [ ] Compare current slate recommendation distribution against historical averages
+- [ ] Support summary reports by day, week, month, sport, and season
+- [ ] Add archive/reset capability for long-term engine tracking
+- SUMMARY
+--------------------------------------------------
+Props Analyzed        : 36
+Recommendations Made  : 12
+Passed                : 24
+Participation Rate    : 33.33%
+--------------------------------------------------
+STRONG MORE           : 4
+LEAN MORE             : 2
+LEAN LESS             : 5
+STRONG LESS           : 1
+--------------------------------------------------
+Recommendation Mix
+Strong More           : 33.3%
+Lean More             : 16.7%
+Lean Less             : 41.7%
+Strong Less           : 8.3%
+--------------------------------------------------
+
+Participation Rate
+--------------------------------------------------
+Today's Slate         : 33.33%
+Last 7 Days           : 42.18%
+Season Average        : 45.71%
 
 ### Board Reporting and Archive System
 
