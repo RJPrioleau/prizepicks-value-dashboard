@@ -115,6 +115,8 @@ def get_wnba_player_game_logs(player_name):
         game_logs["player_name"].str.lower() == player_name.lower()
     ]
 
+
+
     player_logs = add_wnba_calculated_stats(player_logs)
 
     parsed_matchups = player_logs["matchup"].apply(parse_basketball_matchup)
@@ -131,6 +133,13 @@ def add_wnba_calculated_stats(df):
 
     df = df.copy()
 
+    df["pts"] = pd.to_numeric(df["pts"], errors="coerce")
+    df["reb"] = pd.to_numeric(df["reb"], errors="coerce")
+    df["ast"] = pd.to_numeric(df["ast"], errors="coerce")
+    df["fg3m"] = pd.to_numeric(df["fg3m"], errors="coerce")
+    df["fgm"] = pd.to_numeric(df["fgm"], errors="coerce")
+    df["dreb"] = pd.to_numeric(df["dreb"], errors="coerce")
+
     df["pts"] = df["pts"].astype(float)
     df["reb"] = df["reb"].astype(float)
     df["ast"] = df["ast"].astype(float)
@@ -140,10 +149,19 @@ def add_wnba_calculated_stats(df):
     df["PR"] = df["pts"] + df["reb"]
     df["PA"] = df["pts"] + df["ast"]
 
-    df["pts"] = pd.to_numeric(df["pts"], errors="coerce")
-    df["reb"] = pd.to_numeric(df["reb"], errors="coerce")
-    df["ast"] = pd.to_numeric(df["ast"], errors="coerce")
-    df["fg3m"] = pd.to_numeric(df["fg3m"], errors="coerce")
+
+
+    df["Defensive Rebounds"] = df["dreb"].astype(float)
+    df["2-PT Made"] = df["fgm"] - df["fg3m"].astype(float)
+
+
+    df["Double-Double"] = (
+            (df["pts"] >= 10).astype(int)
+            + (df["reb"] >= 10).astype(int)
+            + (df["ast"] >= 10).astype(int)
+    )
+
+
 
     return df
 

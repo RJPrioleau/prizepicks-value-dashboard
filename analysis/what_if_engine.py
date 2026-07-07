@@ -122,42 +122,45 @@ def replay_historical_props(custom_weights):
         df["score"].notna()
         ].copy()
 
+    changed_props = []
+
     print(f"Historical Rows Loaded: {len(df)}")
     print(f"Replay-Eligible Rows: {len(replay_df)}")
 
-    sample_row = replay_df.iloc[0]
-    replay_result = replay_single_prop(sample_row, custom_weights)
-    print()
-    print("REPLAY COMPARISON")
-    print("-" * 90)
+    for _, row in replay_df.iterrows():
 
-    print(f"Player: {sample_row['player']}")
-    print(f"Stat: {sample_row['stat']}")
-    print(f"Line: {sample_row['line']}")
-    print(f"Opponent: {sample_row['opponent']}")
+        replay_result = replay_single_prop(
+            row,
+            custom_weights
+        )
 
-    print()
-    print("Original")
-    print("-" * 40)
-    print(f"Recommendation: {sample_row['recommendation']}")
-    print(f"Score: {sample_row['score']}")
-
-    print()
-    print("Simulation")
-    print("-" * 40)
-    print(f"Recommendation: {replay_result['recommendation']}")
-    print(f"Score: {replay_result['score']}")
-
-    score_change = replay_result["score"] - sample_row["score"]
+        if replay_result["recommendation"] != row["recommendation"]:
+            changed_props.append({
+                "player": row["player"],
+                "original": row["recommendation"],
+                "simulation": replay_result["recommendation"],
+                "original_score": row["score"],
+                "simulation_score": replay_result["score"],
+                "result": row["result"]
+            })
 
     print()
-    print("Difference")
-    print("-" * 40)
-    print(f"Score Change: {score_change:+}")
-    print(
-        "Recommendation Changed: "
-        f"{replay_result['recommendation'] != sample_row['recommendation']}"
-    )
+    print(f"Changed Recommendations: {len(changed_props)}")
+
+    changed_wins = len([p for p in changed_props if p["result"] == "WIN"])
+    changed_losses = len([p for p in changed_props if p["result"] == "LOSS"])
+    changed_pushes = len([p for p in changed_props if p["result"] == "PUSH"])
+
+    print(f"Changed Wins: {changed_wins}")
+    print(f"Changed Losses: {changed_losses}")
+    print(f"Changed Pushes: {changed_pushes}")
+
+    for prop in changed_props:
+        print("-" * 50)
+        print(prop["player"])
+        print(f"Original: {prop['original']} ({prop['original_score']})")
+        print(f"Simulation: {prop['simulation']} ({prop['simulation_score']})")
+        print(f"Result: {prop['result']}")
 
 def replay_single_prop(row, custom_weights):
     """
