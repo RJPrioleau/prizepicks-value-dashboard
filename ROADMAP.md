@@ -307,6 +307,25 @@ Status: COMPLETE
 ---
 
 ## Future Features
+
+### What-If Engine Version 2
+
+- [ ] Support running multiple simulations in one execution
+- [ ] Rank simulation configurations by win rate
+- [ ] Save simulation history
+- [ ] Compare simulation versions
+- [ ] Recommend best-performing weight configuration
+
+### What-If Engine Optimizer
+
+- [ ] Run multiple weight combinations automatically
+- [ ] Rank weight configurations by simulation record
+- [ ] Highlight best-performing configurations
+- [ ] Compare optimized weights against production weights
+- [ ] Add train/test split to reduce overfitting
+- [ ] Support sport-specific optimization
+- [ ] Save optimizer results with timestamp
+
 ### Prop Comparison Report Improvements
 
 - [ ] Redesign summary section for better readability
