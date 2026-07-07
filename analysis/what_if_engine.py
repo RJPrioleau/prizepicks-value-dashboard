@@ -124,6 +124,8 @@ def  replay_historical_props(custom_weights):
 
     changed_props = []
 
+    strength_only_changes = 0
+
     print(f"Historical Rows Loaded: {len(df)}")
     print(f"Replay-Eligible Rows: {len(replay_df)}")
 
@@ -165,10 +167,22 @@ def  replay_historical_props(custom_weights):
             production_pushes += 1
 
         if replay_result["recommendation"] != row["recommendation"]:
+
+            original = row["recommendation"]
+            simulation = replay_result["recommendation"]
+
+            if (
+                    (original == "LEAN MORE" and simulation == "STRONG MORE")
+                    or (original == "STRONG MORE" and simulation == "LEAN MORE")
+                    or (original == "LEAN LESS" and simulation == "STRONG LESS")
+                    or (original == "STRONG LESS" and simulation == "LEAN LESS")
+            ):
+                strength_only_changes += 1
+
             changed_props.append({
                 "player": row["player"],
-                "original": row["recommendation"],
-                "simulation": replay_result["recommendation"],
+                "original": original,
+                "simulation": simulation,
                 "original_score": row["score"],
                 "simulation_score": replay_result["score"],
                 "result": row["result"]
@@ -215,6 +229,7 @@ def  replay_historical_props(custom_weights):
 
     print()
     print(f"Changed Recommendations: {len(changed_props)}")
+    print(f"Strength Only Changes: {strength_only_changes}")
 
     changed_wins = len([p for p in changed_props if p["result"] == "WIN"])
     changed_losses = len([p for p in changed_props if p["result"] == "LOSS"])
