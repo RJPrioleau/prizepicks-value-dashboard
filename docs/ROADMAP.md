@@ -1,53 +1,137 @@
 # PrizePicks Value Dashboard
 
 ## Project Vision
-Build a data-driven sports prop analysis platform that helps identify value opportunities, evaluate recommendation performance, track historical results, and improve decision making through measurable analytics.
 
-The project is designed as a decision-support tool, not an automated betting system. The user always makes the final decision.
+Build a data-driven sports prop analysis platform that improves decision-making through measurable analytics, historical validation, and explainable recommendations.
 
-Primary goals:
+The application is designed as a decision-support tool, not an automated betting system. The user always makes the final decision.
 
-* Analyze player props using historical performance data.
-* Generate explainable recommendations.
-* Track recommendation performance over time.
-* Validate whether the recommendation engine is improving.
-* Support multiple sports and prop types.
-* Reduce manual workflow through automation and tooling.
+### Primary Goals
 
-
-## Design Principles
-* User makes the final betting decision.
-* The application provides decision support, not automatic betting.
-* Recommendations must be explainable.
-* Engine performance must be measurable.
-* Improvements should be driven by data, not assumptions.
-* Historical results are more valuable than opinions.
-* Automation should eliminate repetitive tasks, not remove user control.
-
-## Current Priority
-
-- [ ] Finish Engine Toolkit v1.0
-- [ ] Freeze Engine Toolkit
-- [ ] Begin MLB engine implementation
-- [ ] Run WNBA + MLB concurrently
-- [ ] Expand What-If Engine using live data from both sports
-
-## Core Engine Architecture
-
-### Guiding Principles
-
-- [ ] Build one recommendation engine that supports multiple sports
-- [ ] Generalize features whenever they benefit every sport
-- [ ] Specialize only when a sport truly requires unique logic
-- [ ] The Core Engine should never need to know what sport it is analyzing
-- [ ] Build once. Reuse everywhere.
-- [ ] Make all engine changes data-driven
+- Analyze player props using historical performance data.
+- Generate explainable recommendations.
+- Measure recommendation performance over time.
+- Validate engine improvements using historical replay.
+- Support multiple sports through a shared engine architecture.
+- Reduce repetitive manual work through automation.
 
 ---
 
-## Core Engine
+## Design Principles
 
-### Shared Components
+- The user always makes the final betting decision.
+- Recommendations should always be explainable.
+- Engine improvements must be be measurable.
+- Data takes priority over intuition.
+- Historical validation is required before production changes.
+- Build once. Reuse everywhere.
+- Automation should reduce repetitive work without removing user control.
+
+---
+
+# 🚧 Current Sprint
+
+## Engine Toolkit v1.0
+
+**Status:** 🟡 Active
+
+### Sprint Goal
+
+Complete the Engine Toolkit and validate engine improvements before freezing Version 1.
+
+### Current Objectives
+
+- [ ] Improve What-If Engine reporting
+- [ ] Continue replay investigation
+- [ ] Validate recommendation changes using historical replay
+- [ ] Identify changes that improve decision quality
+- [ ] Freeze Engine Toolkit v1.0
+
+---
+
+# 📅 Next Sprint
+
+## MLB Engine
+
+**Status:** 🔵 Planned
+
+### Objectives
+
+- [ ] Create MLB data source
+- [ ] Build MLB historical statistics module
+- [ ] Integrate MLB into the shared recommendation engine
+- [ ] Run WNBA and MLB concurrently
+- [ ] Expand the What-If Engine to support multiple sports
+
+---
+
+# 🔬 Current Investigation
+
+## Confidence Investigation
+
+**Status:** 🟡 Active
+
+### Objective
+
+Determine why certain recommendation categories outperform others and identify which engine changes genuinely improve prediction quality.
+
+---
+
+### Current Findings
+
+Completed:
+
+- ✅ Findings #1 through #10 documented
+- ✅ Playoff data source issue resolved
+- ✅ Cache key issue resolved
+- ✅ Season configuration implemented
+- ✅ Season type configuration implemented
+
+Current Status:
+
+- Confidence thresholds remain unchanged.
+- Recommendation engine investigation is still active.
+- Historical replay is now the primary validation method.
+
+---
+
+### Active Research Questions
+
+- [ ] Are HIGH confidence recommendations actually underperforming?
+- [ ] Are recommendation scores inflated?
+- [ ] Are Goblin and Demon props affecting overall performance?
+- [ ] Are recommendation rankings producing better outcomes?
+- [ ] Which recommendation categories consistently perform the best?
+- [ ] Which engine changes improve recommendation quality instead of simply changing recommendation strength?
+
+---
+
+### Investigation Philosophy
+
+Do not modify production recommendation logic until historical evidence supports the change.
+
+Every engine change must be validated through replay before entering production.
+
+---
+
+# 🏗 Core Engine Architecture
+
+## Guiding Principles
+
+These principles guide every engine improvement.
+
+- [ ] Build one recommendation engine that supports multiple sports.
+- [ ] Generalize features whenever they benefit every sport.
+- [ ] Specialize only when a sport requires unique logic.
+- [ ] The Core Engine should never need to know what sport it is analyzing.
+- [ ] Build once. Reuse everywhere.
+- [ ] Every engine change must be supported by measurable evidence.
+
+---
+
+## Shared Engine Components
+
+These systems are intended to be reusable across every supported sport.
 
 - [ ] Recommendation Engine
 - [ ] Score Calculation
@@ -64,31 +148,15 @@ Primary goals:
 
 ---
 
-## Sport Modules
+# 🏀 Sport Modules
 
-### NBA
+The Core Engine is shared across all sports.
 
-- [ ] Historical Statistics
-- [ ] Matchup Calculations
-- [ ] Sport-Specific Indicators
-- [ ] Sport-Specific Weights
+Each sport provides only its own historical data, matchup logic, and sport-specific indicators.
 
-### WNBA
+---
 
-- [ ] Historical Statistics
-- [ ] Matchup Calculations
-- [ ] Sport-Specific Indicators
-- [ ] Sport-Specific Weights
-
-### MLB
-
-- [ ] Historical Statistics
-- [ ] Matchup Calculations
-- [ ] Pitcher/Batter Analysis
-- [ ] Sport-Specific Indicators
-- [ ] Sport-Specific Weights
-
-### NFL
+## NBA
 
 - [ ] Historical Statistics
 - [ ] Matchup Calculations
@@ -97,525 +165,159 @@ Primary goals:
 
 ---
 
-## Engine Toolkit v1.0
+## WNBA
 
-### Research & Simulation
+- [ ] Historical Statistics
+- [ ] Matchup Calculations
+- [ ] Sport-Specific Indicators
+- [ ] Sport-Specific Weights
+
+---
+
+## MLB
+
+- [ ] Historical Statistics
+- [ ] Matchup Calculations
+- [ ] Pitcher vs Batter Analysis
+- [ ] Sport-Specific Indicators
+- [ ] Sport-Specific Weights
+
+---
+
+## NFL
+
+- [ ] Historical Statistics
+- [ ] Matchup Calculations
+- [ ] Sport-Specific Indicators
+- [ ] Sport-Specific Weights
+
+---
+
+# 🛠 Engine Toolkit v1.0
+
+## Purpose
+
+The Engine Toolkit exists to improve the production recommendation engine through measurable research instead of intuition.
+
+The toolkit is not part of the production engine.
+
+Its purpose is to generate evidence before production changes are made.
+
+---
+
+## Research Tools
 
 - [ ] Indicator Effectiveness Report
 - [ ] Grouped Indicator Effectiveness Report
-- [ ] Minimum Viable What-If Replay Engine
-- [ ] Weight Simulation
+- [ ] Historical Replay Engine
+- [ ] Weight Simulation Engine
 - [ ] Toolkit Documentation
 
-### Engine Toolkit Freeze
+---
 
-- [ ] Freeze Engine Toolkit v1.0
-- [ ] No new research tools unless they directly improve recommendations or solve a production problem
+## Engine Toolkit Freeze
+
+Version 1.0 will be frozen after the following criteria have been met.
+
+### Completion Criteria
+
+- [ ] Core research tools completed
+- [ ] Historical Replay Engine validated
+- [ ] Weight Simulation validated
+- [ ] Toolkit documentation completed
+
+After Version 1.0 is frozen, no additional research tools should be added unless they directly improve recommendation quality or solve a production problem.
 
 ---
 
-## Engine Development Cycle
+# 🔄 Engine Development Cycle
 
-- [ ] Load WNBA slate
-- [ ] Load MLB slate
-- [ ] Paper trade both sports
-- [ ] Update results
-- [ ] Run diagnostics
-- [ ] Review engine performance
-- [ ] Test improvements in What-If Engine
-- [ ] Apply validated improvements to production engine
-- [ ] Repeat
+Every engine improvement should follow the same repeatable workflow.
 
----
-
-## Engine Improvement Rules
-
-- [ ] Reports create evidence
-- [ ] Evidence creates hypotheses
-- [ ] Simulations test hypotheses
-- [ ] Production engine changes only after simulation validation
-- [ ] No intuition-only engine changes
-
-
-## Current Development Focus
-### Active Investigation
-
-#### Confidence Investigation
-
-Current Status:
-
-* Finding #1 through Finding #10 completed.
-* Playoff data source bug discovered and fixed.
-* Cache key issue discovered and fixed.
-* Historical analysis now uses configurable season and season type settings.
-* Confidence thresholds have not been adjusted.
-* Investigation remains active.
-
-Key Questions:
-
-* Are HIGH confidence plays truly underperforming?
-* Are recommendation scores inflated?
-* Are Goblin and Demon props impacting results?
-* Are recommendation rankings producing positive outcomes?
-* Which recommendation categories are performing best?
-
-Current Philosophy:
-
-Do not modify recommendation logic until investigation data supports the change.
-
+1. Load the current slate.
+2. Analyze player props.
+3. Generate recommendations.
+4. Paper trade recommendations.
+5. Grade completed props.
+6. Run performance reports.
+7. Identify strengths and weaknesses.
+8. Form a hypothesis.
+9. Test the hypothesis using the What-If Engine.
+10. Validate improvements through historical replay.
+11. Apply validated improvements to the production engine.
+12. Repeat.
 
 ---
 
-## Recently Completed Features
-### Analysis Engine
+# 📏 Engine Improvement Rules
 
-- [x] Historical player analysis 
-- [x] Recommendation scoring engine
-- [x] Confidence scoring engine
-- [x] Risk type support (NORMAL, GOBLIN, DEMON)
-- [x] Stat alias support (3PM, 3PTA, 2PM, PRA, etc.)
-- [x] NBA API integration
-- [x] NBA API caching
-- [x] No-data player handling
-- [x] Opponent history analysis
-- [x] Trend analysis
-- [x] Home/Away splits
-- [x] Recommendation reasoning output
-- [x] Initial WNBA data layer (SportsDataverse)
-- [x] Completed first full WNBA board integration and stress test (100 props)
-- [x] WNBA Engine v1 Operational
+Every engine improvement should follow these principles.
+
+- Reports create evidence.
+- Evidence creates hypotheses.
+- Simulations test hypotheses.
+- Production changes require historical validation.
+- Data takes priority over intuition.
+- Do not optimize for one slate.
+- Avoid overfitting historical data.
+- Build the production engine from measurable results.
+
+# ✅ Completed Milestones
+
+The following capabilities have been completed and are part of the production engine.
+
+---
+
+## Analysis Engine
+
+- Historical player analysis
+- Recommendation scoring engine
+- Confidence scoring engine
+- Risk type support (NORMAL, GOBLIN, DEMON)
+- Stat alias support (3PM, 3PTA, 2PM, PRA, etc.)
+- NBA API integration
+- NBA API caching
+- No-data player handling
+- Opponent history analysis
+- Trend analysis
+- Home/Away splits
+- Recommendation reasoning output
+- Initial WNBA data layer
+- Full WNBA board integration and stress testing
+- WNBA Engine Version 1 operational
+
+---
 
 ## Analytics Toolkit
 
-- [x] Ladder Analysis
-- [x] Confidence Audit
-- [x] Sport Performance Tracking
-- [x] Filter Engine
-- [x] Summary Mode
-- [x] Score Tracking
-
-### Tracking & Validation
-
-- [x] Paper bet storage
-- [x] Bulk recommendation saving
-- [x] Duplicate detection
-- [x] Result grading
-- [x] Result updates
-- [x] Actual stat tracking
-- [x] Engine record tracking
-- [x] Paper bet history tracking
-
-### Reporting
-
-- [x] Engine Record Report
-- [x] Recommendation Breakdown
-- [x] Confidence Breakdown
-- [x] Risk Breakdown
-- [x] Full Performance Report
-- [x] Slate Breakdown
-- [x] Recommendation Breakdown by Slate
-- [x] Confidence Breakdown by Slate
-- [x] High Confidence Breakdown by Recommendation
-- [x] Strong More by Risk Type
-- [x] Strong More by Slate and Risk Type
-
-### Importing & Workflow
-
-- [x] CSV prop import
-- [x] Raw PrizePicks text importer
-- [x] Slate archiving
-- [x] Game date assignment
-- [x] Goblin/Demon detection during import
-- [x] Opponent extraction during import
-- [x] Automatic props.csv generation
-- [x] Duplicate protection workflow
-- [x] Raw prop slate archiving by game date
-- [x] Add stacked filters for `props.csv` and `paper_bets.csv`
-  - [x] Filter by player name
-  - [x] Filter by risk type
-  - [x] Filter by sport
-  - [x] Filter by slate date
-  - [x] Allow combined filters
-    - [x] Example: WNBA + DEMON + June 2026
-    - [x] Example: Caitlin Clark + HIGH confidence + LOSS
-
-### Infrastructure
-
-- [x] Season configuration support
-- [x] Season type configuration support
-- [x] Cache key improvements
-- [x] Playoff data source fixes
-- [x] Historical investigation framework
-- [x] Findings documentation process (NOTES.md)
-- [x] Shared analysis layer
-- [x] Shared recommendation engine
-
-### Multi-Sport Support
-- [x] Initial WNBA data integration
-- [x] WNBA player lookup
-- [x] WNBA game log retrieval
-- [x] WNBA historical analysis engine
-- [x] Shared basketball matchup parser
-
-### Mixed NBA/WNBA Slate Support
-Status: COMPLETE
-
-- [x] Added `sport` column to props CSV format
-- [x] Added automatic routing to NBA and WNBA analysis engines
-- [x] Supports mixed NBA and WNBA props in a single slate
-- [x] Added sport display column to comparison reports
-- [x] Verified with mixed-sport test slate
-
-### Historical Stats Refactor
-- [x] Extracted NBA analysis into `sports/nba.py`
-- [x] Added WNBA analysis engine in `sports/wnba.py`
-- [x] Moved historical calculations into `analysis/historical_analysis.py`
-- [x] Moved matchup parsing into `analysis/matchup_parser.py`
-- [x] Moved recommendation logic into `analysis/recommendation_engine.py`
-- [x] Moved paper betting system into `tracking/paper_bets.py`
-- [x] Moved performance reports into `reports/performance_reports.py`
-- [x] Moved diagnostic reports into `reports/diagnostic_reports.py`
-- [x] Reduced `historical_stats.py` from an all-in-one file to a workflow/orchestration module
+- Ladder Analysis
+- Confidence Audit
+- Sport Performance Tracking
+- Filter Engine
+- Summary Mode
+- Score Tracking
 
 ---
 
-## Next Development Priorities
+## Tracking & Validation
 
-### High Priority
-
-- [ ] Continue confidence investigation
-- [ ] Build WNBA player lookup
-- [ ] Build WNBA historical stats engine
-- [ ] Integrate WNBA into recommendation engine
-- [ ] Validate WNBA recommendations against live props
-- [ ] Improve recommendation logic
-- [ ] Improve ranking quality
-
-### Medium Priority
-- [ ] Menu cleanup
-- [ ] Diagnostics refactor
-- [ ] Season configuration menu
-- [ ] Improve error handling
-- [ ] Import validation
-
-### Low Priority
-- [ ] Flask dashboard
-- [ ] Search and filtering
-- [ ] Export reports
-- [ ] Visual analytics
+- Paper bet storage
+- Bulk recommendation saving
+- Duplicate detection
+- Result grading
+- Result updates
+- Actual stat tracking
+- Engine record tracking
+- Paper bet history tracking
 
 ---
 
-## Future Features
+## Reporting
 
-### What-If Engine Version 2
-
-- [ ] Support running multiple simulations in one execution
-- [ ] Rank simulation configurations by win rate
-- [ ] Save simulation history
-- [ ] Compare simulation versions
-- [ ] Recommend best-performing weight configuration
-
-### What-If Engine Optimizer
-
-- [ ] Run multiple weight combinations automatically
-- [ ] Rank weight configurations by simulation record
-- [ ] Highlight best-performing configurations
-- [ ] Compare optimized weights against production weights
-- [ ] Add train/test split to reduce overfitting
-- [ ] Support sport-specific optimization
-- [ ] Save optimizer results with timestamp
-
-### Prop Comparison Report Improvements
-
-- [ ] Redesign summary section for better readability
-- [ ] Display total props analyzed
-- [ ] Display total recommendations made
-- [ ] Display total passes
-- [ ] Display participation rate (recommendations ÷ total props)
-- [ ] Display recommendation rate as a percentage
-- [ ] Display recommendation distribution by confidence level
-- [ ] Display recommendation distribution by recommendation type
-- [ ] Compare current slate participation rate against historical average
-- [ ] Compare current slate recommendation distribution against historical averages
-- [ ] Support summary reports by day, week, month, sport, and season
-- [ ] Add archive/reset capability for long-term engine tracking
-- SUMMARY
---------------------------------------------------
-Props Analyzed        : 36
-Recommendations Made  : 12
-Passed                : 24
-Participation Rate    : 33.33%
---------------------------------------------------
-STRONG MORE           : 4
-LEAN MORE             : 2
-LEAN LESS             : 5
-STRONG LESS           : 1
---------------------------------------------------
-Recommendation Mix
-Strong More           : 33.3%
-Lean More             : 16.7%
-Lean Less             : 41.7%
-Strong Less           : 8.3%
---------------------------------------------------
-
-Participation Rate
---------------------------------------------------
-Today's Slate         : 33.33%
-Last 7 Days           : 42.18%
-Season Average        : 45.71%
-
-### Board Reporting and Archive System
-
-- [ ] Distinguish current-board reports from historical performance reports
-- [ ] Add Props Analyzed to board summary
-- [ ] Add Recommendations Made to board summary
-- [ ] Add Passed count to board summary
-- [ ] Add Participation Rate to board summary
-- [ ] Archive board analysis with timestamp
-- [ ] Save archived board reports separately from paper_bets.csv
-- [ ] Add archive folder for board snapshots
-- [ ] Allow resetting current board counters after archive
-- [ ] Add historical board summary by date range
-- [ ] Add historical board summary by sport
-
-### Confidence Audit
-
-- [ ] Show all HIGH confidence plays
-- [ ] Show HIGH confidence wins
-- [ ] Show HIGH confidence losses
-- [ ] Compare HIGH vs MEDIUM scoring factors
-- [ ] Identify why HIGH confidence underperforms
-
-### Engine Audit
-
-- [ ] Measure results by unique player assessment
-- [ ] Measure results by individual prop
-- [ ] Detect correlated prop clusters
-
-### Paper Bet Tracking Improvements
-
-- [x] Add VOID result support
-    - [x] Add DNP result status
-  - DNP
-  - Injury
-  - Did Not Start
-  - Void prop
-    - Handle injury scratches
-    - Handle illness scratches
-    - Exclude VOID plays from win/loss calculations
-    - Track VOID counts separately in performance reports
-- - [ ] Score Analytics Report
-    - Score distribution
-    - Win rate by score
-    - Score by sport
-    - Score by risk type
-    - Score by recommendation
-- [x] Investigate prop importer skipping props
-  - Latest board expected 20 props but imported 15
-  - Check unsupported stat types
-  - Check malformed raw lines
-  - Check duplicate detection
-  - Add importer summary showing imported vs skipped lines
-  - Add skipped-line report with reason
-
-### Recommendation Engine Investigation
-
-- [ ] Investigate HIGH confidence assignment logic
-- [ ] Investigate STRONG MORE scoring logic
-- [ ] Compare HIGH vs MEDIUM confidence factors
-- [ ] Compare STRONG MORE wins vs losses
-- [ ] Determine why LEAN LESS significantly outperforms STRONG MORE
-- [ ] Add sport-specific performance reports
-- [ ] Add sport filter to engine record
-- [ ] Add sport filter to recommendation breakdown
-- [ ] Add sport filter to confidence breakdown
-
-### Recommendation Engine Analytics
-
-- [ ] Player-level prediction accuracy
-- [ ] Prop-level prediction accuracy
-- [ ] Correlated prop cluster detection
-- [ ] Ladder analysis
-- [ ] Single-player exposure analysis
-- [ ] Ladder Compression Engine
-
-### Ladder Analysis Engine
-
-- [x] Detect player/stat ladders
-- [x] Measure ladder performance
-- [ ] Calculate ladder success rate
-- [ ] Measure player assessment accuracy
-- [ ] Identify best goblin rung
-- [ ] Identify best demon rung
-- [ ] Reduce duplicate exposure in recommendations
-- [ ] Group Goblin ladders
-- [ ] Group Demon ladders
-- [ ] Calculate hit probability by rung
-- [ ] Identify best-value rung
-- [ ] Recommend only the best rung
-- [ ] Track player-level prediction accuracy
-- [ ] Track ladder-level prediction accuracy
-- [ ] Add ladder-aware recommendation handling
-  - Group same player/stat/risk ladders
-  - Recommend only best Goblin rung
-  - Recommend only best Demon rung if worth it
-  - Track player/stat ladder success separately from prop-level record
-  - Limit exposure when one player read creates many props
-
-### Ladder / Correlation System
-
-- Detect multiple props from same player/stat
-- Group them into a ladder
-- Identify best value rung
-- Track player-level accuracy
-- Track prop-level accuracy
-- Reduce duplicate recommendations
-
-### Performance Analytics Improvements
-
-- [ ] Overall record
-- [ ] Record by sport
-    - NBA
-    - WNBA
-    - MLB
-- [ ] Record by slate
-- [ ] Record by month
-- [ ] Record by season
-
-### Paper Bet Data Improvements
-
-- [x] Add sport column to paper_bets.csv
-- [ ] Backfill existing UNKNOWN records
-    - NBA historical records
-    - WNBA historical records
-- [ ] Sport-specific performance reports
-- [ ] Sport-specific recommendation breakdowns
-- [ ] Sport-specific confidence breakdowns
-- [ ] Improve missing player handling
-  - Track players not found in historical data
-  - Distinguish rookie vs missing player vs API issue
-  - Export missing-player report after board analysis
-  - Avoid repeated warnings for same player
-
-### Result Update Quality of Life Improvements
-
-- [ ] Group pending props by game
-
-- [ ] Display matchup during result updates
-- [ ] Display team abbreviation during result updates
-- [ ] Allow updating all props from one game before moving to the next
-- [ ] Validate selected bet index before updating
-    - Show a clear message if the index does not exist
-    - Do not crash or continue with invalid selection
-- [x] Add exit/back option during result update flow
-    - Allow `q`, `quit`, `exit`, or `back`
-    - Useful after accidentally choosing to update another bet
-- [ ] Add slate/game validation before saving paper bets
-    - Confirm all props belong to the intended slate date
-    - Flag games that are not scheduled for the selected date
-    - Prevent future-date props from being mixed into tonight’s paper bet results
-- [ ] Add a way to remove or void an imported game/slate mistake
-    - Remove all pending props by matchup
-    - Remove all pending props by game date
-    - Remove all pending props by team/opponent pair
-
-### Result Update Quality of Life Improvements
-
-- [ ] Group pending props by game
-- [ ] Display matchup during result updates
-- [ ] Display team abbreviation during result updates
-- [ ] Allow updating all props from one game before moving to the next
-
-### Analysis Improvements
-- [ ] Goblin/Demon MORE-only recommendation rules
-- [ ] Additional recommendation tie-breakers
-- [ ] Confidence calibration
-- [ ] Recommendation accuracy reporting
-
-### Import Improvements
-- [ ] Import validation
-- [ ] Duplicate prop detection during import
-- [ ] Automatic slate date detection
-- [ ] Live prop detection
-- [ ] Improved parser error handling
-- [ ] Direct WebCatalog integration research
-- [ ] Prompt user for sport during import
-- [ ] Pass sport into parse_prop_block()
-- [ ] Remove hardcoded "WNBA" value
-- [ ] Support NBA, WNBA, MLB, NFL imports
-
-### Reporting & UX
-- [ ] Custom report sorting
-- [ ] Sort by player
-- [ ] Sort by risk type
-- [ ] Sort by recommendation
-- [ ] Sort by confidence
-- [ ] Sort by hit rate
-- [ ] Sort by score
-- [ ] Filter by risk type
-- [ ] Filter by recommendation
-- [ ] Filter by confidence
-- [ ] Top 5 / Top 10 views
-- [ ] Export reports
-- [ ] Improved report formatting
-
-### Multi-Sport Support
-- [~] WNBA (NBA engine extension)
-- [ ] MLB (Next major sport expansion)
-- [ ] NFL
-- [ ] NCAA
-
-### MLB Analysis Requirements
-
-- [ ] Create MLB data source module
-- [ ] Player lookup
-- [ ] Game log retrieval
-- [ ] Starting pitcher detection
-- [ ] Batter vs pitcher history
-- [ ] Batter handedness splits
-- [ ] Pitcher handedness
-- [ ] Pitcher strikeout/contact profile
-- [ ] Team strikeout/contact tendencies
-- [ ] Lineup spot context
-- [ ] Park factor context
-- [ ] Weather/wind context
-- [ ] MLB-specific recommendation logic
-
-### Advanced Features
-- [ ] Suggested slips
-- [ ] Bankroll management
-- [ ] Alert system
-- [ ] Line movement tracking
-- [ ] Injury/news integration
-- [ ] User bet tracking
-- [ ] Compare user record vs engine record
-- [ ] Track overrides of engine recommendations
-- [ ] Measure value added by engine
-
----
-
-## Long-Term Vision
-- [ ] Automated board ingestion
-- [ ] Machine learning experimentation
-- [ ] Discord integration
-- [ ] Friends & family beta testing
-- [ ] Multi-user support
-- [ ] Subscription model evaluation
-- [ ] Web application deployment
-
----
-
-## Technical Notes
-
-### Diagnostics Refactor Candidate
-Move diagnostic reports into:
-
-- diagnostics.py
-
-Current diagnostics:
-
-- Engine Record
+- Engine Record Report
+- Recommendation Breakdown
+- Confidence Breakdown
+- Risk Breakdown
 - Full Performance Report
 - Slate Breakdown
 - Recommendation Breakdown by Slate
@@ -624,141 +326,235 @@ Current diagnostics:
 - Strong More by Risk Type
 - Strong More by Slate and Risk Type
 
-### Season Configuration
-Currently, season and season type are controlled through configuration variables.
+---
 
-Future improvements:
+## Import & Workflow
 
-- Allow season selection from the menu.
-- Allow season type selection (Regular Season, Playoffs).
-- Move configuration into a dedicated settings file.
-- Prevent future hardcoded season issues.
+- CSV prop import
+- Raw PrizePicks text importer
+- Slate archiving
+- Game date assignment
+- Goblin/Demon detection
+- Opponent extraction
+- Automatic props.csv generation
+- Duplicate protection workflow
+- Raw slate archiving
+- Advanced stacked filtering
+    - Player
+    - Risk Type
+    - Sport
+    - Slate Date
+    - Combined Filters
 
-### Importer Notes
-Current Workflow:
+---
 
-1. Open PrizePicks in WebCatalog.
-2. Copy prop cards.
-3. Paste into raw_props.txt.
-4. Run prop_importer.py.
-5. Enter slate date.
-6. Generate props.csv.
+## Infrastructure
 
-Current Limitations:
+- Season configuration support
+- Season type configuration support
+- Cache key improvements
+- Playoff data source fixes
+- Historical investigation framework
+- Findings documentation process
+- Shared analysis layer
+- Shared recommendation engine
 
-- Only import one slate date at a time.
-- Live props are not officially supported.
-- Date is manually entered.
-- Parser assumes standard PrizePicks card formatting.
+---
 
-Future Improvements:
+## Multi-Sport Support
 
-- Automatic slate date detection.
-- Live prop detection.
-- Import validation.
-- Additional board format support.
+- Initial WNBA integration
+- WNBA player lookup
+- WNBA game log retrieval
+- WNBA historical analysis engine
+- Shared basketball matchup parser
+- Mixed NBA/WNBA slate support
 
-### Archive Notes
-Current Structure:
+---
 
-prop_backups/
-    props_YYYY-MM-DD.csv
+## Historical Analysis Refactor
 
-Purpose:
+Completed migration from a monolithic analysis file into a modular architecture.
 
-- Preserve historical slates.
-- Allow future backtesting.
-- Allow engine comparison against previous versions.
-- Support diagnostics and investigations.
+Current architecture includes modules for:
 
-Current Behavior:
+- `sports/`
+- `analysis/`
+- `reports/`
+- `tracking/`
 
-- Existing props.csv is archived before being overwritten.
-- Archive files are named using the slate date.
+This refactor established the foundation for future multi-sport expansion.
 
-### WNBA Data Source
+---
 
-SportsDataverse successfully provides:
+# 📊 Analytics & Reporting Roadmap
 
-- WNBA rosters
-- Player IDs
-- Player game logs
+## Recommendation Analytics
+
+- [ ] Recommendation performance by score range
+- [ ] Recommendation performance by confidence level
+- [ ] Recommendation performance by risk type
+- [ ] Recommendation performance by sport
+- [ ] Recommendation performance by statistic
+- [ ] Recommendation performance by player position
+
+---
+
+## Historical Replay Analytics
+
+- [ ] Recommendation change summary
+- [ ] Recommendation flip analysis
+- [ ] Indicator contribution report
+- [ ] Weight comparison report
+- [ ] Production vs Simulation comparison
+- [ ] Simulation leaderboard
+
+---
+
+## Engine Diagnostics
+
+- [ ] Recommendation consistency report
+- [ ] Indicator stability report
+- [ ] Confidence distribution analysis
+- [ ] Recommendation score distribution
+- [ ] False positive analysis
+- [ ] False negative analysis
+
+---
+
+# 📥 Import & Workflow Roadmap
+
+## Import Improvements
+
+- [ ] Automatic validation before import
+- [ ] Improved duplicate detection
+- [ ] Better malformed data handling
+- [ ] Import summary report
+- [ ] Import error logging
+
+---
+
+## Workflow Improvements
+
+- [ ] One-command daily workflow
+- [ ] Improved menu navigation
+- [ ] Faster report selection
+- [ ] Configuration file support
+
+---
+
+# 🚀 Future Features
+
+## MLB Engine
+
+- Complete historical statistics engine
+- Pitcher vs Batter analysis
+- MLB recommendation engine
+- MLB diagnostics
+- MLB reporting
+
+---
+
+## NFL Engine
+
 - Historical statistics
+- Matchup analysis
+- Recommendation engine
+- Reporting
+- Diagnostics
 
-Example:
+---
 
-A'ja Wilson -> 3149391
+## AI Assistance
 
-Current implementation status:
+Long-term research only.
 
-- [x] Research complete
-- [x] Roster retrieval
-- [x] Player lookup proof of concept
-- [x] Game log retrieval proof of concept
-- [ ] Integration into analysis engine
+Potential future capabilities:
 
-### Future Refactor - Rename historical_stats.py
+- Recommendation summaries
+- Engine tuning suggestions
+- Report explanations
+- Historical pattern recognition
 
-`historical_stats.py` has been reduced from a large all-in-one file into a smaller workflow/orchestration module.
+AI should assist analysis.
 
-Current remaining responsibilities:
+AI should never make betting decisions.
 
-- Clean game log display
-- Single prop analysis display
-- CSV prop loading
-- Multi-prop comparison/ranking
+---
 
-Potential future names:
+## User Experience
 
-- `prop_analysis.py`
-- `analysis_workflow.py`
-- `prop_workflow.py`
+- Graphical Dashboard
+- Improved CLI
+- Configuration management
+- Saved report presets
+- Export reports to CSV
+- Export reports to Excel
 
-Do not rename yet. Wait until NBA/WNBA mixed slate support is stable.
+---
 
-### Future Refactor - App Menu System
+# 🌎 Long-Term Vision
 
-Current state:
-- app.py contains menu logic and orchestration
-- file is ~1400 lines
+The long-term objective is to build a reusable sports analytics platform rather than an NBA or WNBA application.
 
-Future goal:
-- Extract menu systems into dedicated modules
-- Reduce app.py to application entry point
+The recommendation engine should become sport-agnostic.
 
-Potential structure:
+Each sport should provide only:
 
-menus/
-├── main_menu.py
-├── analysis_menu.py
-├── reports_menu.py
-└── paper_bets_menu.py
+- Historical data
+- Matchup logic
+- Sport-specific indicators
 
-## Sport Engine Validation
+Everything else should be shared.
 
-### WNBA Validation
-- [x] WNBA player lookup integration
-- [x] WNBA game log retrieval
-- [x] WNBA board analysis support
-- [x] PTS support
-- [x] REB support
-- [x] AST support
-- [x] PRA support
-- [x] Rebs+Asts (RA) support
-- [x] Goblin prop support
-- [x] Demon prop support
-- [x] Multi-game slate support
-- [x] Duplicate recommendation detection
-- [x] 100-prop WNBA stress test
+The Engine Toolkit will continue serving as the research environment for testing hypotheses before production implementation.
 
-Known Issues
-- [ ] Investigate Olivia Miles player lookup
-- [ ] Investigate Azzi Fudd player lookup
-- [ ] Investigate Janelle Salaün player lookup
+Production improvements should always be supported by measurable historical evidence.
 
-Future WNBA Support
-- [ ] PA (Points + Assists)
-- [ ] PR (Points + Rebounds)
-- [ ] Fantasy Score
-- [ ] 3PT Made
-- [ ] Additional PrizePicks stat types as discovered
+---
+
+# 📚 Technical Notes
+
+## Current Architecture Direction
+
+```
+Core Engine
+│
+├── Recommendation Engine
+├── Confidence Engine
+├── Indicator Weights
+├── Analytics
+├── Reports
+├── Tracking
+└── What-If Engine
+        │
+        ├── NBA Module
+        ├── WNBA Module
+        ├── MLB Module
+        └── NFL Module
+```
+
+---
+
+## Engineering Philosophy
+
+- Build one engine.
+- Support many sports.
+- Research before production.
+- Measure before changing.
+- Build reusable systems.
+- Let data drive decisions.
+
+---
+
+## Notes
+
+This roadmap is intended to guide development, not document history.
+
+Completed work should remain summarized as milestones.
+
+Future work should remain prioritized.
+
+The roadmap should answer one question immediately:
+
+> **What should we build next?**
