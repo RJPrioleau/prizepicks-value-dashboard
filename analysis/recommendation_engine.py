@@ -22,44 +22,65 @@ def get_basic_recommendation(line,last_10_avg,season_avg,hit_rate,trend_directio
     """
     score = 0
     reasons = []
+    indicator_breakdown = {}
 
     weights = indicator_weights or INDICATOR_WEIGHTS
 
     if last_10_avg > line:
         score += weights["last_10_average"]
+        indicator_breakdown["last_10_average"] = weights["last_10_average"]
         reasons.append("Last 10 average is above the line.")
     else:
         score -= weights["last_10_average"]
+        indicator_breakdown["last_10_average"] = -weights["last_10_average"]
         reasons.append("Last 10 average is below the line.")
 
     if season_avg > line:
         score += weights["season_average"]
+        indicator_breakdown["season_average"] = weights["season_average"]
         reasons.append("Season average is above the line.")
     else:
         score -= weights["season_average"]
+        indicator_breakdown["season_average"] = -weights["season_average"]
         reasons.append("Season average is below the line.")
 
     if hit_rate >= 60:
         score += weights["hit_rate"]
+        indicator_breakdown["hit_rate"] = weights["hit_rate"]
         reasons.append("Hit rate is 60% or higher.")
+
     elif hit_rate <= 50:
         score -= weights["hit_rate"]
+        indicator_breakdown["hit_rate"] = -weights["hit_rate"]
         reasons.append("Hit rate is 50% or lower.")
+
+    else:
+        indicator_breakdown["hit_rate"] = 0
 
     if trend_direction == "UP":
         score += weights["trend"]
+        indicator_breakdown["trend"] = weights["trend"]
         reasons.append("Recent trend is up.")
+
     elif trend_direction == "DOWN":
         score -= weights["trend"]
+        indicator_breakdown["trend"] = -weights["trend"]
         reasons.append("Recent trend is down.")
+
+    else:
+        indicator_breakdown["trend"] = 0
 
     if opponent_avg != "N/A":
         if opponent_avg > line:
             score += weights["opponent_average"]
+            indicator_breakdown["opponent_average"] = weights["opponent_average"]
             reasons.append("Opponent average is above the line.")
         else:
             score -= weights["opponent_average"]
+            indicator_breakdown["opponent_average"] = -weights["opponent_average"]
             reasons.append("Opponent average is below the line.")
+    else:
+        indicator_breakdown["opponent_average"] = 0
 
     if score >= 4:
         recommendation = "STRONG MORE"
