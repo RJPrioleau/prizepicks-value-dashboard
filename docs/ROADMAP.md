@@ -42,6 +42,7 @@ Complete the Engine Toolkit and validate engine improvements before freezing Ver
 ### Current Objectives
 
 - [ ] Improve What-If Engine reporting
+  - [x] Begin indicator contribution tracking in recommendation engine
 - [ ] Continue replay investigation
 - [ ] Validate recommendation changes using historical replay
 - [ ] Identify changes that improve decision quality
