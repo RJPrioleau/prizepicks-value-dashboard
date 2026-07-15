@@ -169,35 +169,84 @@ def parse_prop_block(block, game_date):
         "risk_type": risk_type
     }
 
-def backup_existing_props(
-    game_date,
-    output_file=OUTPUT_PROPS_FILE
-):
+def backup_existing_props(output_file=OUTPUT_PROPS_FILE):
     """
     Back up the current props.csv before overwriting it.
 
     Lo Note:
-    The importer overwrites props.csv, so this protects the previous
-    active slate from being lost.
+    The backup filename must match the slate date stored inside
+    the existing props.csv, not the date of the incoming slate.
     """
-    # Lo Note:
-    # Backups are named by slate date so that historical
-    # boards can be reused later for diagnostics,
-    # backtesting, and engine comparisons.
 
     if not os.path.exists(output_file):
+        return None
+
+    with open(output_file, "r", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+        first_row = next(reader, None)
+
+    if not first_row:
+        return None
+
+    existing_game_date = first_row.get("game_date")
+
+    if not existing_game_date:
         return None
 
     os.makedirs(BACKUP_FOLDER, exist_ok=True)
 
     backup_file = os.path.join(
         BACKUP_FOLDER,
-        f"props_{game_date}.csv"
+        f"props_{existing_game_date}.csv"
     )
 
     shutil.copy(output_file, backup_file)
 
     return backup_file
+
+def load_existing_props(output_file=OUTPUT_PROPS_FILE):
+    """
+    Load the current active props file.
+
+    Returns an empty list if props.csv does not exist.
+    """
+
+    if not os.path.exists(output_file):
+        return []
+
+    with open(output_file, "r", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+        return list(reader)
+
+def merge_props(existing_props, incoming_props):
+    """
+    Merge existing and incoming props while removing exact duplicates.
+
+    A prop is considered a duplicate when all identifying fields match.
+    """
+
+    unique_props = {}
+    key_fields = [
+        "sport",
+        "player",
+        "stat",
+        "line",
+        "opponent",
+        "game_date",
+        "risk_type"
+    ]
+
+    for prop in existing_props + incoming_props:
+        normalized_prop = prop.copy()
+        normalized_prop["line"] = str(float(prop["line"]))
+
+        prop_key = tuple(
+            str(normalized_prop[field]).strip()
+            for field in key_fields
+        )
+        unique_props[prop_key] = prop
+
+    return list(unique_props.values())
 
 def write_props_to_csv(props, output_file=OUTPUT_PROPS_FILE):
     """
@@ -241,11 +290,53 @@ if __name__ == "__main__":
         prop = parse_prop_block(block, game_date)
         props.append(prop)
 
-    backup_file = backup_existing_props(game_date)
+    parsed_count = len(props)
+    props = merge_props([], props)
+    incoming_duplicate_count = parsed_count - len(props)
 
-    if backup_file:
-        print(f"Backed up existing props to {backup_file}")
+    existing_props = load_existing_props()
 
-    write_props_to_csv(props)
+    raw_existing_count = len(existing_props)
+    existing_props = merge_props([], existing_props)
+    existing_duplicate_count = raw_existing_count - len(existing_props)
 
-    print(f"Imported {len(props)} props into {OUTPUT_PROPS_FILE}")
+    if existing_props:
+        existing_game_date = existing_props[0].get("game_date")
+    else:
+        existing_game_date = None
+
+    if existing_game_date == game_date:
+        merged_props = merge_props(existing_props, props)
+
+        existing_count = len(existing_props)
+        imported_count = len(props)
+        final_count = len(merged_props)
+        added_count = final_count - existing_count
+        duplicate_count = imported_count - added_count
+
+        write_props_to_csv(merged_props)
+
+        print()
+        print("SAME-DATE SLATE UPDATE")
+        print("-" * 50)
+        print(f"Slate Date: {game_date}")
+        print(f"Existing Props: {existing_count}")
+        print(f"Existing Duplicates Removed: {existing_duplicate_count}")
+        print(f"Imported Props: {imported_count}")
+        print(f"Incoming Duplicates Removed: {incoming_duplicate_count}")
+        print(f"New Props Added: {added_count}")
+        print(f"Duplicates Skipped: {duplicate_count}")
+        print(f"Updated Total: {final_count}")
+
+    else:
+        backup_file = backup_existing_props()
+
+        if backup_file:
+            print(f"Backed up existing props to {backup_file}")
+
+        write_props_to_csv(props)
+
+        print(f"Imported {len(props)} unique props into {OUTPUT_PROPS_FILE}")
+
+        if incoming_duplicate_count:
+            print(f"Removed {incoming_duplicate_count} duplicate props from raw import.")
