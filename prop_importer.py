@@ -2,6 +2,8 @@ import csv
 import os
 import re
 import shutil
+from analysis.slate_status import get_current_slate_status
+from utils.prop_identity import build_prop_key
 
 
 RAW_PROPS_FILE = "raw_props.txt"
@@ -226,24 +228,9 @@ def merge_props(existing_props, incoming_props):
     """
 
     unique_props = {}
-    key_fields = [
-        "sport",
-        "player",
-        "stat",
-        "line",
-        "opponent",
-        "game_date",
-        "risk_type"
-    ]
 
     for prop in existing_props + incoming_props:
-        normalized_prop = prop.copy()
-        normalized_prop["line"] = str(float(prop["line"]))
-
-        prop_key = tuple(
-            str(normalized_prop[field]).strip()
-            for field in key_fields
-        )
+        prop_key = build_prop_key(prop)
         unique_props[prop_key] = prop
 
     return list(unique_props.values())
@@ -328,7 +315,42 @@ if __name__ == "__main__":
         print(f"Duplicates Skipped: {duplicate_count}")
         print(f"Updated Total: {final_count}")
 
+
     else:
+
+        status = get_current_slate_status()
+
+        if status["status"] != "COMPLETE":
+
+            print()
+
+            print("=" * 70)
+
+            print("WARNING")
+
+            print("=" * 70)
+
+            print(f"Current Slate : {status['game_date']}")
+
+            print(f"Status        : {status['status']}")
+
+            print(f"Analyzed      : {status['analyzed_props']} / {status['total_props']}")
+
+            print(f"Remaining     : {status['remaining_props']}")
+
+            print()
+
+            print("Importing a different slate will replace the current active slate.")
+
+            print()
+
+            response = input("Continue? (Y/N): ").strip().upper()
+
+            if response != "Y":
+                print("Import cancelled.")
+
+                raise SystemExit
+
         backup_file = backup_existing_props()
 
         if backup_file:

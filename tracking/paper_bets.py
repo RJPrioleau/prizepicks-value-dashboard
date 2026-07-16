@@ -1,6 +1,7 @@
 import csv
 from datetime import datetime
 import pandas as pd
+from utils.prop_identity import build_prop_key
 
 def ensure_paper_bets_schema():
     """
@@ -147,15 +148,7 @@ def paper_bet_exists(prop):
 
         for row in reader:
 
-            if (
-                row["game_date"] == prop["game_date"]
-
-                and row.get("sport", "UNKNOWN") == prop.get("sport", "UNKNOWN")
-                and row["player"] == prop["player"]
-                and row["stat"] == prop["stat"]
-                and float(row["line"]) == float(prop["line"])
-                and row["risk_type"] == prop["risk_type"]
-            ):
+            if build_prop_key(row) == build_prop_key(prop):
                 return True
 
     return False
