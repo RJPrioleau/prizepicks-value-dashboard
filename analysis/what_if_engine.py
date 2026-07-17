@@ -100,7 +100,7 @@ def run_weight_simulation(engine_config):
 
     replay_historical_props(engine_config)
 
-def  replay_historical_props(custom_weights):
+def  replay_historical_props(engine_config):
     """
     Replay historical props using simulated indicator weights.
 
@@ -142,7 +142,7 @@ def  replay_historical_props(custom_weights):
 
         replay_result = replay_single_prop(
             row,
-            custom_weights
+            engine_config
         )
 
         simulation_result = score_simulation_result(
@@ -246,7 +246,7 @@ def  replay_historical_props(custom_weights):
         print(f"Simulation: {prop['simulation']} ({prop['simulation_score']})")
         print(f"Result: {prop['result']}")
 
-def replay_single_prop(row, custom_weights):
+def replay_single_prop(row, engine_config):
     """
     Replay one historical prop through the correct sport module.
 
@@ -263,7 +263,7 @@ def replay_single_prop(row, custom_weights):
             row["stat"],
             float(row["line"]),
             row["opponent"],
-            indicator_weights=custom_weights
+            indicator_weights=engine_config
         )
         return analysis
 
