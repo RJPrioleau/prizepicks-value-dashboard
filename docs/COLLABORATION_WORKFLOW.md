@@ -34,6 +34,26 @@ For meaningful tasks:
 
 Do not assume discussion authorizes a file change. Make it clear when the conversation moves from planning or teaching into implementation.
 
+## Incremental refactoring and commits
+
+The user intentionally learns and develops through small, independently understandable changes. Prefer a sequence such as:
+
+```text
+Rename
+    -> verify
+    -> commit
+    -> introduce configuration structure
+    -> verify
+    -> commit
+    -> extract a helper
+    -> verify
+    -> commit
+```
+
+Do not combine several conceptually distinct refactoring steps into a broad rewrite merely because the final architecture is already visible. Explain how the current small step contributes to that architecture, identify any temporary limitation it leaves behind, and verify the behavior before moving to the next step. This deliberate commit structure helps the user understand each change, practice Git, isolate mistakes, and review the project's evolution.
+
+When recommending a larger atomic change for correctness, state why the steps cannot safely be separated. Otherwise, default to the user's rename, verify, commit, then continue model.
+
 The user may select a different interaction mode at any time:
 
 - **Just do it:** Complete the work and provide a concise explanation.
