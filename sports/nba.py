@@ -142,8 +142,8 @@ def get_player_analysis(player_name,stat_type,line,opponent,season=DEFAULT_SEASO
         season_avg,
         hit_rate,
         trend_direction,
-        opponent_avg
-    )
+        opponent_avg,
+        )
 
     return {
         "player": player_name,

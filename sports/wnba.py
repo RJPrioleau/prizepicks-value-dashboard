@@ -250,7 +250,8 @@ def get_wnba_player_analysis(player_name, stat_type, line, opponent=None,indicat
         hit_rate,
         trend_direction,
         opponent_avg,
-        indicator_weights
+        indicator_weights,
+
     )
 
     return {

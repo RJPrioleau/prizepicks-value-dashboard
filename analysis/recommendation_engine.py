@@ -1,6 +1,6 @@
 from analysis.indicator_weights import INDICATOR_WEIGHTS
 
-def get_basic_recommendation(line,last_10_avg,season_avg,hit_rate,trend_direction,opponent_avg,indicator_weights=None):
+def get_basic_recommendation(line,last_10_avg,season_avg,hit_rate,trend_direction,opponent_avg,indicator_weights=None,hit_rate_high_threshold=60, hit_rate_low_threshold=50):
     """
     Generate a recommendation, confidence level, and reasoning.
 
@@ -26,6 +26,8 @@ def get_basic_recommendation(line,last_10_avg,season_avg,hit_rate,trend_directio
 
     weights = indicator_weights or INDICATOR_WEIGHTS
 
+
+
     if last_10_avg > line:
         score += weights["last_10_average"]
         indicator_breakdown["last_10_average"] = weights["last_10_average"]
@@ -44,15 +46,19 @@ def get_basic_recommendation(line,last_10_avg,season_avg,hit_rate,trend_directio
         indicator_breakdown["season_average"] = -weights["season_average"]
         reasons.append("Season average is below the line.")
 
-    if hit_rate >= 60:
+    if hit_rate >= hit_rate_high_threshold:
         score += weights["hit_rate"]
         indicator_breakdown["hit_rate"] = weights["hit_rate"]
-        reasons.append("Hit rate is 60% or higher.")
+        reasons.append(
+            f"Hit rate is {hit_rate_high_threshold}% or higher."
+        )
 
-    elif hit_rate <= 50:
+    elif hit_rate <= hit_rate_low_threshold:
         score -= weights["hit_rate"]
         indicator_breakdown["hit_rate"] = -weights["hit_rate"]
-        reasons.append("Hit rate is 50% or lower.")
+        reasons.append(
+            f"Hit rate is {hit_rate_low_threshold}% or lower."
+        )
 
     else:
         indicator_breakdown["hit_rate"] = 0

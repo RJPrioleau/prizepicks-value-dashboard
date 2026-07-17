@@ -1546,4 +1546,8 @@ def show_grouped_indicator_effectiveness():
             difference = round(
                 abs(win_rates[0] - win_rates[1]),
             )
+            stronger_index = 0 if win_rates[0] >= win_rates[1] else 1
+            stronger_reason = reasons[stronger_index]
+
             print(f"Difference: {difference}%")
+            print(f"Stronger Side: {stronger_reason}")
