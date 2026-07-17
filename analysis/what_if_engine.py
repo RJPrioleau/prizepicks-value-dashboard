@@ -28,7 +28,7 @@ not rewriting history.
 from analysis.indicator_weights import INDICATOR_WEIGHTS
 
 
-def run_weight_simulation(custom_weights):
+def run_weight_simulation(engine_config):
     """
     Display a comparison between the current engine weights
     and a simulated engine configuration.
@@ -59,7 +59,7 @@ def run_weight_simulation(custom_weights):
     print()
     print("Simulation")
 
-    for indicator, weight in custom_weights.items():
+    for indicator, weight in engine_config.items():
         print(f"{indicator:<25}: {weight}")
 
     # -------------------------------------------------
@@ -74,7 +74,7 @@ def run_weight_simulation(custom_weights):
 
     for indicator, current_weight in INDICATOR_WEIGHTS.items():
 
-        new_weight = custom_weights.get(
+        new_weight = engine_config.get(
             indicator,
             current_weight
         )
@@ -98,7 +98,7 @@ def run_weight_simulation(custom_weights):
     # Replay Engine (Coming Next)
     # -------------------------------------------------
 
-    replay_historical_props(custom_weights)
+    replay_historical_props(engine_config)
 
 def  replay_historical_props(custom_weights):
     """
