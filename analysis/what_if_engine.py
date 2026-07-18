@@ -34,6 +34,8 @@ def run_weight_simulation(engine_config):
     and a simulated engine configuration.
     """
 
+    simulated_weights = engine_config["indicator_weights"]
+
     # -------------------------------------------------
     # Header
     # -------------------------------------------------
@@ -59,7 +61,7 @@ def run_weight_simulation(engine_config):
     print()
     print("Simulation")
 
-    for indicator, weight in engine_config.items():
+    for indicator, weight in simulated_weights.items():
         print(f"{indicator:<25}: {weight}")
 
     # -------------------------------------------------
@@ -74,7 +76,7 @@ def run_weight_simulation(engine_config):
 
     for indicator, current_weight in INDICATOR_WEIGHTS.items():
 
-        new_weight = engine_config.get(
+        new_weight = simulated_weights.get(
             indicator,
             current_weight
         )
@@ -255,6 +257,8 @@ def replay_single_prop(row, engine_config):
     analysis function should handle the prop.
     """
 
+    simulated_weights = engine_config["indicator_weights"]
+
     sport = row["sport"]
 
     if sport == "WNBA":
@@ -263,7 +267,7 @@ def replay_single_prop(row, engine_config):
             row["stat"],
             float(row["line"]),
             row["opponent"],
-            indicator_weights=engine_config
+            indicator_weights=simulated_weights
         )
         return analysis
 
