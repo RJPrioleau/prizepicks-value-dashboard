@@ -148,6 +148,23 @@ Use the repository as evidence during these discussions. Inspect the real code w
 
 Screenshots should usually be unnecessary for code, repository files, terminal output, tracebacks, Git changes, and project structure because the agent can inspect those directly. Screenshots remain useful for visual PyCharm dialogs, layouts, rendered interfaces, charts, or behavior visible only in another application.
 
+## Browser ChatGPT project updates
+
+The user began this project with browser-based ChatGPT and wants to keep that conversation current so it can remain a strategic and learning resource. The IDE-based agent handles repository-aware implementation and verification, while browser ChatGPT may provide additional guidance about project direction, architecture, learning, and next steps.
+
+When the user asks for an update for browser ChatGPT, provide a concise, copy-ready summary that includes:
+
+- Work completed since the previous update.
+- Important decisions and architectural direction.
+- Relevant verification results and evidence.
+- Current limitations, unresolved questions, or known issues.
+- The present project state, including any uncommitted work when relevant.
+- Recommended or agreed-upon next steps.
+
+Write the update so browser ChatGPT can understand the current situation without access to the repository or the complete IDE chat transcript. Distinguish proven results from proposals or interpretations, and include concrete metrics, commit state, or behavior changes when they materially affect the guidance being requested.
+
+These browser updates complement, but do not replace, the machine-switch handoff in `AGENTS.md`. Browser updates support ongoing strategic conversation; the `AGENTS.md` handoff remains the authoritative operational record for another repository-aware agent.
+
 ## Continuity between computers
 
 The user regularly switches between a Surface Pro and a desktop. Chat transcripts may not be available on both machines, so continuity must travel through the repository.
