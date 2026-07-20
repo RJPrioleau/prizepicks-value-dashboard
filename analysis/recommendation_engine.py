@@ -1,6 +1,20 @@
 from analysis.indicator_weights import INDICATOR_WEIGHTS
 
-def get_basic_recommendation(line,last_10_avg,season_avg,hit_rate,trend_direction,opponent_avg,indicator_weights=None,hit_rate_high_threshold=60, hit_rate_low_threshold=50):
+DEFAULT_HIT_RATE_HIGH_THRESHOLD = 60
+DEFAULT_HIT_RATE_LOW_THRESHOLD = 50
+
+
+def get_basic_recommendation(
+        line,
+        last_10_avg,
+        season_avg,
+        hit_rate,
+        trend_direction,
+        opponent_avg,
+        indicator_weights=None,
+        hit_rate_high_threshold=DEFAULT_HIT_RATE_HIGH_THRESHOLD,
+        hit_rate_low_threshold=DEFAULT_HIT_RATE_LOW_THRESHOLD,
+):
     """
     Generate a recommendation, confidence level, and reasoning.
 
