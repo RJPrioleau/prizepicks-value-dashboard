@@ -258,6 +258,7 @@ def replay_single_prop(row, engine_config):
     """
 
     simulated_weights = engine_config["indicator_weights"]
+    simulated_thresholds = engine_config["thresholds"]
 
     sport = row["sport"]
 
@@ -267,7 +268,9 @@ def replay_single_prop(row, engine_config):
             row["stat"],
             float(row["line"]),
             row["opponent"],
-            indicator_weights=simulated_weights
+            indicator_weights=simulated_weights,
+            hit_rate_high_threshold=simulated_thresholds["hit_rate_high"],
+            hit_rate_low_threshold=simulated_thresholds["hit_rate_low"],
         )
         return analysis
 
