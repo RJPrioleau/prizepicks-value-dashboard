@@ -32,7 +32,7 @@ from analysis.recommendation_engine import (
 )
 
 
-def run_weight_simulation(engine_config):
+def run_engine_simulation(engine_config):
     """
     Display a comparison between the current and simulated
     engine configurations.
