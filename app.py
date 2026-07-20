@@ -1631,12 +1631,20 @@ while True:
         ).strip()
 
         result = input(
-            "Result [WIN/LOSS/PUSH/PENDING/PASS] (blank for all): "
+            "Result [WIN/LOSS/PUSH/PENDING/PASS/DNP/SKIPPED] (blank for all): "
         ).strip()
 
         valid_sports = ["NBA", "WNBA"]
         valid_risk_types = ["GOBLIN", "NORMAL", "DEMON"]
-        valid_results = ["WIN", "LOSS", "PUSH", "PENDING", "DNP", "PASS"]
+        valid_results = [
+            "WIN",
+            "LOSS",
+            "PUSH",
+            "PENDING",
+            "DNP",
+            "PASS",
+            "SKIPPED",
+        ]
 
         if sport and sport.upper() not in valid_sports:
             print(f"Invalid sport. Choose from: {', '.join(valid_sports)}")
