@@ -26,15 +26,25 @@ not rewriting history.
 """
 
 from analysis.indicator_weights import INDICATOR_WEIGHTS
+from analysis.recommendation_engine import (
+    DEFAULT_HIT_RATE_HIGH_THRESHOLD,
+    DEFAULT_HIT_RATE_LOW_THRESHOLD,
+)
 
 
 def run_weight_simulation(engine_config):
     """
-    Display a comparison between the current engine weights
-    and a simulated engine configuration.
+    Display a comparison between the current and simulated
+    engine configurations.
     """
 
     simulated_weights = engine_config["indicator_weights"]
+    simulated_thresholds = engine_config["thresholds"]
+
+    current_thresholds = {
+        "hit_rate_high": DEFAULT_HIT_RATE_HIGH_THRESHOLD,
+        "hit_rate_low": DEFAULT_HIT_RATE_LOW_THRESHOLD,
+    }
 
     # -------------------------------------------------
     # Header
@@ -42,7 +52,7 @@ def run_weight_simulation(engine_config):
 
     print()
     print("-" * 90)
-    print("WEIGHT SIMULATION")
+    print("ENGINE CONFIGURATION SIMULATION")
     print("-" * 90)
 
     # -------------------------------------------------
@@ -63,6 +73,18 @@ def run_weight_simulation(engine_config):
 
     for indicator, weight in simulated_weights.items():
         print(f"{indicator:<25}: {weight}")
+
+    print()
+    print("Current Thresholds")
+
+    for threshold, value in current_thresholds.items():
+        print(f"{threshold:<25}: {value}")
+
+    print()
+    print("Simulation Thresholds")
+
+    for threshold, value in simulated_thresholds.items():
+        print(f"{threshold:<25}: {value}")
 
     # -------------------------------------------------
     # Weight changes
@@ -95,6 +117,32 @@ def run_weight_simulation(engine_config):
 
     if not changes_found:
         print("No weight changes detected.")
+
+    print()
+    print("THRESHOLD CHANGES")
+    print("-" * 50)
+
+    threshold_changes_found = False
+
+    for threshold, current_value in current_thresholds.items():
+        new_value = simulated_thresholds.get(
+            threshold,
+            current_value
+        )
+
+        if new_value != current_value:
+            threshold_changes_found = True
+
+            change = new_value - current_value
+
+            print(
+                f"{threshold:<25}"
+                f"{current_value} -> {new_value}"
+                f" ({change:+})"
+            )
+
+    if not threshold_changes_found:
+        print("No threshold changes detected.")
 
     # -------------------------------------------------
     # Replay Engine (Coming Next)
