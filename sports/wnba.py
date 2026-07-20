@@ -165,7 +165,15 @@ def add_wnba_calculated_stats(df):
 
     return df
 
-def get_wnba_player_analysis(player_name, stat_type, line, opponent=None,indicator_weights=None):
+def get_wnba_player_analysis(
+        player_name,
+        stat_type,
+        line,
+        opponent=None,
+        indicator_weights=None,
+        hit_rate_high_threshold=60,
+        hit_rate_low_threshold=50
+):
     """
     Analyze a WNBA player's recent performance against a prop line.
 
@@ -250,7 +258,9 @@ def get_wnba_player_analysis(player_name, stat_type, line, opponent=None,indicat
         hit_rate,
         trend_direction,
         opponent_avg,
-        indicator_weights,
+        indicator_weights=indicator_weights,
+        hit_rate_high_threshold=hit_rate_high_threshold,
+        hit_rate_low_threshold=hit_rate_low_threshold,
 
     )
 
