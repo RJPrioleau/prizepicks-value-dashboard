@@ -7,7 +7,8 @@ from analysis.historical_analysis import (
     calculate_hit_rate,
     calculate_trend,
     calculate_home_away_split,
-    calculate_opponent_average
+    calculate_opponent_average,
+    build_evidence_profile,
 )
 from analysis.recommendation_engine import get_basic_recommendation
 from analysis.matchup_parser import parse_basketball_matchup
@@ -251,6 +252,17 @@ def get_wnba_player_analysis(
             opponent
         )
 
+    evidence_profile = build_evidence_profile(
+        player_logs,
+        stat_column,
+        opponent=opponent,
+        recent_game_window=10,
+        location_column="location",
+        opponent_column="opponent",
+        game_date_column="game_date",
+        data_season=WNBA_SEASON,
+    )
+
     recommendation, score, confidence, reasons = get_basic_recommendation(
         line,
         last_10_avg,
@@ -280,6 +292,7 @@ def get_wnba_player_analysis(
         "home_avg": home_avg,
         "away_avg": away_avg,
         "opponent_avg": opponent_avg,
+        "evidence_profile": evidence_profile,
         "recommendation": recommendation,
         "score": score,
         "confidence": confidence,
