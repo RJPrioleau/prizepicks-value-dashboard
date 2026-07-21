@@ -4,6 +4,18 @@
 
 Read `docs/COLLABORATION_WORKFLOW.md` before beginning substantial work. It describes the user's learning goals, preferred teaching style, division of responsibilities between PyCharm and PowerShell, and the relationship between this project and the independent Developer Playbook repository.
 
+## Repository documentation
+
+Before making architectural or data-contract changes, inspect the relevant files in `docs/`.
+
+Important documents include:
+
+- `docs/ROADMAP.md` — project direction, milestones, and architecture.
+- `docs/data_dictionary.md` — definitions and contracts for analysis and data fields.
+- `docs/COLLABORATION_WORKFLOW.md` — the preferred teaching and collaboration workflow.
+
+When adding or changing analysis metadata, update `docs/data_dictionary.md` if the field contract changes.
+
 ## End-of-session workflow
 
 When the user indicates they are finished, asks to wrap up, or says they are switching computers:
@@ -41,6 +53,14 @@ The user should only need to pull the repository and tell the receiving agent:
 ## Handoff details and continuity log
 
 This is the authoritative continuing handoff record for AI agents working on this repository from different computers. At every session end or computer switch, add a new entry directly below this explanation, with the newest entry first. The newest entry is the active handoff; older entries preserve useful decision history. Keep entries concise but preserve decisions and context that cannot be recovered from the code alone. Do not use this section as a general development diary or duplicate information already clear from Git history.
+
+### 2026-07-21 11:45 EDT — Complete Evidence Profile Foundation and shelve project
+
+- Completed: Finished Sprint 3. Added the factual-only `build_evidence_profile` helper, attached its output additively to WNBA player analysis, documented all profile fields in `docs/data_dictionary.md`, and documented the split between recommendation signals and evidence metadata in `docs/ROADMAP.md`. Added standing instructions requiring future agents to inspect relevant repository documentation before architectural or data-contract work. The sprint implementation is committed through `d1bf97b`; the final documentation and this handoff remain to be committed.
+- Decisions and architecture: The Evidence Profile belongs to the analysis layer and is descriptive metadata only. It does not evaluate evidence, assign quality labels, calculate reliability, or affect recommendation direction, strength, confidence, market rules, replay, or `engine_config`. Replay remains the configuration translation boundary, and neither sport analysis nor `get_basic_recommendation` receives the complete configuration object. A future independent confidence system may consume the profile, but no confidence behavior was introduced in this sprint.
+- Next steps: This repository is intentionally being put on the shelf while the user starts a different project in a separate repository. There is no active implementation task. When work resumes, pull the latest `main`, read this handoff plus the roadmap and data dictionary, confirm the preserved baseline, and choose a new sprint deliberately. The natural future direction is an independent confidence system that consumes Evidence Profile metadata, but its design and behavior must be treated as a new sprint rather than assumed from this handoff.
+- Known issues: Previously identified replay look-ahead risk, Goblin/Demon replay divergence, fixed WNBA season, and exact player-name matching remain unresolved and were intentionally outside Sprint 3. `docs/data_dictionary.md` is stored as UTF-16 and therefore appears as a binary file in Git diffs; this encoding predates the Evidence Profile documentation change.
+- Verification: Python compilation passed for the historical analysis, WNBA, recommendation, and What-If modules. A focused profile test confirmed row, missing-value, matchup, location, date, window, and season metadata. Full unchanged-engine replay matched production exactly at 62 wins, 70 losses, and 1 push (46.62%), with zero ignored rows, zero changed recommendations, and zero strength-only changes. `git diff --check` passed.
 
 ### 2026-07-21 10:14 EDT — Bound Sprint 3 Evidence Profile scope
 

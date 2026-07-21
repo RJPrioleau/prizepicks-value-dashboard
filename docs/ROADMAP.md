@@ -31,22 +31,29 @@ The application is designed as a decision-support tool, not an automated betting
 
 # 🚧 Current Sprint
 
-## Engine Toolkit v1.0
+## Evidence Profile Foundation
 
-**Status:** 🟡 Active
+**Status:** 🟢 Complete
 
 ### Sprint Goal
 
-Complete the Engine Toolkit and validate engine improvements before freezing Version 1.
+Introduce descriptive metadata about the evidence used during player analysis without changing recommendation behavior.
 
-### Current Objectives
+### Objectives
 
-- [ ] Improve What-If Engine reporting
-  - [x] Begin indicator contribution tracking in recommendation engine
-- [ ] Continue replay investigation
-- [ ] Validate recommendation changes using historical replay
-- [ ] Identify changes that improve decision quality
-- [ ] Freeze Engine Toolkit v1.0
+- [x] Create the Evidence Profile builder in the analysis layer.
+- [x] Attach the Evidence Profile to WNBA analysis results.
+- [x] Keep recommendation scoring independent from the Evidence Profile.
+- [x] Preserve recommendation direction, score, confidence, market rules, and replay behavior.
+- [x] Define the Evidence Profile field contract in the data dictionary.
+- [x] Document the Evidence Profile’s place in the recommendation architecture.
+- [x] Complete final regression verification.
+
+### Architectural Boundary
+
+The Evidence Profile reports factual metadata only. It does not evaluate evidence, assign quality labels, calculate reliability, or influence recommendations.
+
+A future independent confidence system may consume this metadata to determine how much the engine trusts the available evidence.
 
 ---
 
@@ -534,6 +541,31 @@ Core Engine
         ├── MLB Module
         └── NFL Module
 ```
+
+### Evidence Profile Pipeline
+
+```text
+Historical Replay
+        |
+        | translates engine configuration into explicit arguments
+        v
+WNBA Player Analysis
+        |
+        +-- Analysis values ----------------> Recommendation Scoring
+        |                                    - interprets signal direction
+        |                                    - calculates recommendation score
+        |                                    - assigns current confidence
+        |
+        +-- Evidence Profile ----------------> Future Confidence Engine
+                                             - currently metadata only
+                                             - future consumer of evidence facts
+```
+
+The Evidence Profile is created in the analysis layer and returned as part of the player analysis object.
+
+Recommendation scoring continues to consume only the existing analysis values. It does not receive the Evidence Profile or the complete `engine_config` object.
+
+The Evidence Profile remains independent from recommendation direction, recommendation strength, current confidence calculation, market rules, and replay behavior.
 
 ---
 
