@@ -1,3 +1,6 @@
+import pandas as pd
+
+
 def calculate_recent_averages(player_logs, stat_type):
     """
     Calculate recent averages for a player stat.
@@ -139,3 +142,95 @@ def calculate_opponent_average(player_logs, stat_type, opponent, opponent_column
     opponent_avg = float(round(opponent_games[stat_type].mean(), 2))
 
     return opponent_avg
+
+
+def build_evidence_profile(
+    player_logs,
+    stat_type,
+    opponent=None,
+    recent_game_window=10,
+    location_column="team_location",
+    opponent_column="opponent",
+    game_date_column="game_date",
+    data_season=None,
+):
+    """
+    Build factual metadata describing the evidence available
+    for one player-stat analysis.
+
+    This profile does not score, classify, or interpret evidence.
+    It must not change recommendation or confidence behavior.
+    """
+    total_game_rows = int(len(player_logs))
+
+    valid_stat_rows = int(
+        player_logs[stat_type].notna().sum()
+    )
+
+    missing_stat_rows = int(
+        player_logs[stat_type].isna().sum()
+    )
+
+    available_recent_game_count = int(
+        len(player_logs.head(recent_game_window))
+    )
+
+    opponent_matchup_count = 0
+
+    if (
+        opponent is not None
+        and opponent_column in player_logs.columns
+    ):
+        opponent_matchup_count = int(
+            (player_logs[opponent_column] == opponent).sum()
+        )
+
+    home_game_count = 0
+    away_game_count = 0
+
+    if location_column in player_logs.columns:
+        normalized_locations = (
+            player_logs[location_column]
+            .astype("string")
+            .str.lower()
+        )
+
+        home_game_count = int(
+            (normalized_locations == "home").sum()
+        )
+
+        away_game_count = int(
+            (normalized_locations == "away").sum()
+        )
+
+    earliest_game_date = None
+    latest_game_date = None
+
+    if game_date_column in player_logs.columns:
+        game_dates = pd.to_datetime(
+            player_logs[game_date_column],
+            errors="coerce",
+        ).dropna()
+
+        if not game_dates.empty:
+            earliest_game_date = (
+                game_dates.min().date().isoformat()
+            )
+
+            latest_game_date = (
+                game_dates.max().date().isoformat()
+            )
+
+    return {
+        "total_game_rows": total_game_rows,
+        "valid_stat_rows": valid_stat_rows,
+        "missing_stat_rows": missing_stat_rows,
+        "requested_recent_game_window": recent_game_window,
+        "available_recent_game_count": available_recent_game_count,
+        "opponent_matchup_count": opponent_matchup_count,
+        "home_game_count": home_game_count,
+        "away_game_count": away_game_count,
+        "earliest_game_date": earliest_game_date,
+        "latest_game_date": latest_game_date,
+        "data_season": data_season,
+    }
